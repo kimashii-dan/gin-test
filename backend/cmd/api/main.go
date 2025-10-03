@@ -3,8 +3,8 @@ package main
 import (
 	"gin-backend/internal/database"
 	"gin-backend/internal/handlers"
+	"gin-backend/internal/middleware"
 	"gin-backend/internal/models"
-	"gin-backend/middleware"
 	"time"
 
 	"github.com/gin-contrib/cors"

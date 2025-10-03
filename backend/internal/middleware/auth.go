@@ -52,6 +52,7 @@ func CheckAuth() gin.HandlerFunc {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H {
 					"error": "User not found",
 				})
+				return 
 			}
 
 			c.Set("user", user)

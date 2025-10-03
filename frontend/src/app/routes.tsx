@@ -1,31 +1,39 @@
 import { createBrowserRouter } from "react-router";
-import Login from "../pages/login";
-import Register from "../pages/register";
-import AuthLayout from "../shared/ui/layouts/auth-layout";
 import MainLayout from "../shared/ui/layouts/main-layout";
 import Home from "../pages/home";
+import Login from "../pages/login";
 import NotFound from "../pages/not-found";
+import Profile from "../pages/profile";
+import Register from "../pages/register";
+import AuthLayout from "../shared/ui/layouts/auth-layout";
+import { requireAuth, requireGuest } from "../shared/auth";
 
 export const router = createBrowserRouter([
   {
+    Component: MainLayout,
     path: "/",
-    element: <MainLayout />,
     children: [
       {
         index: true,
-        element: <Home />,
+        Component: Home,
+      },
+      {
+        path: "/profile",
+        middleware: [requireAuth],
+        Component: Profile,
       },
       {
         path: "*",
-        element: <NotFound />,
+        Component: NotFound,
       },
     ],
   },
   {
-    element: <AuthLayout />,
+    Component: AuthLayout,
+    middleware: [requireGuest],
     children: [
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
+      { path: "/login", Component: Login },
+      { path: "/register", Component: Register },
     ],
   },
 ]);

@@ -1,0 +1,29 @@
+@reference "../../../index.css";
+
+.header {
+  @apply p-5 fixed top-0 w-full z-10 flex items-center justify-center;
+}
+
+.header_nav {
+  @apply rounded-full w-10/12 flex flex-row justify-between items-center p-5;
+}
+
+.header_logo {
+  @apply flex flex-row items-center gap-3;
+}
+
+.header_logo_img {
+  @apply w-15;
+}
+
+.header_plus {
+  @apply text-5xl;
+}
+
+.header_btn_auth {
+  @apply px-10 py-5 bg-green-500;
+}
+
+.header_btn_login {
+  @apply px-10 py-5 bg-red-500;
+}

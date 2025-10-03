@@ -11,6 +11,13 @@ export type SuccessResponse = {
   success: true;
 };
 
+export type User = {
+  id: number;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AuthResponse = {
-  userEmail: string;
+  user: User;
 };

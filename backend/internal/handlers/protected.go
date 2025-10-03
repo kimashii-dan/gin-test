@@ -25,7 +25,14 @@ func Validate(c *gin.Context) {
         return
     }
 
+	userResponse := gin.H{
+		"id": user.ID,
+		"email": user.Email,
+		"createdAt": user.CreatedAt,
+		"updatedAt": user.UpdatedAt,
+	}
+
 	c.JSON(http.StatusOK, gin.H {
-		"userEmail": user.Email,
+		"user": userResponse,
 	})
 }

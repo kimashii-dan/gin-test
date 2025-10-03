@@ -122,7 +122,7 @@ func Refresh(c *gin.Context) {
 	tokenString, err := c.Cookie("refreshToken")
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "No refresh token",
 		})
 		return

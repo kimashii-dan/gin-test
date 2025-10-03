@@ -1,10 +1,8 @@
 import { Outlet } from "react-router";
-import Header from "./header";
 
-export default function MainLayout() {
+export default function AuthLayout() {
   return (
     <main>
-      <Header />
       <Outlet />
     </main>
   );

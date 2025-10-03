@@ -1,0 +1,25 @@
+@reference "../../../index.css";
+
+.footer {
+  @apply flex w-full  p-10 justify-center;
+}
+
+.footer_nav {
+  @apply flex justify-between w-10/12;
+}
+
+.footer_title {
+  @apply text-lg font-semibold mb-2;
+}
+
+.footer_socials {
+  @apply flex flex-col;
+}
+
+.footer_icons {
+  @apply grid grid-flow-col gap-4;
+}
+
+.footer_icon {
+  @apply fill-current w-6 h-6;
+}

@@ -1,0 +1,17 @@
+@reference "../../index.css";
+
+.base {
+  @apply px-4 py-2 rounded-md font-medium transition-colors duration-200;
+}
+
+.primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.secondary {
+  @apply bg-gray-200 text-gray-900 hover:bg-gray-300;
+}
+
+.danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
