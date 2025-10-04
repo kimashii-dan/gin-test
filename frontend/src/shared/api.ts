@@ -1,4 +1,4 @@
-import { api } from "./lib/axios";
+import { api } from "./core/axios";
 import type { AuthResponse } from "./types";
 
 export async function getUserData(): Promise<AuthResponse> {

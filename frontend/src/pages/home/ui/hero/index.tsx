@@ -1,10 +1,9 @@
 import { useRouteLoaderData } from "react-router";
 import { Button } from "../../../../shared/ui/button";
-import type { AuthState } from "../../../../shared/auth";
+import type { AuthState } from "../../../../shared/types";
 
 export default function Hero() {
   const { auth } = useRouteLoaderData("root") as { auth: AuthState };
-  console.log(auth);
 
   return (
     <section className="">

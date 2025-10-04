@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./styles.module.css";
-
 type ButtonProps = {
   variant?: "primary" | "secondary" | "danger";
   disabled?: boolean;

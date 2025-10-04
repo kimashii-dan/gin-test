@@ -1,12 +1,7 @@
 import { redirect } from "react-router";
 import { createContext } from "react-router";
-import type { User } from "./types";
-import { getUserData } from "./api";
-
-export type AuthState = {
-  isAuthenticated: boolean;
-  user?: User;
-};
+import type { AuthState } from "../types";
+import { getUserData } from "../api";
 
 export const authContext = createContext<AuthState>();
 

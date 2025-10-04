@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import type z from "zod";
-import { loginSchema } from "../../shared/lib/schemas";
+import { loginSchema } from "../../shared/core/schemas";
 import { Link, useNavigate, useRevalidator } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "./api";

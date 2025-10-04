@@ -1,12 +1,78 @@
 @import "tailwindcss";
 
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0.005 285);
+
+  --card: oklch(0.985 0 0);
+  --card-foreground: var(--foreground);
+
+  --border: oklch(0.9 0 0);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.45 0.01 285);
+
+  --primary: oklch(0.72 0.22 260);
+  --primary-foreground: oklch(0.98 0 0);
+
+  --secondary: oklch(0.88 0.03 260);
+  --secondary-foreground: var(--foreground);
+
+  --accent: oklch(0.72 0.22 160);
+  --accent-foreground: oklch(0.98 0 0);
+
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+}
+
+.dark {
+  --background: oklch(0.15 0.005 285);
+  --foreground: oklch(0.98 0 0);
+
+  --card: oklch(0.22 0.006 285);
+  --card-foreground: oklch(0.96 0 0);
+
+  --border: oklch(0.35 0 0);
+  --muted: oklch(0.3 0 0);
+  --muted-foreground: oklch(0.75 0 0);
+
+  --primary: oklch(0.7 0.22 260);
+  --primary-foreground: oklch(0.1 0 0);
+
+  --secondary: oklch(0.3 0.05 260);
+  --secondary-foreground: oklch(0.9 0 0);
+
+  --accent: oklch(0.68 0.22 160);
+  --accent-foreground: oklch(0.1 0 0);
+
+  --destructive: oklch(0.68 0.22 25);
+  --destructive-foreground: oklch(0.1 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+}
+
 @layer base {
   * {
     @apply box-border;
   }
 
   body {
-    @apply m-0 p-0 bg-blue-950 text-white;
+    @apply m-0 p-0 bg-background text-foreground;
   }
 
   main {

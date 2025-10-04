@@ -1,7 +1,8 @@
 import { Link, useRouteLoaderData } from "react-router";
 import styles from "./styles.module.css";
 import { Button } from "../../button";
-import type { AuthState } from "../../../auth";
+import ModeToggle from "../../mode-toggle";
+import type { AuthState } from "../../../types";
 export default function Header() {
   const { auth } = useRouteLoaderData("root") as { auth: AuthState };
 
@@ -21,6 +22,7 @@ export default function Header() {
             className={styles.header_logo_img}
           />
         </Link>
+        <ModeToggle />
 
         {auth.isAuthenticated ? (
           <Button variant="secondary">

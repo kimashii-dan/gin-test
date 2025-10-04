@@ -1,4 +1,4 @@
-import { api } from "../../shared/lib/axios";
+import { api } from "../../shared/core/axios";
 import type { Credentials, SuccessResponse } from "../../shared/types";
 
 export async function register(
