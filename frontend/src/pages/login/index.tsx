@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { loginSchema } from "../../shared/lib/schemas";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useRevalidator } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "./api";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,13 +17,13 @@ export default function Login() {
   });
 
   const navigate = useNavigate();
-
+  const revalidator = useRevalidator();
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log(data);
       localStorage.setItem("access_token", data.accessToken);
-      navigate("/");
+      navigate("/", { replace: true });
+      revalidator.revalidate();
     },
     onError: (error) => {
       console.log(error);

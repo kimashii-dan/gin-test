@@ -1,39 +1,53 @@
 import { createBrowserRouter } from "react-router";
-import MainLayout from "../shared/ui/layouts/main-layout";
 import Home from "../pages/home";
 import Login from "../pages/login";
 import NotFound from "../pages/not-found";
 import Profile from "../pages/profile";
 import Register from "../pages/register";
+import RootLayout from "../shared/ui/layouts/root-layout";
+import MainLayout from "../shared/ui/layouts/main-layout";
 import AuthLayout from "../shared/ui/layouts/auth-layout";
-import { requireAuth, requireGuest } from "../shared/auth";
+import {
+  authLoader,
+  checkAndPassAuth,
+  requireAuth,
+  requireGuest,
+} from "../shared/auth";
 
 export const router = createBrowserRouter([
   {
-    Component: MainLayout,
     path: "/",
+    id: "root",
+    Component: RootLayout,
+    middleware: [checkAndPassAuth],
+    loader: authLoader,
     children: [
       {
-        index: true,
-        Component: Home,
+        Component: MainLayout,
+        children: [
+          {
+            index: true,
+            Component: Home,
+          },
+          {
+            path: "/profile",
+            middleware: [requireAuth],
+            Component: Profile,
+          },
+          {
+            path: "*",
+            Component: NotFound,
+          },
+        ],
       },
       {
-        path: "/profile",
-        middleware: [requireAuth],
-        Component: Profile,
+        Component: AuthLayout,
+        middleware: [requireGuest],
+        children: [
+          { path: "/login", Component: Login },
+          { path: "/register", Component: Register },
+        ],
       },
-      {
-        path: "*",
-        Component: NotFound,
-      },
-    ],
-  },
-  {
-    Component: AuthLayout,
-    middleware: [requireGuest],
-    children: [
-      { path: "/login", Component: Login },
-      { path: "/register", Component: Register },
     ],
   },
 ]);

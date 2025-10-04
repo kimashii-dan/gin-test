@@ -1,19 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
-import { getUserData } from "../../../../shared/api";
+import { useRouteLoaderData } from "react-router";
 import { Button } from "../../../../shared/ui/button";
+import type { AuthState } from "../../../../shared/auth";
 
 export default function Hero() {
-  const { data } = useQuery({
-    queryKey: ["userData"],
-    queryFn: () => getUserData(),
-    retry: false,
-  });
+  const { auth } = useRouteLoaderData("root") as { auth: AuthState };
+  console.log(auth);
+
   return (
     <section className="">
       <div className="max-w-10/12">
         <div className="">
           <h1 className="text-3xl font-bold">
-            Hello there, {data?.user.email ?? "user"}
+            Hello there, {auth.user?.email ?? "user"}
           </h1>
           <p className="py-6">
             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda

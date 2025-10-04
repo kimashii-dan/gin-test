@@ -4,7 +4,7 @@ import (
 	"gin-backend/internal/database"
 	"gin-backend/internal/handlers"
 	"gin-backend/internal/middleware"
-	"gin-backend/internal/models"
+	"log"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -14,6 +14,13 @@ import (
 
 
 func main(){
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file, using environment variables")
+	}
+	
+	database.Connect()
+
 	router := gin.Default()
     router.Use(cors.New(cors.Config{
         AllowOrigins:     []string{"http://localhost:5173"},
@@ -23,10 +30,6 @@ func main(){
         AllowCredentials: true,
         MaxAge: 12 * time.Hour,
     }))
-
-	_ = godotenv.Load()
-	database.Connect()
-	database.DB.AutoMigrate(&models.User{})
 
 	{
 		auth := router.Group("/auth")

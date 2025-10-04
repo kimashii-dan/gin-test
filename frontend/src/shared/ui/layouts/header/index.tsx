@@ -1,9 +1,9 @@
-import { Link } from "react-router";
-import styles from "./style.module.css";
+import { Link, useRouteLoaderData } from "react-router";
+import styles from "./styles.module.css";
 import { Button } from "../../button";
-import { getAuthState } from "../../../auth";
+import type { AuthState } from "../../../auth";
 export default function Header() {
-  const isAuthenticated = getAuthState();
+  const { auth } = useRouteLoaderData("root") as { auth: AuthState };
 
   return (
     <header className={styles.header}>
@@ -22,7 +22,7 @@ export default function Header() {
           />
         </Link>
 
-        {isAuthenticated ? (
+        {auth.isAuthenticated ? (
           <Button variant="secondary">
             <Link to="/profile">Profile</Link>
           </Button>
