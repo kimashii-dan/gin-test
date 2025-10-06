@@ -1,38 +1,31 @@
-import { Link, useRouteLoaderData } from "react-router";
+import { NavLink, useRouteLoaderData } from "react-router";
 import styles from "./styles.module.css";
-import { Button } from "../../button";
 import ModeToggle from "../../mode-toggle";
 import type { AuthState } from "../../../types";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import Logo from "../../logo";
+import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 export default function Header() {
   const { auth } = useRouteLoaderData("root") as { auth: AuthState };
 
   return (
     <header className={styles.header}>
       <nav className={styles.header_nav}>
-        <Link to="/" className={styles.header_logo}>
-          <img
-            src="/images/gin-logo.webp"
-            alt="gin-logo"
-            className={styles.header_logo_img}
-          />
-          <p className={styles.header_plus}>+</p>
-          <img
-            src="/images/react-logo.webp"
-            alt="react-logo"
-            className={styles.header_logo_img}
-          />
-        </Link>
-        <ModeToggle />
+        <Logo />
 
-        {auth.isAuthenticated ? (
-          <Button variant="secondary">
-            <Link to="/profile">Profile</Link>
-          </Button>
-        ) : (
-          <Button variant="secondary">
-            <Link to="/login">Login</Link>
-          </Button>
-        )}
+        <div className="flex gap-5">
+          <ModeToggle />
+          {auth.isAuthenticated ? (
+            <NavLink to="/profile">
+              <UserCircleIcon className="size-10" />
+            </NavLink>
+          ) : (
+            <NavLink to="/login" className="flex flex-row items-center gap-1">
+              <ArrowLeftEndOnRectangleIcon className="size-6" />
+              <span>Login</span>
+            </NavLink>
+          )}
+        </div>
       </nav>
     </header>
   );

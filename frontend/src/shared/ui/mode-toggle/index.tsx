@@ -1,17 +1,16 @@
-import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "../../hooks/useTheme";
-
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 export default function ModeToggle() {
   const { theme, setTheme } = useTheme();
   return (
     <button
-      className="p-2 border-secondary border-1 rounded-md bg-secondary text-secondary-foreground"
+      className="p-2 border-border border-1 rounded-lg"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
     >
       {theme === "light" ? (
-        <MoonIcon className="size-6" />
+        <MoonIcon className="size-5" />
       ) : (
-        <SunIcon className="size-6" />
+        <SunIcon className="size-5" />
       )}
     </button>
   );

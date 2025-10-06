@@ -1,0 +1,6 @@
+ALTER TABLE users
+ADD COLUMN name TEXT,
+ADD COLUMN university TEXT,
+ADD COLUMN phone TEXT,
+ADD COLUMN telegram_link TEXT,
+ADD COLUMN bio TEXT;

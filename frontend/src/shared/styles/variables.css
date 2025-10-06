@@ -1,0 +1,96 @@
+:root {
+  /* Мягкий бежево-серый фон вместо чистого белого */
+  --background: oklch(0.92 0.01 80);
+  /* Приглушенный текст с минимальным контрастом */
+  --foreground: oklch(0.45 0.015 260);
+
+  /* Карточки чуть светлее фона */
+  --card: oklch(0.95 0.008 80);
+  --card-foreground: oklch(0.42 0.015 260);
+
+  /* Границы едва заметные */
+  --border: oklch(0.82 0.012 80);
+
+  /* Приглушенные области */
+  --muted: oklch(0.88 0.01 80);
+  --muted-foreground: oklch(0.52 0.02 260);
+
+  /* Основной цвет с умеренной насыщенностью */
+  --primary: oklch(0.65 0.16 260);
+  --primary-foreground: oklch(0.95 0.008 80);
+
+  /* Вторичный цвет очень мягкий */
+  --secondary: oklch(0.82 0.04 260);
+  --secondary-foreground: oklch(0.42 0.015 260);
+
+  /* Акцент в зеленых тонах, приглушенный */
+  --accent: oklch(0.68 0.15 160);
+  --accent-foreground: oklch(0.95 0.008 80);
+
+  /* Деструктивный цвет мягче */
+  --destructive: oklch(0.62 0.16 25);
+  --destructive-foreground: oklch(0.95 0.008 80);
+
+  /* Стекло с теплым оттенком */
+  --glass-bg: rgba(240, 235, 225, 0.35);
+  --glass-shadow: rgba(100, 90, 80, 0.15);
+}
+
+.dark {
+  /* Мягкий сине-серый фон вместо черного */
+  --background: oklch(0.28 0.015 260);
+  /* Приглушенный светлый текст */
+  --foreground: oklch(0.78 0.01 260);
+
+  /* Карточки чуть светлее фона */
+  --card: oklch(0.32 0.018 260);
+  --card-foreground: oklch(0.82 0.01 260);
+
+  /* Границы мягкие */
+  --border: oklch(0.42 0.02 260);
+
+  /* Приглушенные области */
+  --muted: oklch(0.38 0.02 260);
+  --muted-foreground: oklch(0.68 0.015 260);
+
+  /* Основной цвет яркий, но не агрессивный */
+  --primary: oklch(0.68 0.18 260);
+  --primary-foreground: oklch(0.25 0.015 260);
+
+  /* Вторичный цвет деликатный */
+  --secondary: oklch(0.42 0.06 260);
+  --secondary-foreground: oklch(0.82 0.01 260);
+
+  /* Акцент зеленый, приглушенный */
+  --accent: oklch(0.66 0.16 160);
+  --accent-foreground: oklch(0.25 0.015 260);
+
+  /* Деструктивный цвет мягче */
+  --destructive: oklch(0.64 0.18 25);
+  --destructive-foreground: oklch(0.25 0.015 260);
+
+  /* Стекло с холодным оттенком */
+  --glass-bg: rgba(40, 45, 55, 0.4);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-glass: var(--glass-bg);
+  --color-glass-shadow: var(--glass-shadow);
+  --font-main: "Inter", sans-serif;
+}

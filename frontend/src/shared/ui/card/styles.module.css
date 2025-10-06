@@ -1,0 +1,5 @@
+@reference "../../styles/index.css";
+
+.base {
+  @apply flex flex-wrap gap-5 w-full justify-between border-1 border-border bg-card text-card-foreground p-5 md:p-10 rounded-xl;
+}

@@ -2,9 +2,8 @@ import { z } from "zod";
 
 export const commonSchema = z.object({
   email: z
-    .string()
-    .min(5, { message: "Username must be at least 8 characters long" })
-    .max(50, { message: "Username cannot exceed 50 characters" }),
+    .email("This is not a valid email.")
+    .min(1, { message: "This field has to be filled." }),
 
   password: z
     .string()
@@ -30,4 +29,16 @@ export const registerSchema = commonSchema
 export const loginSchema = commonSchema.pick({
   email: true,
   password: true,
+});
+
+export const profileSchema = z.object({
+  email: z
+    .email("This is not a valid email.")
+    .min(1, { message: "This field has to be filled." }),
+
+  name: z.string().min(1, "Name is required").optional(),
+  university: z.string().optional(),
+  phone: z.string().optional(),
+  telegram_link: z.union([z.literal(""), z.url("Invalid URL")]).optional(),
+  bio: z.string().optional(),
 });

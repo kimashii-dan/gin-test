@@ -1,11 +1,11 @@
-@reference "../../../index.css";
+@reference "../../../styles/index.css";
 
 .footer {
-  @apply flex w-full  p-10 justify-center;
+  @apply flex w-full p-5 md:p-10 justify-center;
 }
 
 .footer_nav {
-  @apply flex justify-between w-10/12;
+  @apply flex justify-between md:w-9/12 w-11/12;
 }
 
 .footer_title {

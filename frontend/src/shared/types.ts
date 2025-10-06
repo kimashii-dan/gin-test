@@ -12,10 +12,15 @@ export type SuccessResponse = {
 };
 
 export type User = {
-  id: number;
   email: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string;
+  university: string;
+  name: string;
+  phone: string;
+  telegram_link: string;
+  bio: string;
 };
 
 export type AuthResponse = {

@@ -23,6 +23,7 @@ export default function Register() {
     mutationFn: register,
     onSuccess: (data) => {
       console.log(data);
+      form.reset();
       navigate("/login");
     },
     onError: (error) => {
@@ -38,75 +39,83 @@ export default function Register() {
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="flex flex-col gap-5 bg-base-100 border-base-300 rounded-box border p-10 shadow-md md:min-w-lg"
+      className="w-80 md:w-96 flex flex-col gap-5 p-6 bg-card text-card-foreground rounded-lg border-border border-1"
     >
-      <fieldset className="fieldset flex flex-col gap-5">
-        <legend className="fieldset-legend text-lg font-bold">Register</legend>
+      <legend>
+        <h1 className="text-xl font-bold mb-2">Register</h1>
+        <p className="text-muted-foreground">
+          Create your account to get started.
+        </p>
+      </legend>
 
-        <label className="label flex-col items-start">
-          <span className="label-text">Email</span>
-          <input
-            type="email"
-            className={`input input-lg w-full ${
-              form.formState.errors.email ? "input-error" : ""
-            }`}
-            placeholder="Email"
-            {...form.register("email")}
-          />
-        </label>
+      <label className="flex flex-col items-start gap-2 w-full">
+        <span className="">Email</span>
+        <input
+          type="email"
+          className="w-full"
+          placeholder="Enter your password"
+          autoComplete="email"
+          {...form.register("email")}
+        />
+      </label>
 
-        {form.formState.errors.email && (
-          <p className="text-error">{form.formState.errors.email.message}</p>
-        )}
+      {form.formState.errors.email && (
+        <p className="text-destructive">
+          {form.formState.errors.email.message}
+        </p>
+      )}
 
-        <label className="label flex-col items-start">
-          <span className="label-text">Password</span>
-          <input
-            type="password"
-            className={`input input-lg w-full ${
-              form.formState.errors.password ? "input-error" : ""
-            }`}
-            placeholder="Password"
-            {...form.register("password")}
-          />
-        </label>
+      <label className="flex flex-col items-start gap-2 w-full">
+        <span className="">Password</span>
+        <input
+          type="password"
+          className="w-full"
+          placeholder="Enter your password"
+          autoComplete="new-password"
+          {...form.register("password")}
+        />
+      </label>
 
-        {form.formState.errors.password && (
-          <p className="text-error">{form.formState.errors.password.message}</p>
-        )}
+      {form.formState.errors.password && (
+        <p className="text-destructive">
+          {form.formState.errors.password.message}
+        </p>
+      )}
 
-        <label className="label flex-col items-start">
-          <span className="label-text">Confirm Password</span>
-          <input
-            type="password"
-            className={`input input-lg w-full ${
-              form.formState.errors.confirmPassword ? "input-error" : ""
-            }`}
-            placeholder="Confirm Password"
-            {...form.register("confirmPassword")}
-          />
-        </label>
+      <label className="flex flex-col items-start gap-2 w-full">
+        <span className="">Confirm Password</span>
+        <input
+          type="password"
+          className="w-full"
+          autoComplete="off"
+          placeholder="Enter your password again"
+          {...form.register("confirmPassword")}
+        />
+      </label>
 
-        {form.formState.errors.confirmPassword && (
-          <p className="text-error">
-            {form.formState.errors.confirmPassword.message}
-          </p>
-        )}
-      </fieldset>
-      {/* Error from server */}
+      {form.formState.errors.confirmPassword && (
+        <p className="text-destructive">
+          {form.formState.errors.confirmPassword.message}
+        </p>
+      )}
+
       {mutation.isError && (
-        <div className="text-error">
+        <div className="text-destructive">
           {(mutation.error as any)?.response?.data?.message ||
             (mutation.error as Error).message}
         </div>
       )}
-      <Button variant="secondary" disabled={mutation.isPending}>
+      <Button
+        className="w-full"
+        variant="primary"
+        disabled={mutation.isPending}
+      >
         Register
       </Button>
 
       <div className="flex gap-2">
         <p>Already have an account?</p>
-        <Link to="/login" className="text-blue-300">
+        <Link to="/login" className="text-accent">
           Login
         </Link>
       </div>

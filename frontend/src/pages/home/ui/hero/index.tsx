@@ -6,8 +6,8 @@ export default function Hero() {
   const { auth } = useRouteLoaderData("root") as { auth: AuthState };
 
   return (
-    <section className="">
-      <div className="max-w-10/12">
+    <section className="h-[75vh]">
+      <div className="max-w-11/12 md:max-w-9/12 break-all">
         <div className="">
           <h1 className="text-3xl font-bold">
             Hello there, {auth.user?.email ?? "user"}

@@ -24,7 +24,7 @@ func main(){
 	router := gin.Default()
     router.Use(cors.New(cors.Config{
         AllowOrigins:     []string{"http://localhost:5173"},
-        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
         AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
         ExposeHeaders:    []string{"Content-Length"},
         AllowCredentials: true,
@@ -39,7 +39,12 @@ func main(){
 		auth.POST("/logout", handlers.Logout)
 	}
 
-	router.GET("/validate", middleware.CheckAuth(), handlers.Validate)
+	{
+		user := router.Group("/user")
+		user.GET("me", middleware.CheckAuth(), handlers.GetUser)
+		user.PATCH("me", middleware.CheckAuth(), handlers.UpdateUser)
+		user.DELETE("me", middleware.CheckAuth(), handlers.DeleteUser)
+	}
 
   	router.Run(":8080")
 }
