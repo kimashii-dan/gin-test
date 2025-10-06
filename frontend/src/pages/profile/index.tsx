@@ -273,7 +273,11 @@ export default function Profile() {
                 </div>
 
                 {auth.user?.university !== "" ? (
-                  <div className="flex gap-2 items-center w-fit"></div>
+                  <div className="flex gap-2 py-3 px-4  items-center w-fit">
+                    <AcademicCapIcon className="size-5" />
+                    <h2>University:</h2>
+                    <p>{auth.user?.university}</p>
+                  </div>
                 ) : (
                   <button
                     onClick={() => handleAddProperty("university")}
