@@ -27,6 +27,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// check if user already exists
 	var existing models.User
 	if database.DB.First(&existing, "email = ?", body.Email).Error == nil {
 		c.AbortWithStatusJSON(http.StatusConflict, gin.H{
@@ -35,6 +36,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
+	// hash password
 	hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
 
 	if err != nil {
@@ -46,6 +48,7 @@ func Register(c *gin.Context) {
 
 	user := models.User{Email: body.Email, Password: string(hash)}
 
+	// create user in db
 	result := database.DB.Create(&user)
 
 	if result.Error != nil {
@@ -55,8 +58,9 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
+		"user": user,
 	})
 }
 
@@ -70,6 +74,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// check if user exists
 	var user models.User
 	result := database.DB.First(&user, "email = ?", body.Email)
 	if result.Error != nil {
@@ -79,6 +84,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// compare passwords: input and db
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -87,6 +93,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// generate access token
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Minute * 15).Unix(),
@@ -99,6 +106,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// generate refresh token
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Hour * 24 * 15).Unix(),
@@ -111,14 +119,18 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// set refrehs token to the cookies
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("refreshToken", signedRefresh, 60*60*24*15, "", "", false, true)
+
+	// return access token to the frontend
 	c.JSON(http.StatusOK, gin.H{
 		"accessToken": signedAccess,
 	})
 }
 
 func Refresh(c *gin.Context) {
+	// get token from cookies
 	tokenString, err := c.Cookie("refreshToken")
 
 	if err != nil {
@@ -128,6 +140,7 @@ func Refresh(c *gin.Context) {
 		return
 	}
 
+	// validate token with secret word
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return []byte(os.Getenv("JWT_SECRET")), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
@@ -139,6 +152,7 @@ func Refresh(c *gin.Context) {
 		return
 	}
 
+	// get token's content
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -147,6 +161,7 @@ func Refresh(c *gin.Context) {
 		return
 	}
 
+	// get token's property - sub: userID
 	sub, ok := claims["sub"].(float64)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -154,6 +169,8 @@ func Refresh(c *gin.Context) {
 		})
 		return
 	}
+
+	// find user by id (sub)
 	var user models.User
 	result := database.DB.First(&user, uint(sub))
 
@@ -164,6 +181,7 @@ func Refresh(c *gin.Context) {
 		return
 	}
 
+	// generate access token
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
 		"exp": time.Now().Add(time.Minute * 15).Unix(),
@@ -176,6 +194,7 @@ func Refresh(c *gin.Context) {
 		return
 	}
 
+	// return access token to the frontend
 	c.JSON(http.StatusOK, gin.H{
 		"accessToken": signedAccess,
 	})
@@ -183,6 +202,7 @@ func Refresh(c *gin.Context) {
 
 
 func Logout(c *gin.Context) {
+	// delete refresh token
 	c.SetCookie("refreshToken", "", -1, "", "", false, true)
     c.JSON(http.StatusOK, gin.H{
 		"success": true,

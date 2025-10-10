@@ -20,8 +20,12 @@ func main(){
 	}
 	
 	database.Connect()
+	database.InitR2()
 
 	router := gin.Default()
+
+	router.MaxMultipartMemory = 8 << 20
+
     router.Use(cors.New(cors.Config{
         AllowOrigins:     []string{"http://localhost:5173"},
         AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
@@ -40,10 +44,20 @@ func main(){
 	}
 
 	{
-		user := router.Group("/user")
-		user.GET("me", middleware.CheckAuth(), handlers.GetUser)
-		user.PATCH("me", middleware.CheckAuth(), handlers.UpdateUser)
-		user.DELETE("me", middleware.CheckAuth(), handlers.DeleteUser)
+		user := router.Group("/user", middleware.CheckAuth())
+		user.GET("/me", handlers.GetUser)
+		user.PATCH("/me", handlers.UpdateUser)
+		user.DELETE("/me", handlers.DeleteUser)
+		user.PATCH("/avatar", handlers.UploadAvatar)
+	}
+
+	{
+		listings := router.Group("/listings", middleware.CheckAuth())
+		listings.GET("", handlers.GetListings)
+		listings.POST("", handlers.CreateListing)
+		listings.GET("/:id", handlers.GetListing)
+		listings.PATCH("/:id", handlers.UpdateListing)
+		listings.DELETE("/:id", handlers.DeleteListing)
 	}
 
   	router.Run(":8080")

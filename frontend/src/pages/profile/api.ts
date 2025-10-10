@@ -9,3 +9,12 @@ export async function logout(): Promise<SuccessResponse> {
 export async function updateUser(user: Partial<User>) {
   await api.patch("/user/me", user);
 }
+
+export async function uploadAvatar(image: FormData) {
+  const { data } = await api.patch("/user/avatar", image, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return data;
+}

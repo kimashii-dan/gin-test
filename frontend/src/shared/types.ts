@@ -21,6 +21,7 @@ export type User = {
   phone: string;
   telegram_link: string;
   bio: string;
+  avatar_url: string;
 };
 
 export type AuthResponse = {

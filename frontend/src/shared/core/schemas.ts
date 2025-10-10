@@ -42,3 +42,11 @@ export const profileSchema = z.object({
   telegram_link: z.union([z.literal(""), z.url("Invalid URL")]).optional(),
   bio: z.string().optional(),
 });
+
+export const avatarSchema = z.object({
+  avatar: z
+    .any()
+    .refine((file) => file instanceof File, "File is required")
+    .refine((file: File) => file.type.startsWith("image/"), "Must be an image")
+    .refine((file: File) => file.size <= 2_000_000, "Max 2MB"),
+});

@@ -18,4 +18,6 @@ type User struct {
     Phone        string         `json:"phone"`
     TelegramLink string         `json:"telegram_link"`
     Bio          string         `json:"bio"`
+	AvatarURL    string         `json:"avatar_url"`	
+    Listings     []Listing      `json:"listing"`
 }

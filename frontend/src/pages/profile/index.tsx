@@ -27,6 +27,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 import TelegramLogo from "../../shared/ui/telegram-logo";
+import SimpleAvatarUploader from "./ui/avatar-uploader";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -125,16 +126,24 @@ export default function Profile() {
     <div className="max-w-11/12 md:max-w-9/12 flex flex-col gap-10 w-full">
       <h1 className="text-5xl font-semibold">Account</h1>
       <Card className="flex-col md:flex-row items-center">
-        <div className="aspect-square w-30">
-          <div className="rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
-            {auth.user?.email[0].toUpperCase()}
-          </div>
+        <div className="w-40 h-40">
+          {auth.user?.avatar_url ? (
+            <img
+              className="w-full h-full rounded-full object-cover"
+              src={auth.user?.avatar_url}
+              alt=""
+            />
+          ) : (
+            <div className="rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
+              <>{auth.user?.email[0].toUpperCase()}</>
+            </div>
+          )}
         </div>
         <div className="flex flex-col justify-center gap-2">
           <p className="text-2xl font-semibold text-center">
             {auth.user?.name}
           </p>
-          <p className="">
+          <p className="text-muted-foreground">
             Joined: {new Date(auth.user?.created_at ?? "").toLocaleDateString()}
           </p>
         </div>
@@ -157,6 +166,8 @@ export default function Profile() {
           </Button>
         </div>
       </Card>
+
+      <SimpleAvatarUploader />
 
       {isEditing ? (
         <>
