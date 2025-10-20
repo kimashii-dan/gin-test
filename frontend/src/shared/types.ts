@@ -45,3 +45,17 @@ export type AuthState = {
   isAuthenticated: boolean;
   user?: User;
 };
+
+export type ServerError = {
+  response: {
+    data: {
+      error: string;
+    };
+    status: number;
+    statusText: string;
+  };
+  config: {
+    data: string;
+    url: string;
+  };
+};

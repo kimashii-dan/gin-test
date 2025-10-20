@@ -1,11 +1,7 @@
 import React from "react";
 import styles from "./styles.module.css";
-type ButtonProps = {
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "danger" | "outline";
-  disabled?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
 };
 
 export const Button: React.FC<ButtonProps> = ({
@@ -14,11 +10,17 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
   className,
+  ...props
 }) => {
   const classNames = [styles.base, styles[variant], className].join(" ");
 
   return (
-    <button className={classNames} onClick={onClick} disabled={disabled}>
+    <button
+      className={classNames}
+      onClick={onClick}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </button>
   );

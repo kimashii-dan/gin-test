@@ -1,47 +1,34 @@
 import { redirect } from "react-router";
-import { createContext } from "react-router";
-import type { AuthState } from "../types";
+import { useQuery } from "@tanstack/react-query";
 import { getUserData } from "../api";
 
-export const authContext = createContext<AuthState>();
+export function useAuth() {
+  return useQuery({
+    queryKey: ["auth", "user"],
+    queryFn: getUserData,
+    enabled: !!localStorage.getItem("access_token"),
+    staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error: any) => {
+      if (error?.response?.status === 401) return false;
+      return failureCount < 2;
+    },
+  });
+}
 
-export async function checkAndPassAuth({ context }: any) {
+function hasValidToken(): boolean {
   const token = localStorage.getItem("access_token");
+  if (!token) return false;
+  return true;
+}
 
-  if (!token) {
-    const authState: AuthState = { isAuthenticated: false };
-    context.set(authContext, authState);
-    return;
-  }
-
-  try {
-    const { user } = await getUserData();
-    const authState: AuthState = {
-      isAuthenticated: true,
-      user: user,
-    };
-    context.set(authContext, authState);
-  } catch (error) {
-    const authState: AuthState = { isAuthenticated: false };
-    context.set(authContext, authState);
+export async function requireAuth() {
+  if (!hasValidToken()) {
+    throw redirect("/login");
   }
 }
 
-export async function requireAuth({ context }: any) {
-  const authState = context.get(authContext);
-  if (!authState?.isAuthenticated) {
-    throw redirect("/");
-  }
-}
-
-export async function requireGuest({ context }: any) {
-  const authState = context.get(authContext);
-  if (authState?.isAuthenticated) {
+export async function requireGuest() {
+  if (hasValidToken()) {
     throw redirect("/profile");
   }
-}
-
-export async function authLoader({ context }: any) {
-  const auth = context.get(authContext);
-  return { auth };
 }

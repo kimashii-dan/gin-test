@@ -1,12 +1,16 @@
-import { NavLink, useRouteLoaderData } from "react-router";
+import { NavLink } from "react-router";
 import styles from "./styles.module.css";
 import ModeToggle from "../../mode-toggle";
-import type { AuthState } from "../../../types";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import Logo from "../../logo";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "../../../core/auth";
+
 export default function Header() {
-  const { auth } = useRouteLoaderData("root") as { auth: AuthState };
+  const { data: authData } = useAuth();
+  const isAuthenticated = !!authData?.user;
+
+  console.log(isAuthenticated);
 
   return (
     <header className={styles.header}>
@@ -15,7 +19,7 @@ export default function Header() {
 
         <div className="flex gap-5">
           <ModeToggle />
-          {auth.isAuthenticated ? (
+          {isAuthenticated ? (
             <NavLink to="/profile">
               <UserCircleIcon className="size-10" />
             </NavLink>

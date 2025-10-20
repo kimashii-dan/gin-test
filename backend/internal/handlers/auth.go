@@ -60,7 +60,7 @@ func Register(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
-		"user": user,
+		"user":    user,
 	})
 }
 
@@ -78,7 +78,7 @@ func Login(c *gin.Context) {
 	var user models.User
 	result := database.DB.First(&user, "email = ?", body.Email)
 	if result.Error != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid email or password",
 		})
 		return
@@ -200,11 +200,10 @@ func Refresh(c *gin.Context) {
 	})
 }
 
-
 func Logout(c *gin.Context) {
 	// delete refresh token
 	c.SetCookie("refreshToken", "", -1, "", "", false, true)
-    c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 	})
 }

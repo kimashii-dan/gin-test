@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { register } from "./api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../shared/ui/button";
+import type { ServerError } from "../../shared/types";
 
 export default function Register() {
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -26,7 +27,7 @@ export default function Register() {
       form.reset();
       navigate("/login");
     },
-    onError: (error) => {
+    onError: (error: ServerError) => {
       console.log(error);
     },
   });
@@ -39,7 +40,7 @@ export default function Register() {
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="w-80 md:w-96 flex flex-col gap-5 p-6 bg-card text-card-foreground rounded-lg border-border border-1"
+      className="w-80 md:w-96 flex flex-col gap-5 p-6 bg-card text-card-foreground rounded-xl border-border border-1"
     >
       <legend>
         <h1 className="text-xl font-bold mb-2">Register</h1>
@@ -101,8 +102,7 @@ export default function Register() {
 
       {mutation.isError && (
         <div className="text-destructive">
-          {(mutation.error as any)?.response?.data?.message ||
-            (mutation.error as Error).message}
+          {mutation.error.response.data.error}
         </div>
       )}
       <Button

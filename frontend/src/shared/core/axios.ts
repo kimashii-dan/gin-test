@@ -1,5 +1,6 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 import type { TokenResponse } from "../types";
+import { queryClient } from "../../app/main";
 
 export const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -27,7 +28,8 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/refresh")
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("/auth/login")
     ) {
       originalRequest._retry = true;
       try {
@@ -37,9 +39,20 @@ api.interceptors.response.use(
         if (originalRequest.headers) {
           originalRequest.headers["Authorization"] = `${newToken}`;
         }
+
+        if (queryClient) {
+          queryClient.invalidateQueries({ queryKey: ["auth"] });
+        }
+
         return api(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem("access_token");
+        if (queryClient) {
+          queryClient.clear();
+        }
+
+        window.location.href = "/login";
+
         return Promise.reject(refreshError);
       }
     }

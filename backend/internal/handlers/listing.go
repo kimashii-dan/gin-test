@@ -5,6 +5,7 @@ import (
 	"gin-backend/internal/database"
 	"gin-backend/internal/models"
 	"gin-backend/internal/services"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"strings"
@@ -12,31 +13,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type CreateListingDTO struct {
-	Title       string                	`form:"title" binding:"required"`
-	Description string                	`form:"description"`
-	Price       float64                	`form:"price"`
+	Title       string                  `form:"title" binding:"required"`
+	Description string                  `form:"description"`
+	Price       float64                 `form:"price"`
 	Images      []*multipart.FileHeader `form:"images[]"`
 }
 
-
 func CreateListing(c *gin.Context) {
 	userAny, exists := c.Get("user")
-    if !exists {
-        c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
 		})
-        return
-    }
+		return
+	}
 
-    user, ok := userAny.(models.User)
-    if !ok {
-        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Invalid user type",
 		})
-        return
-    }
+		return
+	}
 
 	var body CreateListingDTO
 
@@ -45,9 +44,11 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
+	log.Printf("Here's the body: %+v", body)
+
 	// validate input data
 	if strings.TrimSpace(body.Title) == "" {
-    	c.JSON(http.StatusBadRequest, gin.H{"error": "Title cannot be empty"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Title cannot be empty"})
 		return
 	}
 
@@ -62,11 +63,11 @@ func CreateListing(c *gin.Context) {
 	}
 
 	listing := models.Listing{
-		Title: body.Title,
+		Title:       body.Title,
 		Description: body.Description,
-		Price: body.Price,
-		IsClosed: false,
-		UserID: user.ID,
+		Price:       body.Price,
+		IsClosed:    false,
+		UserID:      user.ID,
 	}
 
 	// create listing in db
@@ -83,6 +84,10 @@ func CreateListing(c *gin.Context) {
 			return
 		}
 
+		for _, value := range imageURLs {
+			log.Printf("Here's url: %s", value)
+		}
+
 		// save listing images ind db
 		listing.ImageURLs = imageURLs
 		if err := database.DB.Save(&listing).Error; err != nil {
@@ -91,7 +96,7 @@ func CreateListing(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusCreated, gin.H {
+	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
 		"listing": listing,
 	})
@@ -100,21 +105,20 @@ func CreateListing(c *gin.Context) {
 
 func GetListings(c *gin.Context) {
 	userAny, exists := c.Get("user")
-    if !exists {
-        c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
 		})
-        return
-    }
+		return
+	}
 
-    user, ok := userAny.(models.User)
-    if !ok {
-        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Invalid user type",
 		})
-        return
-    }
-
+		return
+	}
 
 	var listings []models.Listing
 	if err := database.DB.Where("user_id = ?", user.ID).Find(&listings).Error; err != nil {
@@ -122,27 +126,27 @@ func GetListings(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H {
+	c.JSON(http.StatusOK, gin.H{
 		"listings": listings,
 	})
 }
 
 func GetListing(c *gin.Context) {
 	userAny, exists := c.Get("user")
-    if !exists {
-        c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
 		})
-        return
-    }
+		return
+	}
 
-    user, ok := userAny.(models.User)
-    if !ok {
-        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Invalid user type",
 		})
-        return
-    }
+		return
+	}
 
 	listingID := c.Param("id")
 
@@ -152,20 +156,18 @@ func GetListing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H {
+	c.JSON(http.StatusOK, gin.H{
 		"listing": listing,
 	})
 }
 
-
-
 type UpdateListingDTO struct {
-	Title       *string                 `form:"title"`
-	Description *string                 `form:"description"`
-	Price       *float64                `form:"price"`
-	NewImages   []*multipart.FileHeader `form:"new_images"`
-	ImagesToDelete  []string                `form:"kept_images"`
-	IsClosed	*bool					`form:"is_closed"`
+	Title          *string                 `form:"title"`
+	Description    *string                 `form:"description"`
+	Price          *float64                `form:"price"`
+	NewImages      []*multipart.FileHeader `form:"new_images"`
+	ImagesToDelete []string                `form:"kept_images"`
+	IsClosed       *bool                   `form:"is_closed"`
 }
 
 func UpdateListing(c *gin.Context) {
@@ -184,7 +186,7 @@ func UpdateListing(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	// check if listing belongs to user
 	listingID := c.Param("id")
 	var listing models.Listing
@@ -216,7 +218,6 @@ func UpdateListing(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Total images cannot exceed 5"})
 		return
 	}
-
 
 	// validate that kept images belong to this listing
 	if len(body.ImagesToDelete) > 0 {
@@ -258,7 +259,6 @@ func UpdateListing(c *gin.Context) {
 		return
 	}
 
-
 	var imagesToKeep []string
 	kept := make(map[string]bool)
 	for _, k := range body.ImagesToDelete {
@@ -282,7 +282,6 @@ func UpdateListing(c *gin.Context) {
 		}
 		newImageURLs = urls
 	}
-
 
 	// save images to db
 	listing.ImageURLs = append(imagesToKeep, newImageURLs...)

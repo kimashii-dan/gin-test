@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { loginSchema } from "../../shared/core/schemas";
-import { Link, useNavigate, useRevalidator } from "react-router";
-import { useMutation } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { login } from "./api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../shared/ui/button";
+import type { ServerError } from "../../shared/types";
 
 export default function Login() {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -17,17 +18,18 @@ export default function Login() {
   });
 
   const navigate = useNavigate();
-  const revalidator = useRevalidator();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
       localStorage.setItem("access_token", data.accessToken);
+
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
       navigate("/", { replace: true });
       form.reset();
-      revalidator.revalidate();
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (error: ServerError) => {
+      console.log(error.response.data.error);
     },
   });
 
@@ -39,7 +41,7 @@ export default function Login() {
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="w-80 md:w-96 flex flex-col gap-5 p-6 bg-card text-card-foreground rounded-lg border-border border-1"
+      className="w-80 md:w-96 flex flex-col gap-5 p-6 bg-card text-card-foreground rounded-xl border-border border-1"
     >
       <legend>
         <h1 className="text-xl font-bold mb-2">Login</h1>
@@ -85,8 +87,7 @@ export default function Login() {
       {/* Error from server */}
       {mutation.isError && (
         <div className="text-destructive">
-          {(mutation.error as any)?.response?.data?.message ||
-            (mutation.error as Error).message}
+          {mutation.error.response.data.error}
         </div>
       )}
 

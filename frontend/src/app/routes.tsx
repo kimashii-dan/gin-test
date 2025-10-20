@@ -5,12 +5,7 @@ import Login from "../pages/login";
 import NotFound from "../pages/not-found";
 import Profile from "../pages/profile";
 import Register from "../pages/register";
-import {
-  checkAndPassAuth,
-  authLoader,
-  requireAuth,
-  requireGuest,
-} from "../shared/core/auth";
+import { requireAuth, requireGuest } from "../shared/core/auth";
 import AuthLayout from "../shared/ui/layouts/auth-layout";
 import MainLayout from "../shared/ui/layouts/main-layout";
 
@@ -19,8 +14,6 @@ export const router = createBrowserRouter([
     path: "/",
     id: "root",
     Component: RootLayout,
-    middleware: [checkAndPassAuth],
-    loader: authLoader,
     children: [
       {
         Component: MainLayout,
