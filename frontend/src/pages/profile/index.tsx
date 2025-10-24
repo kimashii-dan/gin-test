@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../shared/core/auth";
 
-import SimpleAvatarUploader from "./ui/avatar-uploader";
 import MainInfo from "./ui/main-info";
 import DetailsInfo from "./ui/details-info";
 import ProfileEditing from "./ui/profile-editing";
@@ -56,8 +55,6 @@ export default function Profile() {
         queryClient={queryClient}
         user={user}
       />
-
-      <SimpleAvatarUploader />
 
       {!isEditing ? (
         <DetailsInfo

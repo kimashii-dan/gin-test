@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { uploadAvatar } from "../../api";
 import { Button } from "../../../../shared/ui/button";
+import { Modal } from "../../../../shared/ui/modal";
+import { PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Card } from "../../../../shared/ui/card";
 
-export default function SimpleAvatarUploader() {
+export default function AvatarUploader() {
   const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -18,7 +22,7 @@ export default function SimpleAvatarUploader() {
       setFile(selectedFile);
 
       const objectUrl = URL.createObjectURL(selectedFile);
-      setPreviewUrl(objectUrl);
+      setPreview(objectUrl);
     }
   };
 
@@ -37,60 +41,95 @@ export default function SimpleAvatarUploader() {
 
       console.log("Upload successful:", data);
 
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
+      if (preview) {
+        URL.revokeObjectURL(preview);
       }
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
 
+  const handleClick = () => {
+    if (!fileInputRef.current) {
+      return;
+    }
+
+    fileInputRef.current.click();
+  };
+
+  const handleCancel = () => {
+    setPreview(null);
+    setFile(null);
+  };
+
   return (
-    <div className="flex flex-col items-start gap-4">
+    <div className="flex flex-col items-start gap-4 absolute bottom-2 right-2">
       <input
-        id="avatar"
+        ref={fileInputRef}
         type="file"
         accept="image/*"
         className="hidden"
         onChange={handleFileChange}
       />
-      <Button>
-        <label htmlFor="avatar" className="">
-          {file ? "Change File" : "Choose File"}
-        </label>
-      </Button>
+      <button className="w-fit" onClick={handleClick}>
+        <PencilSquareIcon className="size-6" />
+      </button>
 
-      {/* File info */}
       {file && (
-        <div className="text-gray-700 text-sm">
-          <div>
-            Selected: <span className="text-primary">{file.name}</span>
-          </div>
-          <div>
-            Size:{" "}
-            <span className="text-accent">
-              {(file.size / 1024).toFixed(2)} KB
-            </span>
-          </div>
-        </div>
-      )}
+        <Modal>
+          <Card className="flex-col relative justify-center items-center gap-5 w-80 md:w-96">
+            {file && (
+              <div className="text-sm break-all">
+                <div>
+                  Selected: <span className="text-primary">{file.name}</span>
+                </div>
+                <div>
+                  Size:{" "}
+                  <span className="text-accent">
+                    {(file.size / 1024).toFixed(2)} KB
+                  </span>
+                </div>
+              </div>
+            )}
 
-      {/* Image preview */}
-      {previewUrl && (
-        <div className="w-40 h-40">
-          <img
-            className="w-full h-full object-cover rounded-full"
-            src={previewUrl}
-            alt="Preview"
-          />
-        </div>
-      )}
+            {preview && (
+              <div className="w-40 h-40">
+                <img
+                  className="w-full h-full object-cover rounded-full"
+                  src={preview}
+                  alt="Preview"
+                />
+              </div>
+            )}
 
-      {/* Upload button */}
-      {file && (
-        <Button variant="secondary" onClick={handleUpload}>
-          Upload Avatar
-        </Button>
+            {file && (
+              <div className="flex flex-row justify-center gap-2">
+                <Button
+                  className="w-fit"
+                  variant="primary"
+                  onClick={handleUpload}
+                >
+                  Upload Avatar
+                </Button>
+
+                <Button
+                  className="w-fit"
+                  variant="secondary"
+                  onClick={handleClick}
+                >
+                  Change image
+                </Button>
+              </div>
+            )}
+
+            <button
+              onClick={handleCancel}
+              className="w-fit absolute top-2 right-2"
+            >
+              <XMarkIcon className="size-5" />
+            </button>
+          </Card>
+        </Modal>
       )}
     </div>
   );

@@ -40,7 +40,7 @@ export default function DetailsInfo({
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-10">
-        <Card className="flex-col gap-5">
+        <Card className="flex-col gap-5 w-full">
           <div className="flex gap-2 items-center w-fit">
             <InformationCircleIcon className="size-7 text-accent" />
             <h1 className="text-2xl font-semibold">Info</h1>
@@ -75,7 +75,7 @@ export default function DetailsInfo({
             )}
           </div>
         </Card>
-        <Card className="flex-col gap-5">
+        <Card className="flex-col gap-5 w-full">
           <div className="flex gap-2 items-center w-fit">
             <LinkIcon className="size-7 text-primary" />
             <h1 className="text-2xl font-semibold">Contacts</h1>
@@ -124,7 +124,7 @@ export default function DetailsInfo({
           </div>
         </Card>
       </div>
-      <Card className="flex flex-col gap-5">
+      <Card className="flex flex-col gap-5 w-full">
         <div className="flex gap-2 items-center w-fit">
           <UserIcon className="size-7 text-foreground" />
           <h1 className="text-2xl font-semibold">About me</h1>

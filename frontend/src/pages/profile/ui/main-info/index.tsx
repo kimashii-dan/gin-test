@@ -8,6 +8,7 @@ import { Button } from "../../../../shared/ui/button";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { logout } from "../../api";
 import { useNavigate } from "react-router";
+import AvatarUploader from "../avatar-uploader";
 
 type MainInfoProps = {
   user: User;
@@ -40,8 +41,8 @@ export default function MainInfo({
   }
 
   return (
-    <Card className="items-center justify-center md:justify-between gap-8">
-      <div className="w-40 h-40">
+    <Card className="items-center justify-center md:justify-between gap-8 relative">
+      <div className="w-40 h-40 relative">
         {/* {auth.user?.avatar_url ? (
             <img
               className="w-full h-full rounded-full object-cover"
@@ -56,6 +57,7 @@ export default function MainInfo({
         <div className="rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
           <>{user?.email[0].toUpperCase()}</>
         </div>
+        <AvatarUploader />
       </div>
       <div className="flex flex-col justify-center gap-2">
         <p className="text-2xl font-semibold text-center">{user?.name}</p>

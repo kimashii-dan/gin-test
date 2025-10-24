@@ -1,11 +1,11 @@
 import React from "react";
 import styles from "./styles.module.css";
-type CardProps = React.HTMLAttributes<HTMLDivElement> & {
+type ModalProps = React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
   className?: string;
 };
 
-export const Card: React.FC<CardProps> = ({
+export const Modal: React.FC<ModalProps> = ({
   children,
   className,
   ...props
