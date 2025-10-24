@@ -12,13 +12,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
-
-func main(){
+func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file, using environment variables")
 	}
-	
+
 	database.Connect()
 	database.InitR2()
 
@@ -26,14 +25,14 @@ func main(){
 
 	router.MaxMultipartMemory = 8 << 20
 
-    router.Use(cors.New(cors.Config{
-        AllowOrigins:     []string{"http://localhost:5173"},
-        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
-        AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-        ExposeHeaders:    []string{"Content-Length"},
-        AllowCredentials: true,
-        MaxAge: 12 * time.Hour,
-    }))
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	{
 		auth := router.Group("/auth")
@@ -44,21 +43,31 @@ func main(){
 	}
 
 	{
+		// user CRUD
 		user := router.Group("/user", middleware.CheckAuth())
 		user.GET("/me", handlers.GetUser)
 		user.PATCH("/me", handlers.UpdateUser)
 		user.DELETE("/me", handlers.DeleteUser)
 		user.PATCH("/avatar", handlers.UploadAvatar)
+
+		{
+			// user's listing CRUD
+			listing := user.Group("/listings")
+			listing.GET("", handlers.GetMyListings)
+			listing.POST("", handlers.CreateListing)
+			listing.PATCH("/:id", handlers.UpdateListing)
+			listing.DELETE("/:id", handlers.DeleteListing)
+		}
 	}
 
 	{
-		listings := router.Group("/listings", middleware.CheckAuth())
-		listings.GET("", handlers.GetListings)
-		listings.POST("", handlers.CreateListing)
-		listings.GET("/:id", handlers.GetListing)
-		listings.PATCH("/:id", handlers.UpdateListing)
-		listings.DELETE("/:id", handlers.DeleteListing)
+		public := router.Group("/public", middleware.CheckAuth())
+		{
+			listing := public.Group("/listings")
+			listing.GET("", handlers.GetListings)
+			listing.GET("/:id", handlers.GetListing)
+		}
 	}
 
-  	router.Run(":8080")
+	router.Run(":8080")
 }

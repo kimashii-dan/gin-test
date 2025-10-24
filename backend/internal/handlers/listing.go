@@ -103,7 +103,7 @@ func CreateListing(c *gin.Context) {
 
 }
 
-func GetListings(c *gin.Context) {
+func GetMyListings(c *gin.Context) {
 	userAny, exists := c.Get("user")
 	if !exists {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -131,8 +131,8 @@ func GetListings(c *gin.Context) {
 	})
 }
 
-func GetListing(c *gin.Context) {
-	userAny, exists := c.Get("user")
+func GetListings(c *gin.Context) {
+	_, exists := c.Get("user")
 	if !exists {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
@@ -140,10 +140,22 @@ func GetListing(c *gin.Context) {
 		return
 	}
 
-	user, ok := userAny.(models.User)
-	if !ok {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"error": "Invalid user type",
+	var listings []models.Listing
+	if err := database.DB.Find(&listings).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch listings"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"listings": listings,
+	})
+}
+
+func GetListing(c *gin.Context) {
+	_, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "User not found in context",
 		})
 		return
 	}
@@ -151,7 +163,7 @@ func GetListing(c *gin.Context) {
 	listingID := c.Param("id")
 
 	var listing models.Listing
-	if err := database.DB.First(&listing, "id = ? AND user_id = ?", listingID, user.ID).Error; err != nil {
+	if err := database.DB.First(&listing, "id = ?", listingID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
 		return
 	}
