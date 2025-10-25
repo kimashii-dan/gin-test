@@ -45,9 +45,9 @@ func main() {
 	{
 		// user CRUD
 		user := router.Group("/user", middleware.CheckAuth())
-		user.GET("/me", handlers.GetUser)
-		user.PATCH("/me", handlers.UpdateUser)
-		user.DELETE("/me", handlers.DeleteUser)
+		user.GET("", handlers.GetUser)
+		user.PATCH("", handlers.UpdateUser)
+		user.DELETE("", handlers.DeleteUser)
 		user.PATCH("/avatar", handlers.UploadAvatar)
 
 		{
@@ -61,11 +61,17 @@ func main() {
 	}
 
 	{
-		public := router.Group("/public", middleware.CheckAuth())
+		// public routes
+		public := router.Group("/public")
 		{
 			listing := public.Group("/listings")
 			listing.GET("", handlers.GetListings)
 			listing.GET("/:id", handlers.GetListing)
+		}
+
+		{
+			user := public.Group("/users")
+			user.GET("/:id", handlers.GetUserWithListing)
 		}
 	}
 

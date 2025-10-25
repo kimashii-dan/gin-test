@@ -41,7 +41,7 @@ export default function MainInfo({
   }
 
   return (
-    <Card className="items-center justify-center md:justify-between gap-8 relative">
+    <Card className="items-center flex-wrap justify-center md:justify-between gap-8 relative p-5 md:p-10">
       <div className="w-40 h-40 relative">
         {/* {auth.user?.avatar_url ? (
             <img

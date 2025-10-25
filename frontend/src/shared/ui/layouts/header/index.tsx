@@ -10,8 +10,6 @@ export default function Header() {
   const { data: authData } = useAuth();
   const isAuthenticated = !!authData?.user;
 
-  console.log(isAuthenticated);
-
   return (
     <header className={styles.header}>
       <nav className={styles.header_nav}>

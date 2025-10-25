@@ -36,7 +36,7 @@ export const profileSchema = z.object({
     .email("This is not a valid email.")
     .min(1, { message: "This field has to be filled." }),
 
-  name: z.string().min(1, "Name is required").optional(),
+  name: z.string().min(5, "Name is required").optional(),
   university: z.string().optional(),
   phone: z.string().optional(),
   telegram_link: z.union([z.literal(""), z.url("Invalid URL")]).optional(),
@@ -49,4 +49,24 @@ export const avatarSchema = z.object({
     .refine((file) => file instanceof File, "File is required")
     .refine((file: File) => file.type.startsWith("image/"), "Must be an image")
     .refine((file: File) => file.size <= 2_000_000, "Max 2MB"),
+});
+
+export const listingSchema = z.object({
+  title: z
+    .string()
+    .nonempty()
+    .max(50, { message: "Title cannot exceed 50 characters" }),
+  description: z
+    .string()
+    .max(100, { message: "Description cannot exceed 100 characters" }),
+  price: z.number().min(1, { message: "Item should not be free" }),
+  images: z
+    .array(
+      z
+        .instanceof(File)
+        .refine((file) => file.type.startsWith("image/"), "Must be an image")
+        .refine((file) => file.size <= 2_000_000, "Max 2MB")
+    )
+    .min(1, { message: "At least one image is required" })
+    .max(3, { message: "You can upload up to 3 images" }),
 });

@@ -7,7 +7,7 @@ export async function logout(): Promise<SuccessResponse> {
 }
 
 export async function updateUser(user: Partial<User>) {
-  await api.patch("/user/me", user);
+  await api.patch("/user", user);
 }
 
 export async function uploadAvatar(image: FormData) {

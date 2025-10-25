@@ -5,7 +5,7 @@
 }
 
 .footer_nav {
-  @apply flex justify-between md:w-9/12 w-11/12;
+  @apply flex justify-between md:w-10/12 w-11/12;
 }
 
 .footer_title {

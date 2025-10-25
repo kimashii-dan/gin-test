@@ -131,48 +131,6 @@ func GetMyListings(c *gin.Context) {
 	})
 }
 
-func GetListings(c *gin.Context) {
-	_, exists := c.Get("user")
-	if !exists {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error": "User not found in context",
-		})
-		return
-	}
-
-	var listings []models.Listing
-	if err := database.DB.Find(&listings).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch listings"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"listings": listings,
-	})
-}
-
-func GetListing(c *gin.Context) {
-	_, exists := c.Get("user")
-	if !exists {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error": "User not found in context",
-		})
-		return
-	}
-
-	listingID := c.Param("id")
-
-	var listing models.Listing
-	if err := database.DB.First(&listing, "id = ?", listingID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"listing": listing,
-	})
-}
-
 type UpdateListingDTO struct {
 	Title          *string                 `form:"title"`
 	Description    *string                 `form:"description"`

@@ -59,3 +59,24 @@ export type ServerError = {
     url: string;
   };
 };
+
+export type Listing = {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  user_id: number;
+  title: string;
+  description: string;
+  image_urls: string[];
+  price: number;
+  is_closed: boolean;
+  user?: User;
+};
+
+export type ListingCreate = {
+  title: string;
+  description: string;
+  price: number;
+  images: File[];
+};

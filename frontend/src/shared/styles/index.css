@@ -7,15 +7,11 @@
   }
 
   body {
-    @apply m-0 p-0 bg-background text-foreground font-main;
+    @apply m-0 p-0 bg-background text-foreground font-main min-h-screen flex flex-col;
   }
 
   main {
-    @apply flex items-center flex-col min-h-screen w-full;
-  }
-
-  section {
-    @apply flex justify-center items-center flex-col h-screen;
+    @apply flex flex-col w-full flex-1 items-center min-h-screen;
   }
 
   button,
@@ -25,6 +21,11 @@
 
   input,
   textarea {
-    @apply p-2 border-border border-1 rounded-md;
+    @apply p-2 border-border border-1 rounded-md inset-shadow-soft;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-muted-foreground font-normal;
   }
 }

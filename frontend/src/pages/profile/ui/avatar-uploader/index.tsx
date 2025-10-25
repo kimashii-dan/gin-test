@@ -77,7 +77,7 @@ export default function AvatarUploader() {
 
       {file && (
         <Modal>
-          <Card className="flex-col relative justify-center items-center gap-5 w-80 md:w-96">
+          <Card className="flex-col relative justify-center items-center gap-5 w-80 md:w-96 p-5 md:p-10">
             {file && (
               <div className="text-sm break-all">
                 <div>

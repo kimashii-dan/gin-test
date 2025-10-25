@@ -28,7 +28,7 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <div className="max-w-11/12 md:max-w-9/12 flex flex-col gap-10 w-full">
+      <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full">
         <div className="animate-pulse">
           <div className="h-12 bg-card rounded mb-4"></div>
           <div className="h-40 bg-card rounded"></div>
@@ -39,7 +39,7 @@ export default function Profile() {
 
   if (isError || !user) {
     return (
-      <div className="max-w-11/12 md:max-w-9/12 flex flex-col gap-10 w-full">
+      <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full">
         <h1 className="text-5xl font-semibold text-red-500">
           Error loading profile
         </h1>
@@ -48,8 +48,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-11/12 md:max-w-9/12 flex flex-col gap-10 w-full">
-      <h1 className="text-5xl font-semibold">Account</h1>
+    <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full py-5">
+      <h1 className="text-5xl font-normal font-nice italic">Account</h1>
       <MainInfo
         setIsEditing={setIsEditing}
         queryClient={queryClient}

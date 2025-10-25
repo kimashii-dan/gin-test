@@ -91,7 +91,7 @@ export default function ProfileEditing({
 
   return (
     <form onSubmit={form.handleSubmit(handleUpdate)}>
-      <Card className="flex-col gap-5">
+      <Card className="flex-col gap-5 p-5 md:p-10">
         <label className="flex flex-col items-start gap-2 w-full">
           <span className="">Email</span>
           <input
