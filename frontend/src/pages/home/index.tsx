@@ -1,5 +1,6 @@
 // import { useQuery } from "@tanstack/react-query";
-// import { getListings } from "../../api";
+// import { getListings } from "./api";
+
 import type { Listing } from "../../shared/types";
 import { Button } from "../../shared/ui/button";
 import ListingComponent from "./ui/listing";

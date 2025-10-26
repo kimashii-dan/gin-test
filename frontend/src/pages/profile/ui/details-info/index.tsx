@@ -66,7 +66,7 @@ export default function DetailsInfo({
             ) : (
               <button
                 onClick={() => handleAddProperty("university")}
-                className="flex py-3 px-4 rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
+                className="flex py-3 px-4 shadow-base font-medium rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
               >
                 <PlusIcon className="size-5" />
                 <h2>Add University</h2>
@@ -91,7 +91,7 @@ export default function DetailsInfo({
             ) : (
               <button
                 onClick={() => handleAddProperty("phone")}
-                className="flex py-3 px-4 rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
+                className="flex py-3 px-4 shadow-base font-medium rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
               >
                 <PlusIcon className="size-5" />
                 <h2>Add Phone</h2>
@@ -114,7 +114,7 @@ export default function DetailsInfo({
             ) : (
               <button
                 onClick={() => handleAddProperty("telegram_link")}
-                className="flex py-3 px-4 rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
+                className="flex py-3 px-4 shadow-base font-medium  rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
               >
                 <PlusIcon className="size-5" />
                 <h2>Add Telegram</h2>
@@ -137,7 +137,7 @@ export default function DetailsInfo({
           ) : (
             <button
               onClick={() => handleAddProperty("bio")}
-              className="flex py-3 px-4 rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
+              className="flex py-3 px-4 shadow-base font-medium rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
             >
               <PlusIcon className="size-5" />
               <h2>Add Bio</h2>

@@ -37,13 +37,17 @@ export default function ListingComponent({ listing }: { listing: Listing }) {
       <Card className="max-w-[300px] mx-auto w-full h-full flex flex-col justify-between gap-5 p-5 hover:-translate-y-1 hover:shadow-base">
         <div className="relative w-full aspect-square overflow-hidden rounded-xl group">
           <img
-            src={listing.image_urls[0] || "/images/placeholder.webp"}
+            src={
+              listing.image_urls && listing.image_urls.length > 0
+                ? listing.image_urls[0]
+                : "/images/placeholder.webp"
+            }
             className="w-full h-full object-cover"
             alt={`${listing.title} image 1`}
           />
 
           <span
-            className={`absolute top-2 left-2 px-2 py-0.5 text-sm font-semibold rounded-full ${
+            className={`absolute shadow-sm top-2 left-2 px-2 py-0.5 text-sm font-semibold rounded-full ${
               listing.is_closed
                 ? "bg-destructive text-destructive-foreground"
                 : "bg-accent text-accent-foreground"

@@ -54,7 +54,7 @@ export default function MainInfo({
               <>{auth.user?.email[0].toUpperCase()}</>
             </div>
           )} */}
-        <div className="rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
+        <div className="rounded-full shadow-sm w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
           <>{user?.email[0].toUpperCase()}</>
         </div>
         <AvatarUploader />

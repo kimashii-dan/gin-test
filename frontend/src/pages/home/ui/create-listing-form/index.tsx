@@ -8,7 +8,7 @@ import type { ServerError } from "../../../../shared/types";
 import { listingSchema } from "../../../../shared/core/schemas";
 import { createListing } from "../../api";
 import { Button } from "../../../../shared/ui/button";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 export default function CreateListingForm({
   setIsCreating,
@@ -30,8 +30,9 @@ export default function CreateListingForm({
     mutationFn: createListing,
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries({ queryKey: ["listings"] });
       form.reset();
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      setIsCreating(false);
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
@@ -39,14 +40,18 @@ export default function CreateListingForm({
   });
 
   async function onSubmit(data: z.infer<typeof listingSchema>) {
+    console.log(data);
+
     const formData = new FormData();
 
     formData.append("title", data.title);
-    formData.append("description", data.description);
+    formData.append("description", data.description ?? "");
     formData.append("price", data.price.toString());
     data.images.forEach((image) => {
       formData.append("images[]", image);
     });
+
+    console.log(formData);
 
     mutation.mutate(formData);
   }
@@ -57,8 +62,6 @@ export default function CreateListingForm({
     form.reset();
     setIsCreating(false);
   }
-
-  console.log(images);
 
   return (
     <Modal>
@@ -106,7 +109,8 @@ export default function CreateListingForm({
                 className="w-full"
                 placeholder="Add your price"
                 autoComplete="off"
-                {...form.register("price")}
+                type="number"
+                {...form.register("price", { valueAsNumber: true })}
               />
             </label>
 
@@ -161,11 +165,6 @@ export default function CreateListingForm({
                   <p className="text-base text-muted-foreground font-medium">
                     Click to upload or drag and drop
                   </p>
-                  {images && images.length > 0 && (
-                    <p className="text-sm text-accent">
-                      {images.length} image(s) selected
-                    </p>
-                  )}
                 </label>
               </div>
               {form.formState.errors.images && (
@@ -178,11 +177,6 @@ export default function CreateListingForm({
                 <div className="flex gap-2 flex-wrap">
                   {Array.from(images).map((file, index) => (
                     <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index + 1}`}
-                        className="w-35 h-35 object-cover rounded-sm"
-                      />
                       <button
                         type="button"
                         onClick={() => {
@@ -192,9 +186,16 @@ export default function CreateListingForm({
                           );
                           form.setValue("images", filtered);
                         }}
-                        className="absolute -top-2 -right-2 rounded-full bg-destructive text-highlight w-5 h-5 p-1 flex items-center justify-center"
+                        className="relative w-35 h-35"
                       >
-                        <XMarkIcon className="w-full" />
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-35 h-35 object-cover rounded-sm"
+                        />
+                        <div className="absolute bg-black/50  inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+                          <TrashIcon className="size-10 text-destructive" />
+                        </div>
                       </button>
                     </div>
                   ))}

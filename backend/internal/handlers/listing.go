@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 type CreateListingDTO struct {
@@ -39,7 +40,7 @@ func CreateListing(c *gin.Context) {
 
 	var body CreateListingDTO
 
-	if err := c.ShouldBind(&body); err != nil {
+	if err := c.ShouldBindWith(&body, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

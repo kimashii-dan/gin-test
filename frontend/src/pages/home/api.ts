@@ -7,6 +7,10 @@ export async function getListings(): Promise<Listing[]> {
 }
 
 export async function createListing(formData: FormData) {
-  const { data } = await api.post("/user/listings", formData);
+  const { data } = await api.post("/user/listings", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data;
 }
