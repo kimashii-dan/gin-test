@@ -27,9 +27,7 @@ func GetListing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"listing": listing,
-	})
+	c.JSON(http.StatusOK, listing)
 }
 
 func GetUserWithListing(c *gin.Context) {

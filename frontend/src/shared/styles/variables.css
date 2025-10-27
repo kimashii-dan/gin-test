@@ -129,4 +129,5 @@
   --shadow-lg: var(--shadow-lg);
   --color-highlight: var(--highlight);
   --inset-shadow-soft: var(--shadow-inset-soft);
+  --breakpoint-base: 900px;
 }

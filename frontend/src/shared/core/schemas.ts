@@ -58,7 +58,7 @@ export const listingSchema = z.object({
     .max(50, { message: "Title cannot exceed 50 characters" }),
   description: z
     .string()
-    .max(100, { message: "Description cannot exceed 100 characters" })
+    .max(500, { message: "Description cannot exceed 100 characters" })
     .optional(),
   price: z.number().min(1, { message: "Item should not be free" }),
   images: z

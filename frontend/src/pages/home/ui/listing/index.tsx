@@ -4,27 +4,10 @@ import { Link } from "react-router";
 import type { Listing } from "../../../../shared/types";
 import { Button } from "../../../../shared/ui/button";
 import { Card } from "../../../../shared/ui/card";
+import { timeAgo } from "../../../../shared/helpers/timeAgo";
 
 export default function ListingComponent({ listing }: { listing: Listing }) {
-  function timeAgo(dateString: string) {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diff < 60) return "just now";
-    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-    if (diff < 86400)
-      return `${Math.floor(diff / 3600)} hour${
-        Math.floor(diff / 3600) > 1 ? "s" : ""
-      } ago`;
-    if (diff < 2592000)
-      return `${Math.floor(diff / 86400)} day${
-        Math.floor(diff / 86400) > 1 ? "s" : ""
-      } ago`;
-    return date.toLocaleDateString();
-  }
-
-  function handleAddToCard(
+  function handleAddToWishlist(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) {
     event.stopPropagation();
@@ -79,9 +62,9 @@ export default function ListingComponent({ listing }: { listing: Listing }) {
             <Button
               className="shadow-lg"
               variant="secondary"
-              onClick={(e) => handleAddToCard(e)}
+              onClick={(e) => handleAddToWishlist(e)}
             >
-              Add to cart
+              Add to wishlist
             </Button>
           </div>
         </div>
