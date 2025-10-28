@@ -133,12 +133,12 @@ func GetMyListings(c *gin.Context) {
 }
 
 type UpdateListingDTO struct {
-	Title          *string                 `form:"title"`
-	Description    *string                 `form:"description"`
-	Price          *float64                `form:"price"`
-	NewImages      []*multipart.FileHeader `form:"new_images"`
-	ImagesToDelete []string                `form:"kept_images"`
-	IsClosed       *bool                   `form:"is_closed"`
+	Title       *string                 `form:"title"`
+	Description *string                 `form:"description"`
+	Price       *float64                `form:"price"`
+	NewImages   []*multipart.FileHeader `form:"new_images"`
+	KeptImages  []string                `form:"kept_images"`
+	IsClosed    *bool                   `form:"is_closed"`
 }
 
 func UpdateListing(c *gin.Context) {
@@ -166,8 +166,9 @@ func UpdateListing(c *gin.Context) {
 		return
 	}
 
+	// binding body
 	var body UpdateListingDTO
-	if err := c.ShouldBind(&body); err != nil {
+	if err := c.ShouldBindWith(&body, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -184,23 +185,23 @@ func UpdateListing(c *gin.Context) {
 	}
 
 	// check if amount of images exceeds limit
-	totalImages := len(listing.ImageURLs) - len(body.ImagesToDelete) + len(body.NewImages)
+	totalImages := len(body.KeptImages) + len(body.NewImages)
 	if totalImages > 5 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Total images cannot exceed 5"})
 		return
 	}
 
 	// validate that kept images belong to this listing
-	if len(body.ImagesToDelete) > 0 {
+	if len(body.KeptImages) > 0 {
 		originalImageMap := make(map[string]bool)
 		for _, img := range listing.ImageURLs {
 			originalImageMap[img] = true
 		}
 
-		for _, delImg := range body.ImagesToDelete {
-			if !originalImageMap[delImg] {
+		for _, keptImg := range body.KeptImages {
+			if !originalImageMap[keptImg] {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"error": fmt.Sprintf("Image %s does not belong to this listing", delImg),
+					"error": fmt.Sprintf("Image %s does not belong to this listing", keptImg),
 				})
 				return
 			}
@@ -230,16 +231,16 @@ func UpdateListing(c *gin.Context) {
 		return
 	}
 
-	var imagesToKeep []string
 	kept := make(map[string]bool)
-	for _, k := range body.ImagesToDelete {
+	for _, k := range body.KeptImages {
 		kept[k] = true
 	}
 
 	// collect 'images to delete'
+	var imagesToDelete []string
 	for _, old := range listing.ImageURLs {
 		if !kept[old] {
-			imagesToKeep = append(imagesToKeep, old)
+			imagesToDelete = append(imagesToDelete, old)
 		}
 	}
 
@@ -255,14 +256,14 @@ func UpdateListing(c *gin.Context) {
 	}
 
 	// save images to db
-	listing.ImageURLs = append(imagesToKeep, newImageURLs...)
+	listing.ImageURLs = append(body.KeptImages, newImageURLs...)
 	if err := database.DB.Save(&listing).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing images"})
 		return
 	}
 
 	// delete images from r2
-	for _, imgURL := range body.ImagesToDelete {
+	for _, imgURL := range imagesToDelete {
 		if err := services.DeleteImageByURL(c.Request.Context(), imgURL); err != nil {
 			fmt.Printf("warning: failed to delete old image %s: %v\n", imgURL, err)
 		}

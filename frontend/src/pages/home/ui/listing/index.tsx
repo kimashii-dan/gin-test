@@ -60,7 +60,7 @@ export default function ListingComponent({ listing }: { listing: Listing }) {
               ${listing.price}
             </h2>
             <Button
-              className="shadow-lg"
+              className="shadow-lg font-medium"
               variant="secondary"
               onClick={(e) => handleAddToWishlist(e)}
             >
