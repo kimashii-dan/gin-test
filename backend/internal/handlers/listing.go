@@ -185,10 +185,12 @@ func UpdateListing(c *gin.Context) {
 	}
 
 	// check if amount of images exceeds limit
-	totalImages := len(body.KeptImages) + len(body.NewImages)
-	if totalImages > 5 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Total images cannot exceed 5"})
-		return
+	if body.KeptImages != nil || body.NewImages != nil {
+		totalImages := len(body.KeptImages) + len(body.NewImages)
+		if totalImages > 5 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Total images cannot exceed 5"})
+			return
+		}
 	}
 
 	// validate that kept images belong to this listing
@@ -231,41 +233,43 @@ func UpdateListing(c *gin.Context) {
 		return
 	}
 
-	kept := make(map[string]bool)
-	for _, k := range body.KeptImages {
-		kept[k] = true
-	}
-
-	// collect 'images to delete'
-	var imagesToDelete []string
-	for _, old := range listing.ImageURLs {
-		if !kept[old] {
-			imagesToDelete = append(imagesToDelete, old)
+	if body.KeptImages != nil || body.NewImages != nil {
+		kept := make(map[string]bool)
+		for _, k := range body.KeptImages {
+			kept[k] = true
 		}
-	}
 
-	// upload new images
-	var newImageURLs []string
-	if len(body.NewImages) > 0 {
-		urls, err := services.UploadImages(c.Request.Context(), body.NewImages, &user, "listings")
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		// collect 'images to delete'
+		var imagesToDelete []string
+		for _, old := range listing.ImageURLs {
+			if !kept[old] {
+				imagesToDelete = append(imagesToDelete, old)
+			}
+		}
+
+		// upload new images
+		var newImageURLs []string
+		if len(body.NewImages) > 0 {
+			urls, err := services.UploadImages(c.Request.Context(), body.NewImages, &user, "listings")
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			newImageURLs = urls
+		}
+
+		// save images to db
+		listing.ImageURLs = append(body.KeptImages, newImageURLs...)
+		if err := database.DB.Save(&listing).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing images"})
 			return
 		}
-		newImageURLs = urls
-	}
 
-	// save images to db
-	listing.ImageURLs = append(body.KeptImages, newImageURLs...)
-	if err := database.DB.Save(&listing).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing images"})
-		return
-	}
-
-	// delete images from r2
-	for _, imgURL := range imagesToDelete {
-		if err := services.DeleteImageByURL(c.Request.Context(), imgURL); err != nil {
-			fmt.Printf("warning: failed to delete old image %s: %v\n", imgURL, err)
+		// delete images from r2
+		for _, imgURL := range imagesToDelete {
+			if err := services.DeleteImageByURL(c.Request.Context(), imgURL); err != nil {
+				fmt.Printf("warning: failed to delete old image %s: %v\n", imgURL, err)
+			}
 		}
 	}
 

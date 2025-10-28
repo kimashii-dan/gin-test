@@ -50,6 +50,7 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
 
       <div className="flex w-full md:gap-3 gap-2">
         {listing.image_urls &&
+          listing.image_urls.length > 1 &&
           listing.image_urls.map((url, index) => (
             <div
               key={index}

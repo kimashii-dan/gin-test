@@ -50,8 +50,6 @@ export default function UpdateListingForm({
   );
 
   async function onSubmit(data: z.infer<typeof updateListingSchema>) {
-    console.log(data);
-
     const formData = new FormData();
 
     if (data.title !== listing.title) {
@@ -77,10 +75,6 @@ export default function UpdateListingForm({
     existingImages.forEach((url: string) => {
       formData.append("kept_images", url);
     });
-
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
 
     const id = listing.id;
     mutation.mutate({ id, formData });
@@ -167,7 +161,7 @@ export default function UpdateListingForm({
                   if (files) {
                     const currentImages = form.getValues("images") || [];
                     const newImages = [...currentImages, ...Array.from(files)];
-                    form.setValue("images", newImages.slice(0, 3));
+                    form.setValue("images", newImages.slice(0, 5));
                   }
                 }}
                 className="hidden w-full h-full"
@@ -192,7 +186,7 @@ export default function UpdateListingForm({
                     );
                     const currentImages = form.getValues("images") || [];
                     const newImages = [...currentImages, ...files];
-                    form.setValue("images", newImages.slice(0, 3));
+                    form.setValue("images", newImages.slice(0, 5));
                   }}
                   className="flex flex-col inset-shadow-soft gap-2 items-center justify-center w-full h-32 border-2 border-border border-dashed rounded cursor-pointer"
                 >
@@ -257,7 +251,7 @@ export default function UpdateListingForm({
                 variant="primary"
                 disabled={mutation.isPending}
               >
-                Create
+                Update
               </Button>
             </div>
           </div>

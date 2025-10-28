@@ -69,7 +69,7 @@ export const listingSchema = z.object({
         .refine((file) => file.size <= 2_000_000, "Max 2MB")
     )
     .min(1, { message: "At least one image is required" })
-    .max(3, { message: "You can upload up to 3 images" }),
+    .max(5, { message: "You can upload up to 3 images" }),
 });
 
 export const updateListingSchema = listingSchema.extend({
@@ -80,6 +80,6 @@ export const updateListingSchema = listingSchema.extend({
         .refine((file) => file.type.startsWith("image/"), "Must be an image")
         .refine((file) => file.size <= 2_000_000, "Max 2MB")
     )
-    .max(3, { message: "You can upload up to 3 images" })
+    .max(5, { message: "You can upload up to 3 images" })
     .optional(),
 });

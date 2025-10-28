@@ -50,7 +50,7 @@ export default function ListingComponent({ listing }: { listing: Listing }) {
         <div className="w-full flex flex-col gap-5">
           <div className="">
             <h1 className="text-xl font-medium truncate">{listing.title}</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground truncate">
               {listing.description}
             </p>
           </div>
