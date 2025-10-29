@@ -39,7 +39,5 @@ func GetUserWithListing(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"user": user,
-	})
+	c.JSON(http.StatusOK, user)
 }

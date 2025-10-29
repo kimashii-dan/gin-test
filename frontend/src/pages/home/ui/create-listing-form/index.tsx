@@ -32,7 +32,6 @@ export default function CreateListingForm({
       console.log(data);
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["listings"] });
-      setIsCreating(false);
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
@@ -54,6 +53,8 @@ export default function CreateListingForm({
     console.log(formData);
 
     mutation.mutate(formData);
+
+    setIsCreating(false);
   }
 
   const images = form.watch("images");

@@ -107,7 +107,7 @@ export default function Register() {
           </div>
         )}
         <Button
-          className="w-full"
+          className="w-full font-medium"
           variant="primary"
           disabled={mutation.isPending}
         >

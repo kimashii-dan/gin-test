@@ -37,7 +37,6 @@ export default function UpdateListingForm({
     onSuccess: (data) => {
       console.log(data);
       form.reset();
-      setIsUpdating(false);
       queryClient.invalidateQueries({ queryKey: ["listing"] });
     },
     onError: (error: ServerError) => {
@@ -78,6 +77,8 @@ export default function UpdateListingForm({
 
     const id = listing.id;
     mutation.mutate({ id, formData });
+
+    setIsUpdating(false);
   }
 
   const images = form.watch("images");
@@ -92,7 +93,7 @@ export default function UpdateListingForm({
   }
 
   return (
-    <Modal>
+    <Modal className="items-start md:items-center">
       <form
         className="flex flex-col w-11/12 h-auto md:h-[80vh]"
         onSubmit={form.handleSubmit(onSubmit)}
@@ -245,7 +246,7 @@ export default function UpdateListingForm({
               </div>
             </div>
 
-            <div className="flex gap-2 justify-end">
+            <div className="flex gap-2 justify-end font-medium">
               <Button
                 type="submit"
                 variant="primary"

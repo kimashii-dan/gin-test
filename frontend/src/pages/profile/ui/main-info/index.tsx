@@ -67,7 +67,7 @@ export default function MainInfo({
       </div>
       <div className="flex flex-row md:flex-col gap-5 justify-center">
         <Button
-          className="flex gap-2 items-center justify-center"
+          className="flex gap-2 items-center justify-center font-medium"
           variant="secondary"
           onClick={() => setIsEditing(true)}
         >
@@ -75,7 +75,7 @@ export default function MainInfo({
           <span>Edit</span>
         </Button>
         <Button
-          className="flex gap-2 items-center justify-center"
+          className="flex gap-2 items-center justify-center font-medium"
           onClick={handleLogout}
           variant="danger"
         >

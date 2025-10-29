@@ -76,7 +76,7 @@ export default function AvatarUploader() {
       </button>
 
       {file && (
-        <Modal>
+        <Modal className="items-center">
           <Card className="flex-col relative justify-center items-center gap-5 w-80 md:w-96 p-5 md:p-10">
             {file && (
               <div className="text-sm break-all">
@@ -105,7 +105,7 @@ export default function AvatarUploader() {
             {file && (
               <div className="flex flex-row justify-center gap-2">
                 <Button
-                  className="w-fit"
+                  className="w-fit font-medium"
                   variant="primary"
                   onClick={handleUpload}
                 >
@@ -113,7 +113,7 @@ export default function AvatarUploader() {
                 </Button>
 
                 <Button
-                  className="w-fit"
+                  className="w-fit font-medium"
                   variant="secondary"
                   onClick={handleClick}
                 >

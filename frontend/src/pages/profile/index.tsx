@@ -49,7 +49,7 @@ export default function Profile() {
 
   return (
     <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full py-5">
-      <h1 className="text-5xl font-normal font-nice italic">Account</h1>
+      <h1 className="text-5xl font-normal font-nice italic">Profile</h1>
       <MainInfo
         setIsEditing={setIsEditing}
         queryClient={queryClient}

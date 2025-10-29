@@ -13,7 +13,7 @@ import type { Listing, ServerError } from "../../../../shared/types";
 import { Button } from "../../../../shared/ui/button";
 import { Card } from "../../../../shared/ui/card";
 import TelegramLogo from "../../../../shared/ui/telegram-logo";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../../../shared/core/auth";
 import { useState } from "react";
 import UpdateListingForm from "../updating-listing";
@@ -109,7 +109,7 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
         <DeletingAlert setIsDeleting={setIsDeleting} id={listing.id} />
       )}
 
-      <Card className="p-8 w-full">
+      <Card className="p-8 flex-col">
         <div className="flex flex-col gap-8">
           <h1 className="text-4xl font-nice italic font-medium">
             {listing.title}
@@ -177,7 +177,10 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
 
           <hr />
 
-          <div className="flex items-center w-fit gap-5">
+          <Link
+            to={`/users/${listing.user?.id}`}
+            className="flex items-center w-fit gap-5"
+          >
             <div className="w-15 h-15 relative aspect-square  ">
               {listing.user?.avatar_url ? (
                 <img
@@ -197,7 +200,7 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
                 Member since {formatDate(listing.user?.created_at)}
               </p>
             </div>
-          </div>
+          </Link>
 
           <div className="flex flex-col gap-5">
             {listing.user?.telegram_link ? (

@@ -9,6 +9,7 @@ import AuthLayout from "../shared/ui/layouts/auth-layout";
 import MainLayout from "../shared/ui/layouts/main-layout";
 import ListingPage from "../pages/listing";
 import Home from "../pages/home";
+import AccountPage from "../pages/account";
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
           {
             path: "/listings/:id",
             Component: ListingPage,
+          },
+          {
+            path: "/users/:id",
+            Component: AccountPage,
           },
           {
             path: "/profile",

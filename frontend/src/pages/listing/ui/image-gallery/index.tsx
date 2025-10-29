@@ -28,7 +28,7 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
               })
             }
           >
-            <ArrowLeftIcon className="size-8 text-foreground bg-black/60 rounded-full p-1" />
+            <ArrowLeftIcon className="size-8 text-gray-300 bg-black/60 rounded-full p-1" />
           </button>
         </div>
         <div className="absolute top-1/2 right-1">
@@ -43,7 +43,7 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
               });
             }}
           >
-            <ArrowRightIcon className="size-8 text-foreground bg-black/60 rounded-full p-1" />
+            <ArrowRightIcon className="size-8 text-gray-300 bg-black/60 rounded-full p-1" />
           </button>
         </div>
       </div>

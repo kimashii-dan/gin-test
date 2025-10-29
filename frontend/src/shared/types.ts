@@ -11,19 +11,6 @@ export type SuccessResponse = {
   success: true;
 };
 
-export type User = {
-  id: number;
-  email: string;
-  created_at: string;
-  updated_at: string;
-  university: string;
-  name: string;
-  phone: string;
-  telegram_link: string;
-  bio: string;
-  avatar_url: string;
-};
-
 export type AuthResponse = {
   user: User;
 };
@@ -58,6 +45,20 @@ export type ServerError = {
     data: string;
     url: string;
   };
+};
+
+export type User = {
+  id: number;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  university: string;
+  name: string;
+  phone: string;
+  telegram_link: string;
+  bio: string;
+  avatar_url: string;
+  listing?: Listing[];
 };
 
 export type Listing = {
