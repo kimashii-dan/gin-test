@@ -17,4 +17,5 @@ type Listing struct {
 	ImageURLs   pq.StringArray `json:"image_urls" gorm:"type:text[]"`
 	Price       float64        `json:"price"`
 	IsClosed    bool           `json:"is_closed"`
+	Wishlists   []Wishlist     `gorm:"many2many:wishlist_listings;" json:"wishlists,omitempty"`
 }

@@ -102,6 +102,9 @@
 
   --shadow-inset-soft: inset 2px 2px 4px #00000035,
     inset -2px -2px 4px #ffffff08;
+
+  --shadow-inset-medium: inset 2px 2px 5px #00000060,
+    inset -2px -2px 5px #ffffff10;
 }
 
 @theme inline {
@@ -129,5 +132,6 @@
   --shadow-lg: var(--shadow-lg);
   --color-highlight: var(--highlight);
   --inset-shadow-soft: var(--shadow-inset-soft);
+  --inset-shadow-medium: var(--shadow-inset-medium);
   --breakpoint-base: 900px;
 }

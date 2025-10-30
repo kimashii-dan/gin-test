@@ -1,7 +1,7 @@
 import { api } from "../../shared/core/axios";
-import type { Listing } from "../../shared/types";
+import type { GetListingResponseType } from "../../shared/types";
 
-export async function getListing(id: number): Promise<Listing> {
+export async function getListing(id: number): Promise<GetListingResponseType> {
   const { data } = await api.get(`/public/listings/${id}`);
   return data;
 }
@@ -26,5 +26,10 @@ export async function updateListing(request: UpdateRequest) {
 
 export async function deleteListing(id: number) {
   const { data } = await api.delete(`/user/listings/${id}`);
+  return data;
+}
+
+export async function addToWishlist(id: number) {
+  const { data } = await api.post(`/user/listings/wishlist/${id}`);
   return data;
 }

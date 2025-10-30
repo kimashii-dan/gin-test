@@ -7,7 +7,8 @@ import ListingComponent from "./ui/listing";
 import { useAuth } from "../../shared/core/auth";
 import { useState } from "react";
 import CreateListingForm from "./ui/create-listing-form";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import SelectListingType from "./ui/select-listing-type";
+
 // import { listings } from "../../shared/core/mock";
 
 export default function Home() {
@@ -22,11 +23,6 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [listingType, setListingType] = useState("All");
   const [isOpen, setIsOpen] = useState(false);
-
-  const handleTypeChange = (value: string) => {
-    setListingType(value);
-    setIsOpen(false);
-  };
 
   const handleCreateListing = () => {
     setIsCreating(true);
@@ -56,37 +52,13 @@ export default function Home() {
             Recent Listings
           </h1>
           {isAuthenticated && (
-            <div className="w-30">
-              <div className="relative">
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="w-full shadow-base flex items-center justify-between px-4 py-2 bg-muted rounded-lg"
-                >
-                  <span>{listingType}</span>
-                  <ChevronDownIcon
-                    className={`size-5 transition-transform ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {isOpen && (
-                  <div className="absolute shadow-base top-full mt-2 w-full p-2 rounded-lg border border-border z-10 overflow-hidden bg-card">
-                    {options.map((option) => (
-                      <button
-                        onClick={() => handleTypeChange(option)}
-                        className="w-full px-4 py-2 text-left flex items-center justify-between rounded-md hover:bg-muted"
-                      >
-                        <span>{option}</span>
-                        {listingType === option && (
-                          <CheckIcon className="size-5" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+            <SelectListingType
+              options={options}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              listingType={listingType}
+              setListingType={setListingType}
+            />
           )}
         </div>
         {isAuthenticated && (

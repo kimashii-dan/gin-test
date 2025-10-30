@@ -17,4 +17,5 @@ type User struct {
 	Bio          string    `json:"bio"`
 	AvatarURL    string    `json:"avatar_url"`
 	Listings     []Listing `json:"listing"`
+	Wishlist     *Wishlist `gorm:"foreignKey:UserID" json:"wishlist,omitempty"`
 }

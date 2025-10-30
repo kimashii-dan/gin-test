@@ -66,8 +66,7 @@ export default function ProfileEditing({
       return;
     }
 
-    const dataToUpdate: Partial<User> = {};
-
+    const dataToUpdate: Record<string, any> = {};
     for (const [key, value] of Object.entries(userData)) {
       const typedKey = key as keyof User;
       if (value !== user[typedKey]) {
@@ -81,7 +80,7 @@ export default function ProfileEditing({
     }
 
     console.log("Updating:", dataToUpdate);
-    updateUserMutation.mutate(dataToUpdate);
+    updateUserMutation.mutate(dataToUpdate as Partial<User>);
   }
 
   function handleCancelEdit() {

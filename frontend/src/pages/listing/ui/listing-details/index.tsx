@@ -19,20 +19,39 @@ import { useState } from "react";
 import UpdateListingForm from "../updating-listing";
 import DeletingAlert from "../deleting-alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateListing } from "../../api";
+import { addToWishlist, updateListing } from "../../api";
 
-export default function ListingDetails({ listing }: { listing: Listing }) {
+export default function ListingDetails({
+  listing,
+  isInWishlist,
+}: {
+  listing: Listing;
+  isInWishlist: boolean;
+}) {
   const navigate = useNavigate();
   const { data } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isClosed, setIsClosed] = useState(listing.is_closed ?? false);
+  const [isLiked, setIsLiked] = useState(isInWishlist);
+
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: updateListing,
     onSuccess: (data) => {
       console.log(data);
       setIsUpdating(false);
+      queryClient.invalidateQueries({ queryKey: ["listing"] });
+    },
+    onError: (error: ServerError) => {
+      console.log(error.response.data.error);
+    },
+  });
+
+  const likeMutation = useMutation({
+    mutationFn: addToWishlist,
+    onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries({ queryKey: ["listing"] });
     },
     onError: (error: ServerError) => {
@@ -70,12 +89,19 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
   }
 
   function handleToggleStatus() {
-    if (mutation.isPending) return;
+    if (updateMutation.isPending) return;
     setIsClosed(!isClosed);
     const formData = new FormData();
     formData.append("is_closed", String(!isClosed));
     const id = listing.id;
-    mutation.mutate({ id, formData });
+    updateMutation.mutate({ id, formData });
+  }
+
+  function handleLike() {
+    if (likeMutation.isPending) return;
+    setIsLiked(!isLiked);
+    const id = listing.id;
+    likeMutation.mutate(id);
   }
 
   return (
@@ -114,12 +140,10 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
           <h1 className="text-4xl font-nice italic font-medium">
             {listing.title}
           </h1>
-
+          <h2 className="text-3xl font-semibold text-highlight">
+            ${listing.price}
+          </h2>
           <div className="flex justify-between items-center">
-            <h2 className="text-3xl font-semibold text-highlight">
-              ${listing.price}
-            </h2>
-
             {listing.user?.id === data?.user.id ? (
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
@@ -166,10 +190,18 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
                 </div>
               </div>
             )}
+
+            <button onClick={handleLike} className="flex items-center gap-2">
+              <HeartIcon
+                fill={`${isLiked ? "red" : "none"}`}
+                className="size-7 text-destructive"
+              />
+              <span>Like</span>
+            </button>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <p className="text-lg font-medium">Description</p>
+          <div className="flex flex-col gap-2">
+            <p className="text-xl font-medium">Description</p>
             <p className="text-base font-normal text-muted-foreground">
               {listing.description}
             </p>
@@ -209,8 +241,8 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
                 className="flex items-center justify-center gap-2"
                 onClick={handleContact}
               >
-                <TelegramLogo width={30} height={30} />
-                <p className="font-semibold text-lg">Contact via Telegram</p>
+                <TelegramLogo width={25} height={25} />
+                <p className="font-semibold text-base">Contact via Telegram</p>
               </Button>
             ) : (
               <Button
@@ -219,21 +251,13 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
                 onClick={handleContact}
               >
                 <EnvelopeIcon className="size-5" />
-                <p className="font-semibold text-lg">Contact via Email</p>
+                <p className="font-semibold text-base">Contact via Email</p>
               </Button>
             )}
 
             <div className="flex flex-col base:flex-row base:items-center gap-5">
               <Button
-                variant="outline"
-                className="flex items-center justify-center gap-2 flex-1"
-                onClick={handleAddToWishList}
-              >
-                <HeartIcon className="size-5 text-destructive" />
-                <p className="font-semibold text-base">Add to Wishlist</p>
-              </Button>
-              <Button
-                variant="outline"
+                variant="secondary"
                 className="flex items-center justify-center gap-2 flex-1"
                 onClick={handleShare}
               >
@@ -245,7 +269,7 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
 
           <hr />
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-5">
-            <div className="flex items-center w-fit gap-5">
+            <div className="flex items-center w-fit gap-2">
               <AcademicCapIcon className="size-8 text-muted-foreground" />
               <div className="flex flex-col">
                 <p className="text-base font-normal text-muted-foreground">
@@ -259,7 +283,7 @@ export default function ListingDetails({ listing }: { listing: Listing }) {
               </div>
             </div>
 
-            <div className="flex items-center w-fit gap-5">
+            <div className="flex items-center w-fit gap-2">
               <CalendarDaysIcon className="size-8 text-muted-foreground" />
               <div className="flex flex-col">
                 <p className="text-base font-normal text-muted-foreground">

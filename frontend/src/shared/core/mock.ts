@@ -2,7 +2,7 @@ import type { Listing } from "../types";
 
 export const listings: Listing[] = [
   {
-    id: 7,
+    id: 1,
     created_at: "2025-10-24T18:44:51.74984Z",
     updated_at: "2025-10-24T18:44:52.3198Z",
     user_id: 1,
@@ -87,7 +87,8 @@ export const listing: Listing = {
   created_at: "2025-10-24T18:44:51.74984Z",
   updated_at: "2025-10-24T18:44:52.3198Z",
   user_id: 1,
-  title: "MacBook Pro M2",
+  title:
+    "MacBook Pro M2 blablabla meowmeowmeow pro max ultra light super mega powerfull",
   description:
     "Used M2 MacBook Pro 13-inch (Late 2022) – Excellent Condition! It features the M2 chip with an upgraded 16GB Unified Memory and a fast 512GB SSD. The condition is flawless; there are no visible scratches or dents on the casing or display. The battery health is 98%, with a very low cycle count (currently 35). Comes complete with the original 67W USB-C Power Adapter, charging cable, and the retail box. Price is firm at $1200. Local pickup or secure shipping available.",
   image_urls: [

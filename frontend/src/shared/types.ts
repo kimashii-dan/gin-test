@@ -73,3 +73,8 @@ export type Listing = {
   is_closed: boolean;
   user?: User;
 };
+
+export type GetListingResponseType = {
+  is_in_wishlist: boolean;
+  listing: Listing;
+};

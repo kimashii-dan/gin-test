@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router";
 import { getListing } from "./api";
+import { useParams } from "react-router";
 
 import ImageGallery from "./ui/image-gallery";
-// import type { Listing } from "../../shared/types";
 import ListingDetails from "./ui/listing-details";
+// import { listing } from "../../shared/core/mock";
+
 export default function ListingPage() {
   let { id } = useParams();
 
   const {
-    data: listing,
+    data: listingData,
     isLoading,
     isError,
   } = useQuery({
@@ -28,7 +29,7 @@ export default function ListingPage() {
     );
   }
 
-  if (isError || !listing) {
+  if (isError || !listingData?.listing) {
     return (
       <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full">
         <h1 className="text-5xl font-semibold text-red-500">
@@ -40,8 +41,11 @@ export default function ListingPage() {
 
   return (
     <div className="max-w-11/12 base:max-w-10/12 w-full flex flex-col base:flex-row gap-10 py-5">
-      <ImageGallery listing={listing} />
-      <ListingDetails listing={listing} />
+      <ImageGallery listing={listingData.listing} />
+      <ListingDetails
+        listing={listingData.listing}
+        isInWishlist={listingData.is_in_wishlist}
+      />
     </div>
   );
 }

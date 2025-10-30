@@ -9,7 +9,9 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
       <div className="relative w-full aspect-square overflow-hidden rounded-xl">
         <img
           src={
-            listing.image_urls && listing.image_urls.length > 0
+            listing.image_urls &&
+            Array.isArray(listing.image_urls) &&
+            listing.image_urls.length > 0
               ? listing.image_urls[currentIndex]
               : "/images/hoodie.webp"
           }

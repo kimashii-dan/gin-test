@@ -57,6 +57,8 @@ func main() {
 			listing.POST("", handlers.CreateListing)
 			listing.PATCH("/:id", handlers.UpdateListing)
 			listing.DELETE("/:id", handlers.DeleteListing)
+			listing.POST("/wishlist/:id", handlers.ToggleWishlist)
+			listing.GET("/wishlist", handlers.GetListingsFromWishlist)
 		}
 	}
 
@@ -66,7 +68,7 @@ func main() {
 		{
 			listing := public.Group("/listings")
 			listing.GET("", handlers.GetListings)
-			listing.GET("/:id", handlers.GetListing)
+			listing.GET("/:id", handlers.GetListing, middleware.OptionalAuth())
 		}
 
 		{

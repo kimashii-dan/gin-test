@@ -319,3 +319,82 @@ func DeleteListing(c *gin.Context) {
 		"success": true,
 	})
 }
+
+func GetListingsFromWishlist(c *gin.Context) {
+	var listings []models.Listing
+
+	userAny, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "User not found in context",
+		})
+		return
+	}
+
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Invalid user type",
+		})
+		return
+	}
+
+	if database.DB.
+		Preload("Wishlists", "user_id = ?", user.ID).
+		Find(&listings).Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch listings"})
+		return
+	}
+
+	c.JSON(http.StatusOK, listings)
+}
+
+func ToggleWishlist(c *gin.Context) {
+	userAny, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "User not found in context",
+		})
+		return
+	}
+
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Invalid user type",
+		})
+		return
+	}
+
+	listingID := c.Param("id")
+
+	var listing models.Listing
+	if err := database.DB.First(&listing, "id = ? AND user_id = ?", listingID, user.ID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
+		return
+	}
+
+	var wishlist models.Wishlist
+	if err := database.DB.FirstOrCreate(&wishlist, models.Wishlist{UserID: user.ID}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create wishlist"})
+		return
+	}
+
+	existingCount := database.DB.Model(&wishlist).Where("id = ?", listingID).Association("Listings").Count()
+
+	if existingCount > 0 {
+
+		database.DB.Model(&wishlist).Association("Listings").Delete(&listing)
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+		})
+	} else {
+
+		database.DB.Model(&wishlist).Association("Listings").Append(&listing)
+
+		c.JSON(http.StatusOK, gin.H{
+			"success": true,
+		})
+	}
+}
