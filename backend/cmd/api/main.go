@@ -68,7 +68,7 @@ func main() {
 		{
 			listing := public.Group("/listings")
 			listing.GET("", handlers.GetListings)
-			listing.GET("/:id", handlers.GetListing, middleware.OptionalAuth())
+			listing.GET("/:id", middleware.OptionalAuth(), handlers.GetListing)
 		}
 
 		{

@@ -32,8 +32,6 @@ export default function ListingDetails({
   const { data } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isClosed, setIsClosed] = useState(listing.is_closed ?? false);
-  const [isLiked, setIsLiked] = useState(isInWishlist);
 
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -76,10 +74,6 @@ export default function ListingDetails({
     console.log("share");
   }
 
-  function handleAddToWishList() {
-    console.log("add to wishlist");
-  }
-
   function handleUpdate() {
     setIsUpdating(true);
   }
@@ -90,16 +84,14 @@ export default function ListingDetails({
 
   function handleToggleStatus() {
     if (updateMutation.isPending) return;
-    setIsClosed(!isClosed);
     const formData = new FormData();
-    formData.append("is_closed", String(!isClosed));
+    formData.append("is_closed", String(!listing.is_closed));
     const id = listing.id;
     updateMutation.mutate({ id, formData });
   }
 
-  function handleLike() {
+  function handleAddToWishList() {
     if (likeMutation.isPending) return;
-    setIsLiked(!isLiked);
     const id = listing.id;
     likeMutation.mutate(id);
   }
@@ -149,7 +141,9 @@ export default function ListingDetails({
                 <div className="flex items-center gap-2">
                   <span
                     className={`text-sm font-medium ${
-                      isClosed ? "text-muted-foreground" : "text-accent"
+                      listing.is_closed
+                        ? "text-muted-foreground"
+                        : "text-accent"
                     }`}
                   >
                     Available
@@ -158,19 +152,21 @@ export default function ListingDetails({
                   <button
                     onClick={handleToggleStatus}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      isClosed ? "bg-destructive" : "bg-accent"
+                      listing.is_closed ? "bg-destructive" : "bg-accent"
                     }`}
                   >
                     <span
                       className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        isClosed ? "translate-x-6" : "translate-x-1"
+                        listing.is_closed ? "translate-x-6" : "translate-x-1"
                       }`}
                     />
                   </button>
 
                   <span
                     className={`text-sm font-medium ${
-                      isClosed ? "text-destructive" : "text-muted-foreground"
+                      listing.is_closed
+                        ? "text-destructive"
+                        : "text-muted-foreground"
                     }`}
                   >
                     Sold
@@ -191,9 +187,12 @@ export default function ListingDetails({
               </div>
             )}
 
-            <button onClick={handleLike} className="flex items-center gap-2">
+            <button
+              onClick={handleAddToWishList}
+              className="flex items-center gap-2"
+            >
               <HeartIcon
-                fill={`${isLiked ? "red" : "none"}`}
+                fill={`${isInWishlist ? "red" : "none"}`}
                 className="size-7 text-destructive"
               />
               <span>Like</span>

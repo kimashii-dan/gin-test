@@ -24,19 +24,9 @@ func GetListing(c *gin.Context) {
 	userAny, userExists := c.Get("user")
 
 	var listing models.Listing
-	var err error
-
-	if userExists {
-		user := userAny.(models.User)
-		err = database.DB.
-			Preload("User").
-			Preload("Wishlists", "user_id = ?", user.ID).
-			First(&listing, "id = ?", listingID).Error
-	} else {
-		err = database.DB.
-			Preload("User").
-			First(&listing, "id = ?", listingID).Error
-	}
+	err := database.DB.
+		Preload("User").
+		First(&listing, "id = ?", listingID).Error
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
@@ -44,8 +34,15 @@ func GetListing(c *gin.Context) {
 	}
 
 	isInWishlist := false
-	if userExists && len(listing.Wishlists) > 0 {
-		isInWishlist = true
+	if userExists {
+		user := userAny.(models.User)
+
+		var count int64
+		database.DB.Model(&models.WishlistListing{}).
+			Where("user_id = ? AND listing_id = ?", user.ID, listing.ID).
+			Count(&count)
+
+		isInWishlist = count > 0
 	}
 
 	c.JSON(http.StatusOK, gin.H{

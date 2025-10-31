@@ -40,10 +40,8 @@ func OptionalAuth() gin.HandlerFunc {
 				c.Next()
 				return
 			}
-
 			c.Set("user", user)
 		}
-
 		c.Next()
 	}
 }

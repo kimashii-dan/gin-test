@@ -1,2 +1,1 @@
-DROP TABLE IF EXISTS wishlist_listings;
-DROP TABLE IF EXISTS wishlists;
+DROP TABLE IF EXISTS wishlist_listings CASCADE;

@@ -1,39 +1,35 @@
 :root {
-  /* Мягкий бежево-серый фон вместо чистого белого */
-  --background: oklch(0.92 0.01 80);
-  /* Приглушенный текст с минимальным контрастом */
-  --foreground: oklch(0.45 0.015 260);
+  /* Light Mode Neutral Colors: Anchored to HUE 80 (Beige-Gray) and low Chroma */
+  --neutral-hue: 80;
+  --neutral-chroma: 0.01;
 
-  /* Карточки чуть светлее фона */
-  --card: oklch(0.95 0.008 80);
-  --card-foreground: oklch(0.42 0.015 260);
+  --background: oklch(0.92 var(--neutral-chroma) var(--neutral-hue));
+  --foreground: oklch(0.4 0.015 260); /* Slightly cold for contrast */
 
-  /* Границы едва заметные */
-  --border: oklch(0.82 0.012 80);
+  --card: oklch(0.95 0.008 var(--neutral-hue));
+  --card-foreground: var(--foreground);
 
-  /* Приглушенные области */
-  --muted: oklch(0.88 0.01 80);
-  --muted-foreground: oklch(0.52 0.02 260);
+  --border: oklch(0.82 0.012 var(--neutral-hue));
 
-  /* Основной цвет с умеренной насыщенностью */
+  --muted: oklch(0.88 var(--neutral-chroma) var(--neutral-hue));
+  --muted-foreground: oklch(0.58 0.02 260);
+
+  /* Functional Colors (Hues preserved) */
   --primary: oklch(0.65 0.16 260);
-  --primary-foreground: oklch(0.95 0.008 80);
+  --primary-foreground: var(--card); /* Use card color for consistency */
 
-  /* Вторичный цвет очень мягкий */
   --secondary: oklch(0.82 0.04 260);
-  --secondary-foreground: oklch(0.42 0.015 260);
+  --secondary-foreground: var(--foreground);
 
-  /* Акцент в зеленых тонах, приглушенный */
   --accent: oklch(0.68 0.15 160);
-  --accent-foreground: oklch(0.95 0.008 80);
+  --accent-foreground: var(--card);
 
-  /* Деструктивный цвет мягче */
   --destructive: oklch(0.62 0.16 25);
-  --destructive-foreground: oklch(0.95 0.008 80);
+  --destructive-foreground: var(--card);
 
   --highlight: oklch(0 0 0);
 
-  /* Стекло с теплым оттенком */
+  /* Shadows and Glass remain untouched */
   --glass-bg: rgba(240, 235, 225, 0.35);
   --glass-shadow: rgba(100, 90, 80, 0.15);
 
@@ -52,43 +48,39 @@
 }
 
 .dark {
-  /* Мягкий сине-серый фон вместо черного */
-  --background: oklch(0.28 0.015 260);
-  /* Приглушенный светлый текст */
-  --foreground: oklch(0.78 0.01 260);
+  /* Dark Mode Neutral Colors: Anchored to HUE 260 (Blue-Gray) and low Chroma */
+  --neutral-hue: 260;
+  --neutral-chroma: 0.015;
 
-  /* Карточки чуть светлее фона */
-  --card: oklch(0.32 0.018 260);
-  --card-foreground: oklch(0.82 0.01 260);
+  --background: oklch(0.28 var(--neutral-chroma) var(--neutral-hue));
+  --foreground: oklch(0.8 0.01 var(--neutral-hue));
 
-  /* Границы мягкие */
-  --border: oklch(0.42 0.02 260);
+  --card: oklch(0.32 0.018 var(--neutral-hue));
+  --card-foreground: var(--foreground);
 
-  /* Приглушенные области */
-  --muted: oklch(0.38 0.02 260);
-  --muted-foreground: oklch(0.68 0.015 260);
+  --border: oklch(0.42 0.02 var(--neutral-hue));
 
-  /* Основной цвет яркий, но не агрессивный */
+  --muted: oklch(0.38 0.02 var(--neutral-hue));
+  --muted-foreground: oklch(0.68 0.015 var(--neutral-hue));
+
+  /* Functional Colors (Hues preserved) */
   --primary: oklch(0.68 0.18 260);
   --primary-foreground: oklch(0.25 0.015 260);
 
-  /* Вторичный цвет деликатный */
   --secondary: oklch(0.42 0.06 260);
-  --secondary-foreground: oklch(0.82 0.01 260);
+  --secondary-foreground: var(--foreground);
 
-  /* Акцент зеленый, приглушенный */
   --accent: oklch(0.66 0.16 160);
   --accent-foreground: oklch(0.25 0.015 260);
 
-  /* Деструктивный цвет мягче */
   --destructive: oklch(0.64 0.18 25);
   --destructive-foreground: oklch(0.25 0.015 260);
 
-  /* Стекло с холодным оттенком */
+  --highlight: oklch(1 0 0);
+
+  /* Shadows and Glass remain untouched */
   --glass-bg: rgba(40, 45, 55, 0.4);
   --glass-shadow: rgba(0, 0, 0, 0.3);
-
-  --highlight: oklch(1 0 0);
 
   --shadow-sm: inset 0 1px 2px #ffffff30,
     /* top highlight */ 0 1px 2px #00000030,

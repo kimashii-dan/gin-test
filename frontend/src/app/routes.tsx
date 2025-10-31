@@ -10,6 +10,7 @@ import MainLayout from "../shared/ui/layouts/main-layout";
 import ListingPage from "../pages/listing";
 import Home from "../pages/home";
 import AccountPage from "../pages/account";
+import WishlistPage from "../pages/wishlist";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,11 @@ export const router = createBrowserRouter([
             path: "/profile",
             middleware: [requireAuth],
             Component: Profile,
+          },
+          {
+            path: "/wishlist",
+            middleware: [requireAuth],
+            Component: WishlistPage,
           },
           {
             path: "*",
