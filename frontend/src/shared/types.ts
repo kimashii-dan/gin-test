@@ -58,7 +58,7 @@ export type User = {
   telegram_link: string;
   bio: string;
   avatar_url: string;
-  listing?: Listing[];
+  listings?: ListingData[];
 };
 
 export type Listing = {
@@ -74,7 +74,7 @@ export type Listing = {
   user?: User;
 };
 
-export type GetListingResponseType = {
-  is_in_wishlist: boolean;
+export type ListingData = {
   listing: Listing;
+  is_in_wishlist: boolean;
 };

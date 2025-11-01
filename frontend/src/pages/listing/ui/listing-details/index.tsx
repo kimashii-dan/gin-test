@@ -29,7 +29,8 @@ export default function ListingDetails({
   isInWishlist: boolean;
 }) {
   const navigate = useNavigate();
-  const { data } = useAuth();
+  const { data: authData } = useAuth();
+  const isAuthenticated = !!authData?.user;
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -98,7 +99,7 @@ export default function ListingDetails({
 
   return (
     <div className="base:w-[45%] w-full flex flex-col break-all gap-5">
-      {listing.user?.id === data?.user.id && (
+      {listing.user?.id === authData?.user.id && (
         <div className="flex gap-5 items-center">
           <Button
             className="flex-1 font-semibold flex justify-center items-center gap-1"
@@ -136,7 +137,7 @@ export default function ListingDetails({
             ${listing.price}
           </h2>
           <div className="flex justify-between items-center">
-            {listing.user?.id === data?.user.id ? (
+            {listing.user?.id === authData?.user.id ? (
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <span
@@ -186,17 +187,18 @@ export default function ListingDetails({
                 </div>
               </div>
             )}
-
-            <button
-              onClick={handleAddToWishList}
-              className="flex items-center gap-2"
-            >
-              <HeartIcon
-                fill={`${isInWishlist ? "red" : "none"}`}
-                className="size-7 text-destructive"
-              />
-              <span>Like</span>
-            </button>
+            {isAuthenticated && (
+              <button
+                onClick={handleAddToWishList}
+                className="flex items-center gap-2"
+              >
+                <HeartIcon
+                  fill={`${isInWishlist ? "red" : "none"}`}
+                  className="size-7 text-destructive"
+                />
+                <span>Like</span>
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -233,11 +235,11 @@ export default function ListingDetails({
             </div>
           </Link>
 
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col md:flex-row gap-5">
             {listing.user?.telegram_link ? (
               <Button
-                variant="secondary"
-                className="flex items-center justify-center gap-2"
+                variant="primary"
+                className="flex items-center justify-center gap-2 flex-1"
                 onClick={handleContact}
               >
                 <TelegramLogo width={25} height={25} />
@@ -245,8 +247,8 @@ export default function ListingDetails({
               </Button>
             ) : (
               <Button
-                variant="secondary"
-                className="flex items-center justify-center gap-2"
+                variant="primary"
+                className="flex items-center justify-center gap-2 flex-1"
                 onClick={handleContact}
               >
                 <EnvelopeIcon className="size-5" />
@@ -254,16 +256,14 @@ export default function ListingDetails({
               </Button>
             )}
 
-            <div className="flex flex-col base:flex-row base:items-center gap-5">
-              <Button
-                variant="secondary"
-                className="flex items-center justify-center gap-2 flex-1"
-                onClick={handleShare}
-              >
-                <ShareIcon className="size-5 text-primary" />
-                <p className="font-semibold text-base">Share</p>
-              </Button>
-            </div>
+            <Button
+              variant="secondary"
+              className="flex items-center justify-center gap-2 flex-1"
+              onClick={handleShare}
+            >
+              <ShareIcon className="size-5 text-primary" />
+              <p className="font-semibold text-base">Share</p>
+            </Button>
           </div>
 
           <hr />

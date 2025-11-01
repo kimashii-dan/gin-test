@@ -1,6 +1,6 @@
 import type { Listing } from "../types";
 
-export const listings: Listing[] = [
+export const filteredListings: Listing[] = [
   {
     id: 1,
     created_at: "2025-10-24T18:44:51.74984Z",

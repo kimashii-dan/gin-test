@@ -25,7 +25,7 @@ export default function SelectListingType({
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full shadow-base flex items-center justify-between px-4 py-2 bg-muted rounded-md"
+          className="w-full shadow-base flex items-center justify-between px-4 py-2 bg-secondary text-secondary-foreground rounded-md"
         >
           <span>{listingType}</span>
           <ChevronDownIcon

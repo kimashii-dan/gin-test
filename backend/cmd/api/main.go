@@ -67,13 +67,13 @@ func main() {
 		public := router.Group("/public")
 		{
 			listing := public.Group("/listings")
-			listing.GET("", handlers.GetListings)
+			listing.GET("", middleware.OptionalAuth(), handlers.GetListings)
 			listing.GET("/:id", middleware.OptionalAuth(), handlers.GetListing)
 		}
 
 		{
 			user := public.Group("/users")
-			user.GET("/:id", handlers.GetUserWithListing)
+			user.GET("/:id", middleware.OptionalAuth(), handlers.GetUserWithListing)
 		}
 	}
 

@@ -13,7 +13,7 @@ import {
   StarIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import type { Listing } from "../../shared/types";
+import type { ListingData } from "../../shared/types";
 import ListingComponent from "../home/ui/listing";
 
 export default function AccountPage() {
@@ -152,13 +152,17 @@ export default function AccountPage() {
           </Card>
         </div>
       </div>
-      <h2 className="font-nice text-4xl italic">Listings</h2>
 
-      <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-5 items-center justify-between">
-        {user?.listing &&
-          Array.isArray(user?.listing) &&
-          user.listing.map((listing: Listing) => (
-            <ListingComponent key={listing.id} listing={listing} />
+      <h2 className="font-nice text-4xl italic">Listings</h2>
+      <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] gap-5 items-center justify-between">
+        {user?.listings &&
+          Array.isArray(user?.listings) &&
+          user.listings.map((listingData: ListingData) => (
+            <ListingComponent
+              key={listingData.listing.id}
+              listing={listingData.listing}
+              isInWishlist={listingData.is_in_wishlist}
+            />
           ))}
       </div>
     </div>

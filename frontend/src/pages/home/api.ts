@@ -1,7 +1,7 @@
 import { api } from "../../shared/core/axios";
-import type { Listing } from "../../shared/types";
+import type { ListingData } from "../../shared/types";
 
-export async function getListings(): Promise<Listing[]> {
+export async function getListings(): Promise<ListingData[]> {
   const { data } = await api.get("/public/listings");
   return data;
 }

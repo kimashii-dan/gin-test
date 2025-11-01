@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { getListings } from "./api";
 
-import type { Listing } from "../../shared/types";
+import type { ListingData } from "../../shared/types";
 import { Button } from "../../shared/ui/button";
 import ListingComponent from "./ui/listing";
 import { useAuth } from "../../shared/core/auth";
 import { useState } from "react";
 import CreateListingForm from "./ui/create-listing-form";
 import SelectListingType from "./ui/select-listing-type";
-
-// import { listings } from "../../shared/core/mock";
+// import { filteredListings } from "../../shared/core/mock";
 
 export default function Home() {
-  const { data: listings } = useQuery({
+  const { data: listingsData } = useQuery({
     queryKey: ["listings"],
     queryFn: getListings,
   });
@@ -31,13 +30,13 @@ export default function Home() {
   const options = ["All", "Mine"];
 
   const filteredListings =
-    Array.isArray(listings) && listings
-      ? listings.filter((listing: Listing) => {
+    Array.isArray(listingsData) && listingsData
+      ? listingsData.filter((listingData: ListingData) => {
           if (listingType === "All") {
             return true;
           }
           if (listingType === "Mine") {
-            return listing.user_id === authData?.user?.id;
+            return listingData.listing.user_id === authData?.user?.id;
           }
 
           return true;
@@ -73,9 +72,13 @@ export default function Home() {
       </div>
       {isCreating && <CreateListingForm setIsCreating={setIsCreating} />}
 
-      <div className="grid grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-5 items-center justify-between">
-        {filteredListings.map((listing: Listing) => (
-          <ListingComponent key={listing.id} listing={listing} />
+      <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] gap-5 justify-start">
+        {filteredListings.map((listingData: ListingData) => (
+          <ListingComponent
+            key={listingData.listing.id}
+            listing={listingData.listing}
+            isInWishlist={listingData.is_in_wishlist}
+          />
         ))}
       </div>
     </section>
