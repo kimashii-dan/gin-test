@@ -1,12 +1,13 @@
 import { useState } from "react";
 import type { Listing } from "../../../../shared/types";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/20/solid";
+import styles from "../../styles.module.css";
 
 export default function ImageGallery({ listing }: { listing: Listing }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   return (
-    <div className="base:w-[45%] w-full flex flex-col gap-5 h-fit base:sticky base:top-30">
-      <div className="relative w-full aspect-square overflow-hidden rounded-xl">
+    <div className={styles.image_gallery}>
+      <div className={styles.image}>
         <img
           src={
             listing.image_urls &&
@@ -30,7 +31,7 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
               })
             }
           >
-            <ArrowLeftIcon className="size-8 text-gray-300 bg-black/60 rounded-full p-1" />
+            <ArrowLeftIcon className={styles.arrow} />
           </button>
         </div>
         <div className="absolute top-1/2 right-1">
@@ -45,20 +46,18 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
               });
             }}
           >
-            <ArrowRightIcon className="size-8 text-gray-300 bg-black/60 rounded-full p-1" />
+            <ArrowRightIcon className={styles.arrow} />
           </button>
         </div>
       </div>
 
-      <div className="flex w-full md:gap-3 gap-2">
+      <div className="flex w-full gap-2">
         {listing.image_urls &&
           listing.image_urls.length > 1 &&
           listing.image_urls.map((url, index) => (
             <div
               key={index}
-              className={`relative flex-1 aspect-square overflow-hidden rounded-lg cursor-pointer ${
-                index === currentIndex ? "" : ""
-              }`}
+              className={styles.image_nav}
               onClick={() => setCurrentIndex(index)}
             >
               <img

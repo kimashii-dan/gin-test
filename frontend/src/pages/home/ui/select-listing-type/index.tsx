@@ -1,20 +1,20 @@
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-
+import { Button } from "../../../../shared/ui/button";
+import { Card } from "../../../../shared/ui/card";
+import styles from "../../styles.module.css";
+import { useState } from "react";
 type SelectListingTypeProps = {
-  options: string[];
-  setIsOpen: (value: React.SetStateAction<boolean>) => void;
-  isOpen: boolean;
   setListingType: (value: React.SetStateAction<string>) => void;
   listingType: string;
 };
 
 export default function SelectListingType({
-  options,
-  setIsOpen,
-  isOpen,
   listingType,
   setListingType,
 }: SelectListingTypeProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const options = ["All", "Mine"];
+
   const handleTypeChange = (value: string) => {
     setListingType(value);
     setIsOpen(false);
@@ -23,9 +23,10 @@ export default function SelectListingType({
   return (
     <div className="w-30">
       <div className="relative">
-        <button
+        <Button
+          variant="secondary"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full shadow-base flex items-center justify-between px-4 py-2 bg-secondary text-secondary-foreground rounded-md"
+          className="w-full flex items-center justify-between"
         >
           <span>{listingType}</span>
           <ChevronDownIcon
@@ -33,22 +34,24 @@ export default function SelectListingType({
               isOpen ? "rotate-180" : ""
             }`}
           />
-        </button>
+        </Button>
 
         {isOpen && (
-          <div className="absolute flex flex-col gap-2 shadow-base top-full mt-2 w-full p-2 rounded-lg border border-border z-10 overflow-hidden bg-card">
+          <Card className="absolute flex-col gap-2 mt-2 w-full p-2 z-10">
             {options.map((option) => (
               <button
                 onClick={() => handleTypeChange(option)}
-                className={`w-full px-4 py-2 text-left flex items-center justify-between rounded-md hover:bg-muted ${
-                  listingType === option && "inset-shadow-medium"
-                }`}
+                className={
+                  listingType === option
+                    ? styles.button_active
+                    : styles.button_not_active
+                }
               >
                 <span>{option}</span>
                 {listingType === option && <CheckIcon className="size-5" />}
               </button>
             ))}
-          </div>
+          </Card>
         )}
       </div>
     </div>

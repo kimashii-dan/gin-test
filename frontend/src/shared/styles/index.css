@@ -21,11 +21,29 @@
 
   input,
   textarea {
-    @apply p-2 border-border border-1 rounded-md inset-shadow-soft;
+    @apply p-2 border-border border-1 font-normal rounded-md inset-shadow-soft;
   }
 
   input::placeholder,
   textarea::placeholder {
     @apply text-muted-foreground font-normal;
+  }
+}
+
+@layer utilities {
+  .page-layout {
+    @apply max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full py-5;
+  }
+
+  .cards {
+    @apply grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] gap-5 justify-start;
+  }
+
+  .page-title {
+    @apply text-5xl font-normal font-nice italic;
+  }
+
+  .field {
+    @apply flex flex-col items-start gap-2 w-full;
   }
 }

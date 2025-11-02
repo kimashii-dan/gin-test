@@ -5,6 +5,8 @@ import { useAuth } from "../../shared/core/auth";
 import MainInfo from "./ui/main-info";
 import DetailsInfo from "./ui/details-info";
 import ProfileEditing from "./ui/profile-editing";
+import ProfileSkeleton from "./skeleton";
+import ErrorScreen from "../../shared/ui/error-screen";
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -27,29 +29,16 @@ export default function Profile() {
   });
 
   if (isLoading) {
-    return (
-      <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full">
-        <div className="animate-pulse">
-          <div className="h-12 bg-card rounded mb-4"></div>
-          <div className="h-40 bg-card rounded"></div>
-        </div>
-      </div>
-    );
+    return <ProfileSkeleton />;
   }
 
   if (isError || !user) {
-    return (
-      <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full">
-        <h1 className="text-5xl font-semibold text-red-500">
-          Error loading profile
-        </h1>
-      </div>
-    );
+    return <ErrorScreen text={"Error loading user"} />;
   }
 
   return (
     <div className="max-w-11/12 md:max-w-10/12 flex flex-col gap-10 w-full py-5">
-      <h1 className="text-5xl font-normal font-nice italic">Profile</h1>
+      <h1 className="page-title">Profile</h1>
       <MainInfo
         setIsEditing={setIsEditing}
         queryClient={queryClient}

@@ -1,0 +1,17 @@
+@reference "../../shared/styles/index.css";
+
+.user_info {
+  @apply items-center flex-wrap lg:flex-col justify-center lg:w-fit w-full gap-8 relative p-5 lg:p-10;
+}
+
+.user_avatar {
+  @apply shadow-sm rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center;
+}
+
+.user_details {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-5 flex-1;
+}
+
+.user_detail {
+  @apply p-8 flex flex-col gap-2 items-start justify-center;
+}

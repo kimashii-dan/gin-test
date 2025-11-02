@@ -4,11 +4,25 @@ import { Button } from "../../../../shared/ui/button";
 import { Modal } from "../../../../shared/ui/modal";
 import { PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Card } from "../../../../shared/ui/card";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ServerError } from "../../../../shared/types";
 
 export default function AvatarUploader() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: uploadAvatar,
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+    },
+    onError: (error: ServerError) => {
+      console.log(error.response.data.error);
+    },
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -32,24 +46,17 @@ export default function AvatarUploader() {
     const formData = new FormData();
     formData.append("image", file);
 
-    try {
-      const data = await uploadAvatar(formData);
+    mutation.mutate(formData);
 
-      if (!data.ok) {
-        throw new Error(`Upload failed: ${data.statusText}`);
-      }
+    setFile(null);
+    setPreview(null);
 
-      console.log("Upload successful:", data);
-
-      if (preview) {
-        URL.revokeObjectURL(preview);
-      }
-    } catch (error) {
-      console.error("Upload error:", error);
+    if (preview) {
+      URL.revokeObjectURL(preview);
     }
   };
 
-  const handleClick = () => {
+  const handleChange = () => {
     if (!fileInputRef.current) {
       return;
     }
@@ -71,7 +78,7 @@ export default function AvatarUploader() {
         className="hidden"
         onChange={handleFileChange}
       />
-      <button className="w-fit" onClick={handleClick}>
+      <button className="w-fit" onClick={handleChange}>
         <PencilSquareIcon className="size-6" />
       </button>
 
@@ -115,7 +122,7 @@ export default function AvatarUploader() {
                 <Button
                   className="w-fit font-medium"
                   variant="secondary"
-                  onClick={handleClick}
+                  onClick={handleChange}
                 >
                   Change image
                 </Button>

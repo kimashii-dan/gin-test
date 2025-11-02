@@ -9,6 +9,7 @@ import { listingSchema } from "../../../../shared/core/schemas";
 import { createListing } from "../../api";
 import { Button } from "../../../../shared/ui/button";
 import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import styles from "../../styles.module.css";
 
 export default function CreateListingForm({
   setIsCreating,
@@ -25,6 +26,8 @@ export default function CreateListingForm({
     },
   });
 
+  const images = form.watch("images");
+
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: createListing,
@@ -39,10 +42,7 @@ export default function CreateListingForm({
   });
 
   async function onSubmit(data: z.infer<typeof listingSchema>) {
-    console.log(data);
-
     const formData = new FormData();
-
     formData.append("title", data.title);
     formData.append("description", data.description ?? "");
     formData.append("price", data.price.toString());
@@ -50,29 +50,47 @@ export default function CreateListingForm({
       formData.append("images[]", image);
     });
 
-    console.log(formData);
-
     mutation.mutate(formData);
-
     setIsCreating(false);
   }
-
-  const images = form.watch("images");
 
   function handleCancel() {
     form.reset();
     setIsCreating(false);
   }
 
+  function addImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (files) {
+      const currentImages = form.getValues("images") || [];
+      const newImages = [...currentImages, ...Array.from(files)];
+      form.setValue("images", newImages.slice(0, 3));
+    }
+  }
+
+  function dropImages(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+    const currentImages = form.getValues("images") || [];
+    const newImages = [...currentImages, ...files];
+    form.setValue("images", newImages.slice(0, 3));
+  }
+
+  function deleteImagePreview(index: number) {
+    const currentImages = form.getValues("images");
+    const filtered = currentImages.filter((_, i) => i !== index);
+    form.setValue("images", filtered);
+  }
+
   return (
-    <Modal>
-      <form
-        className="flex flex-col w-11/12 h-auto md:h-[80vh]"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <Card className="flex-col md:flex-row relative w-full h-full justify-between items-center gap-5 p-5">
-          <div className="flex flex-col gap-10 w-full h-full">
-            <label className="flex flex-col items-start gap-2 w-full">
+    <Modal className="items-start md:items-center">
+      <form className={styles.form} onSubmit={form.handleSubmit(onSubmit)}>
+        <Card className={styles.form_card}>
+          <div className="flex flex-col gap-10 w-full">
+            <label className="field">
               <span className="">Title</span>
               <input
                 className="w-full"
@@ -88,7 +106,7 @@ export default function CreateListingForm({
               </p>
             )}
 
-            <label className="flex flex-col items-start gap-2 w-full">
+            <label className="field">
               <span className="">Description</span>
               <textarea
                 className="w-full h-32"
@@ -104,7 +122,7 @@ export default function CreateListingForm({
               </p>
             )}
 
-            <label className="flex flex-col items-start gap-2 w-full">
+            <label className="field">
               <span className="">Price</span>
               <input
                 className="w-full"
@@ -122,21 +140,14 @@ export default function CreateListingForm({
             )}
           </div>
 
-          <div className="w-full h-full flex flex-col gap-5 md:justify-between">
-            <div className="flex flex-col gap-5 overflow-y-auto max-h-[500px]">
+          <div className={styles.image_upload}>
+            <div className={styles.image_input}>
               <input
                 id="images"
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => {
-                  const files = e.target.files;
-                  if (files) {
-                    const currentImages = form.getValues("images") || [];
-                    const newImages = [...currentImages, ...Array.from(files)];
-                    form.setValue("images", newImages.slice(0, 3));
-                  }
-                }}
+                onChange={addImage}
                 className="hidden w-full h-full"
               />
 
@@ -151,25 +162,17 @@ export default function CreateListingForm({
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const files = Array.from(e.dataTransfer.files).filter(
-                      (file) => file.type.startsWith("image/")
-                    );
-                    const currentImages = form.getValues("images") || [];
-                    const newImages = [...currentImages, ...files];
-                    form.setValue("images", newImages.slice(0, 3));
-                  }}
-                  className="flex flex-col inset-shadow-soft gap-2 items-center justify-center w-full h-32 border-2 border-border border-dashed rounded cursor-pointer"
+                  onDrop={dropImages}
+                  className={styles.image_upload_area}
                 >
-                  <p className="text-base text-muted-foreground font-medium">
+                  <p className="text-muted-foreground font-medium">
                     Click to upload or drag and drop
                   </p>
                 </label>
               </div>
+
               {form.formState.errors.images && (
-                <p className="text-destructive text-sm">
+                <p className="text-destructive">
                   {form.formState.errors.images.message}
                 </p>
               )}
@@ -180,21 +183,15 @@ export default function CreateListingForm({
                     <div key={index} className="relative">
                       <button
                         type="button"
-                        onClick={() => {
-                          const currentImages = form.getValues("images");
-                          const filtered = currentImages.filter(
-                            (_, i) => i !== index
-                          );
-                          form.setValue("images", filtered);
-                        }}
+                        onClick={() => deleteImagePreview(index)}
                         className="relative w-35 h-35"
                       >
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Preview ${index + 1}`}
-                          className="w-35 h-35 object-cover rounded-sm"
+                          className="w-full h-full object-cover rounded-md"
                         />
-                        <div className="absolute bg-black/50  inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+                        <div className={styles.image_preview_hover}>
                           <TrashIcon className="size-10 text-destructive" />
                         </div>
                       </button>
@@ -209,15 +206,17 @@ export default function CreateListingForm({
                 type="submit"
                 variant="primary"
                 disabled={mutation.isPending}
+                className=""
               >
                 Create
               </Button>
             </div>
           </div>
+
           <button
             type="button"
             onClick={handleCancel}
-            className="w-fit absolute top-2 right-2"
+            className={styles.button_cancel}
           >
             <XMarkIcon className="size-5" />
           </button>

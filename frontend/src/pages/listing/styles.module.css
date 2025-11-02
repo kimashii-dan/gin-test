@@ -1,0 +1,85 @@
+@reference "../../shared/styles/index.css";
+
+.page_listing {
+  @apply max-w-11/12 base:max-w-10/12 w-full flex flex-col base:flex-row gap-5 base:justify-between py-5;
+}
+
+.image_gallery {
+  @apply base:w-[48%] w-full flex flex-col gap-5 h-fit;
+}
+
+.image {
+  @apply relative w-full aspect-square overflow-hidden rounded-xl;
+}
+
+.arrow {
+  @apply size-8 text-gray-300 bg-black/60 rounded-full p-1;
+}
+
+.image_nav {
+  @apply relative flex-1 aspect-square overflow-hidden rounded-lg cursor-pointer;
+}
+
+.listing_details {
+  @apply base:w-[48%] w-full flex flex-col break-all gap-5 h-fit base:sticky base:top-30;
+}
+
+.listing_title {
+  @apply text-4xl font-nice italic font-medium;
+}
+
+.listing_price {
+  @apply text-3xl font-semibold text-highlight;
+}
+
+.listing_status_switch_sold {
+  @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors bg-destructive;
+}
+
+.listing_status_switch_available {
+  @apply relative inline-flex h-6 w-11 items-center rounded-full transition-colors bg-accent;
+}
+
+.listing_switch_pointer {
+  @apply inline-block h-4 w-4 transform rounded-full bg-white transition-transform;
+}
+
+.listing_status_sold {
+  @apply shadow-base w-fit px-2 py-1 text-sm font-semibold rounded-full bg-destructive text-destructive-foreground;
+}
+
+.listing_status_available {
+  @apply shadow-base w-fit px-2 py-1 text-sm font-semibold rounded-full bg-accent text-accent-foreground;
+}
+
+.listing_user_avatar {
+  @apply rounded-full shadow-sm w-full h-full bg-background text-foreground text-xl font-bold flex justify-center items-center;
+}
+
+.form {
+  @apply flex flex-col w-11/12 h-auto md:h-[80vh];
+}
+
+.form_card {
+  @apply flex-col md:flex-row relative h-full gap-5 p-5;
+}
+
+.image_upload {
+  @apply w-full flex flex-col gap-5 md:justify-between;
+}
+
+.image_input {
+  @apply flex flex-col gap-5 overflow-y-auto max-h-[500px];
+}
+
+.image_upload_area {
+  @apply flex flex-col inset-shadow-soft gap-2 items-center justify-center w-full h-32 border-2 border-border border-dashed rounded-md cursor-pointer;
+}
+
+.image_preview_hover {
+  @apply absolute bg-black/50  inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200;
+}
+
+.button_cancel {
+  @apply w-fit absolute top-2 right-2;
+}

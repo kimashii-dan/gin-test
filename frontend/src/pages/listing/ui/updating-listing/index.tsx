@@ -6,11 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Listing, ServerError } from "../../../../shared/types";
 import { updateListingSchema } from "../../../../shared/core/schemas";
-
 import { Button } from "../../../../shared/ui/button";
 import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { updateListing } from "../../api";
 import { useState } from "react";
+
+import styles from "../../styles.module.css";
 
 type UpdateListingFormProps = {
   setIsUpdating: (value: React.SetStateAction<boolean>) => void;
@@ -30,6 +31,8 @@ export default function UpdateListingForm({
       images: [],
     },
   });
+
+  const images = form.watch("images");
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -81,8 +84,6 @@ export default function UpdateListingForm({
     setIsUpdating(false);
   }
 
-  const images = form.watch("images");
-
   function handleCancel() {
     form.reset();
     setIsUpdating(false);
@@ -92,15 +93,37 @@ export default function UpdateListingForm({
     setExistingImages((prev) => prev.filter((existing) => existing !== url));
   }
 
+  function addImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (files) {
+      const currentImages = form.getValues("images") || [];
+      const newImages = [...currentImages, ...Array.from(files)];
+      form.setValue("images", newImages.slice(0, 3));
+    }
+  }
+
+  function dropImages(e: React.DragEvent<HTMLLabelElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+    const currentImages = form.getValues("images") || [];
+    const newImages = [...currentImages, ...files];
+    form.setValue("images", newImages.slice(0, 3));
+  }
+
+  function deleteImagePreview(index: number) {
+    const filtered = images?.filter((_, i) => i !== index);
+    form.setValue("images", filtered);
+  }
+
   return (
     <Modal className="items-start md:items-center">
-      <form
-        className="flex flex-col w-11/12 h-auto md:h-[80vh]"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <Card className="flex-col md:flex-row relative w-full h-full justify-between items-center gap-5 p-5">
-          <div className="flex flex-col gap-10 w-full h-full">
-            <label className="flex flex-col items-start gap-2 w-full">
+      <form className={styles.form} onSubmit={form.handleSubmit(onSubmit)}>
+        <Card className={styles.form_card}>
+          <div className="flex flex-col gap-10 w-full">
+            <label className="field">
               <span className="">Title</span>
               <input
                 className="w-full"
@@ -116,7 +139,7 @@ export default function UpdateListingForm({
               </p>
             )}
 
-            <label className="flex flex-col items-start gap-2 w-full">
+            <label className="field">
               <span className="">Description</span>
               <textarea
                 className="w-full h-32"
@@ -132,7 +155,7 @@ export default function UpdateListingForm({
               </p>
             )}
 
-            <label className="flex flex-col items-start gap-2 w-full">
+            <label className="field">
               <span className="">Price</span>
               <input
                 className="w-full"
@@ -150,21 +173,14 @@ export default function UpdateListingForm({
             )}
           </div>
 
-          <div className="w-full h-full flex flex-col gap-5 md:justify-between">
-            <div className="flex flex-col gap-5 overflow-y-auto max-h-[500px]">
+          <div className={styles.image_upload}>
+            <div className={styles.image_input}>
               <input
                 id="images"
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(e) => {
-                  const files = e.target.files;
-                  if (files) {
-                    const currentImages = form.getValues("images") || [];
-                    const newImages = [...currentImages, ...Array.from(files)];
-                    form.setValue("images", newImages.slice(0, 5));
-                  }
-                }}
+                onChange={addImage}
                 className="hidden w-full h-full"
               />
 
@@ -179,23 +195,15 @@ export default function UpdateListingForm({
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const files = Array.from(e.dataTransfer.files).filter(
-                      (file) => file.type.startsWith("image/")
-                    );
-                    const currentImages = form.getValues("images") || [];
-                    const newImages = [...currentImages, ...files];
-                    form.setValue("images", newImages.slice(0, 5));
-                  }}
-                  className="flex flex-col inset-shadow-soft gap-2 items-center justify-center w-full h-32 border-2 border-border border-dashed rounded cursor-pointer"
+                  onDrop={dropImages}
+                  className={styles.image_upload_area}
                 >
-                  <p className="text-base text-muted-foreground font-medium">
+                  <p className="text-muted-foreground font-medium">
                     Click to upload or drag and drop
                   </p>
                 </label>
               </div>
+
               {form.formState.errors.images && (
                 <p className="text-destructive text-sm">
                   {form.formState.errors.images.message}
@@ -215,34 +223,32 @@ export default function UpdateListingForm({
                         alt={`Existing ${index + 1}`}
                         className="w-35 h-35 object-cover rounded-sm"
                       />
-                      <div className="absolute bg-black/50 inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
+                      <div className={styles.image_preview_hover}>
                         <TrashIcon className="size-10 text-destructive" />
                       </div>
                     </button>
                   </div>
                 ))}
 
-                {images?.map((file, index) => (
-                  <div key={`new-${index}`} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const filtered = images.filter((_, i) => i !== index);
-                        form.setValue("images", filtered);
-                      }}
-                      className="relative w-35 h-35"
-                    >
-                      <img
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index + 1}`}
-                        className="w-35 h-35 object-cover rounded-sm"
-                      />
-                      <div className="absolute bg-black/50 inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-                        <TrashIcon className="size-10 text-destructive" />
-                      </div>
-                    </button>
-                  </div>
-                ))}
+                {images &&
+                  images.map((file, index) => (
+                    <div key={`new-${index}`} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => deleteImagePreview(index)}
+                        className="relative w-35 h-35"
+                      >
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`Preview ${index + 1}`}
+                          className="w-35 h-35 object-cover rounded-sm"
+                        />
+                        <div className={styles.image_preview_hover}>
+                          <TrashIcon className="size-10 text-destructive" />
+                        </div>
+                      </button>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -259,7 +265,7 @@ export default function UpdateListingForm({
           <button
             type="button"
             onClick={handleCancel}
-            className="w-fit absolute top-2 right-2"
+            className={styles.button_cancel}
           >
             <XMarkIcon className="size-5" />
           </button>

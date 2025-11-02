@@ -26,7 +26,7 @@ export default function Header() {
                 to="/wishlist"
                 className="flex flex-row items-center gap-2"
               >
-                <ShoppingCartIcon className="size-8 text-primary" />
+                <ShoppingCartIcon className="size-8 text-accent" />
               </NavLink>
               <NavLink to="/profile">
                 <UserCircleIcon className="size-10" />

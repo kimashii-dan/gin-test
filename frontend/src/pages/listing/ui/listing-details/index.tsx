@@ -20,6 +20,7 @@ import UpdateListingForm from "../updating-listing";
 import DeletingAlert from "../deleting-alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToWishlist, updateListing } from "../../api";
+import styles from "../../styles.module.css";
 
 export default function ListingDetails({
   listing,
@@ -40,7 +41,7 @@ export default function ListingDetails({
     onSuccess: (data) => {
       console.log(data);
       setIsUpdating(false);
-      queryClient.invalidateQueries({ queryKey: ["listing"] });
+      queryClient.invalidateQueries({ queryKey: ["listing", listing.id] });
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
@@ -51,7 +52,7 @@ export default function ListingDetails({
     mutationFn: addToWishlist,
     onSuccess: (data) => {
       console.log(data);
-      queryClient.invalidateQueries({ queryKey: ["listing"] });
+      queryClient.invalidateQueries({ queryKey: ["listing", listing.id] });
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
@@ -98,11 +99,11 @@ export default function ListingDetails({
   }
 
   return (
-    <div className="base:w-[45%] w-full flex flex-col break-all gap-5">
+    <div className={styles.listing_details}>
       {listing.user?.id === authData?.user.id && (
         <div className="flex gap-5 items-center">
           <Button
-            className="flex-1 font-semibold flex justify-center items-center gap-1"
+            className="flex-1 flex justify-center gap-1 items-center font-medium"
             variant="primary"
             onClick={handleUpdate}
           >
@@ -110,7 +111,7 @@ export default function ListingDetails({
             <span>Update</span>
           </Button>
           <Button
-            className="flex-1 font-semibold flex justify-center gap-1 items-center"
+            className="flex-1 flex justify-center gap-1 items-center font-medium"
             variant="danger"
             onClick={handleDelete}
           >
@@ -130,63 +131,60 @@ export default function ListingDetails({
 
       <Card className="p-8 flex-col">
         <div className="flex flex-col gap-8">
-          <h1 className="text-4xl font-nice italic font-medium">
-            {listing.title}
-          </h1>
-          <h2 className="text-3xl font-semibold text-highlight">
-            ${listing.price}
-          </h2>
+          <h1 className={styles.listing_title}>{listing.title}</h1>
+
+          <h2 className={styles.listing_price}>${listing.price}</h2>
+
           <div className="flex justify-between items-center">
             {listing.user?.id === authData?.user.id ? (
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-sm font-medium ${
-                      listing.is_closed
-                        ? "text-muted-foreground"
-                        : "text-accent"
-                    }`}
-                  >
-                    Available
-                  </span>
+              <div className="flex justify-between items-center gap-2">
+                <span
+                  className={`text-sm font-medium ${
+                    listing.is_closed ? "text-muted-foreground" : "text-accent"
+                  }`}
+                >
+                  Available
+                </span>
 
-                  <button
-                    onClick={handleToggleStatus}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      listing.is_closed ? "bg-destructive" : "bg-accent"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        listing.is_closed ? "translate-x-6" : "translate-x-1"
-                      }`}
-                    />
-                  </button>
-
+                <button
+                  onClick={handleToggleStatus}
+                  className={
+                    listing.is_closed
+                      ? styles.listing_status_switch_sold
+                      : styles.listing_status_switch_available
+                  }
+                >
                   <span
-                    className={`text-sm font-medium ${
-                      listing.is_closed
-                        ? "text-destructive"
-                        : "text-muted-foreground"
+                    className={`${styles.listing_switch_pointer} ${
+                      listing.is_closed ? "translate-x-6" : "translate-x-1"
                     }`}
-                  >
-                    Sold
-                  </span>
-                </div>
+                  />
+                </button>
+
+                <span
+                  className={`text-sm font-medium ${
+                    listing.is_closed
+                      ? "text-destructive"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  Sold
+                </span>
               </div>
             ) : (
               <div className="flex justify-between">
                 <div
-                  className={`shadow-base w-fit px-2 py-1 text-sm font-semibold rounded-full ${
+                  className={
                     listing.is_closed
-                      ? "bg-destructive text-destructive-foreground"
-                      : "bg-accent text-accent-foreground"
-                  }`}
+                      ? styles.listing_status_sold
+                      : styles.listing_status_available
+                  }
                 >
                   {listing.is_closed ? "Sold" : "Available"}
                 </div>
               </div>
             )}
+
             {isAuthenticated && (
               <button
                 onClick={handleAddToWishList}
@@ -203,18 +201,18 @@ export default function ListingDetails({
 
           <div className="flex flex-col gap-2">
             <p className="text-xl font-medium">Description</p>
-            <p className="text-base font-normal text-muted-foreground">
+            <p className="font-normal text-muted-foreground">
               {listing.description}
             </p>
           </div>
 
-          <hr />
+          <hr className="border border-border" />
 
           <Link
             to={`/users/${listing.user?.id}`}
             className="flex items-center w-fit gap-5"
           >
-            <div className="w-15 h-15 relative aspect-square  ">
+            <div className="w-15 h-15 relative aspect-square">
               {listing.user?.avatar_url ? (
                 <img
                   className="w-full h-full rounded-full object-cover"
@@ -222,11 +220,12 @@ export default function ListingDetails({
                   alt=""
                 />
               ) : (
-                <div className="rounded-full shadow-sm w-full h-full bg-background text-foreground text-xl font-bold flex justify-center items-center">
+                <div className={styles.listing_user_avatar}>
                   {listing.user?.email[0].toUpperCase()}
                 </div>
               )}
             </div>
+
             <div className="flex flex-col justify-between">
               <p className="text-lg font-medium">{listing.user?.email}</p>
               <p className="text-base font-normal text-muted-foreground">
@@ -243,7 +242,7 @@ export default function ListingDetails({
                 onClick={handleContact}
               >
                 <TelegramLogo width={25} height={25} />
-                <p className="font-semibold text-base">Contact via Telegram</p>
+                <span className="">Contact via Telegram</span>
               </Button>
             ) : (
               <Button
@@ -251,8 +250,8 @@ export default function ListingDetails({
                 className="flex items-center justify-center gap-2 flex-1"
                 onClick={handleContact}
               >
-                <EnvelopeIcon className="size-5" />
-                <p className="font-semibold text-base">Contact via Email</p>
+                <EnvelopeIcon className="size-5 text-secondary" />
+                <span className="">Contact via Email</span>
               </Button>
             )}
 
@@ -262,19 +261,18 @@ export default function ListingDetails({
               onClick={handleShare}
             >
               <ShareIcon className="size-5 text-primary" />
-              <p className="font-semibold text-base">Share</p>
+              <span className="">Share</span>
             </Button>
           </div>
 
-          <hr />
+          <hr className="border border-border" />
+
           <div className="flex flex-col md:flex-row justify-between md:items-center gap-5">
             <div className="flex items-center w-fit gap-2">
               <AcademicCapIcon className="size-8 text-muted-foreground" />
               <div className="flex flex-col">
-                <p className="text-base font-normal text-muted-foreground">
-                  University
-                </p>
-                <p className="text-base font-medium">
+                <p className="font-normal text-muted-foreground">University</p>
+                <p className="font-medium">
                   {listing.user?.university === ""
                     ? "Unknown"
                     : listing.user?.university}
@@ -285,10 +283,8 @@ export default function ListingDetails({
             <div className="flex items-center w-fit gap-2">
               <CalendarDaysIcon className="size-8 text-muted-foreground" />
               <div className="flex flex-col">
-                <p className="text-base font-normal text-muted-foreground">
-                  Posted
-                </p>
-                <p className="text-base font-medium">
+                <p className="font-normal text-muted-foreground">Posted</p>
+                <p className="font-medium">
                   {formatDateTime(listing.created_at)}
                 </p>
               </div>

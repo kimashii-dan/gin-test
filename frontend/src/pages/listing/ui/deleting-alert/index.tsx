@@ -38,7 +38,7 @@ export default function DeletingAlert({
 
   return (
     <Modal className="items-center">
-      <Card className="p-10 flex-col gap-5">
+      <Card className="p-5 md:p-10 flex-col gap-5 m-5">
         <p className="text-lg font-medium">
           Do you really want to delete this beautiful listing?
         </p>

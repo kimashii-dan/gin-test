@@ -43,26 +43,24 @@ export default function MainInfo({
   return (
     <Card className="items-center flex-wrap justify-center md:justify-between gap-8 relative p-5 md:p-10">
       <div className="w-40 h-40 relative">
-        {/* {auth.user?.avatar_url ? (
-            <img
-              className="w-full h-full rounded-full object-cover"
-              src={auth.user?.avatar_url}
-              alt=""
-            />
-          ) : (
-            <div className="rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
-              <>{auth.user?.email[0].toUpperCase()}</>
-            </div>
-          )} */}
-        <div className="rounded-full shadow-sm w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
-          <>{user?.email[0].toUpperCase()}</>
-        </div>
+        {user.avatar_url ? (
+          <img
+            className="w-full h-full rounded-full object-cover"
+            src={user.avatar_url}
+            alt=""
+          />
+        ) : (
+          <div className="rounded-full w-full h-full bg-background text-foreground text-5xl font-bold flex justify-center items-center">
+            <>{user.email[0].toUpperCase()}</>
+          </div>
+        )}
+
         <AvatarUploader />
       </div>
       <div className="flex flex-col justify-center gap-2">
         <p className="text-2xl font-semibold text-center">{user?.name}</p>
         <p className="text-muted-foreground">
-          Joined: {new Date(user?.created_at ?? "").toLocaleDateString()}
+          Joined: {new Date(user.created_at ?? "").toLocaleDateString()}
         </p>
       </div>
       <div className="flex flex-row md:flex-col gap-5 justify-center">
