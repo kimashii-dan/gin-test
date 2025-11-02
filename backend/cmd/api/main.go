@@ -4,6 +4,7 @@ import (
 	"gin-backend/internal/database"
 	"gin-backend/internal/handlers"
 	"gin-backend/internal/middleware"
+	"gin-backend/internal/services"
 	"log"
 	"time"
 
@@ -20,6 +21,7 @@ func main() {
 
 	database.Connect()
 	database.InitR2()
+	services.InitGemini()
 
 	router := gin.Default()
 
@@ -75,6 +77,12 @@ func main() {
 			user := public.Group("/users")
 			user.GET("/:id", middleware.OptionalAuth(), handlers.GetUserWithListing)
 		}
+	}
+
+	{
+		ai := router.Group("/ai", middleware.CheckAuth())
+		ai.GET("/health-check", handlers.HealthCheckGemini)
+		ai.POST("/suggest-price", handlers.PredictPrice)
 	}
 
 	router.Run(":8080")
