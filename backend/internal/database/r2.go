@@ -14,7 +14,7 @@ import (
 
 var S3Client *s3.Client
 
-func InitR2(){
+func InitR2() {
 	accountID := os.Getenv("R2_ACCOUNT_ID")
 	accessKeyID := os.Getenv("R2_ACCESS_KEY_ID")
 	secretAccessKey := os.Getenv("R2_SECRET_ACCESS_KEY")
@@ -24,13 +24,13 @@ func InitR2(){
 		config.WithRegion("auto"),
 	)
 
-    if err != nil {
-    	log.Fatal(err)
-  	}
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
-      o.BaseEndpoint = aws.String(fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID))
-  	})
+		o.BaseEndpoint = aws.String(fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID))
+	})
 
 	S3Client = client
 }

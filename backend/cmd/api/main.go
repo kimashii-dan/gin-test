@@ -82,7 +82,7 @@ func main() {
 	{
 		ai := router.Group("/ai", middleware.CheckAuth())
 		ai.GET("/health-check", handlers.HealthCheckGemini)
-		ai.POST("/suggest-price", handlers.PredictPrice)
+		ai.POST("/suggest-price", handlers.SuggestPrice)
 	}
 
 	router.Run(":8080")

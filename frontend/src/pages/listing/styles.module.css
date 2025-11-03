@@ -5,7 +5,7 @@
 }
 
 .image_gallery {
-  @apply base:w-[48%] w-full flex flex-col gap-5 h-fit;
+  @apply base:w-[48%] w-full flex flex-col gap-5 h-fit base:sticky base:top-30;
 }
 
 .image {
@@ -21,7 +21,7 @@
 }
 
 .listing_details {
-  @apply base:w-[48%] w-full flex flex-col break-all gap-5 h-fit base:sticky base:top-30;
+  @apply base:w-[48%] w-full flex flex-col break-all gap-5 h-fit;
 }
 
 .listing_title {

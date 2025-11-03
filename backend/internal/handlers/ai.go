@@ -17,23 +17,22 @@ import (
 	"google.golang.org/genai"
 )
 
-type PricePredictionRequest struct {
+type PriceSuggestionRequest struct {
 	Title       string                  `form:"title" binding:"required"`
 	Description string                  `form:"description" binding:"required"`
 	Images      []*multipart.FileHeader `form:"images[]" binding:"required"`
+	// ImageUrls   []string                `form:"image_urls[]"`
 }
 
-type PricePredictionResponse struct {
-	SuggestedPriceMin   float64 `json:"suggested_price_min"`
-	SuggestedPriceMax   float64 `json:"suggested_price_max"`
-	Currency            string  `json:"currency"`
-	ConfidenceLevel     string  `json:"confidence_level"`
-	Reasoning           string  `json:"reasoning"`
-	Category            string  `json:"category"`
-	ConditionAssessment string  `json:"condition_assessment"`
+type PriceSuggestionResponse struct {
+	SuggestedPriceMin float64 `json:"suggested_price_min"`
+	SuggestedPriceMax float64 `json:"suggested_price_max"`
+	ConfidenceLevel   string  `json:"confidence_level"`
+	Currency          string  `json:"currency"`
+	Reasoning         string  `json:"reasoning"`
 }
 
-func PredictPrice(c *gin.Context) {
+func SuggestPrice(c *gin.Context) {
 	// check if user is authenticated
 	_, exists := c.Get("user")
 	if !exists {
@@ -44,7 +43,7 @@ func PredictPrice(c *gin.Context) {
 	}
 
 	// bind body
-	var body PricePredictionRequest
+	var body PriceSuggestionRequest
 	if err := c.ShouldBindWith(&body, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -69,21 +68,20 @@ func PredictPrice(c *gin.Context) {
 			Title: %s
 			Description: %s
 
-			Based on the images provided and the description, please:
-			1. Identify the category/type of item
-			2. Assess the condition and quality from the images
-			3. Consider market demand and comparable items
-			4. Provide a price range with justification
+			Based on the images provided and the description, please perform a brief and highly targeted analysis.
 
-			Please respond in JSON format:
+			1. Assess the condition and quality (implied from images/description).
+			2. Consider market demand and prices of comparable items.
+			3. Provide a price range with justification.
+
+			Please respond **strictly in JSON format**. Ensure the output is **maximal clarity with short length**.
+
 			{
-				"suggested_price_min": <number>,
-				"suggested_price_max": <number>,
-				"currency": "USD",
-				"confidence_level": "<high|medium|low>",
-				"reasoning": "<explanation of pricing factors>",
-				"category": "<detected item category>",
-				"condition_assessment": "<condition based on images>"
+				"suggested_price_min": "<The lowest fair selling price as a numeric value.>",
+				"suggested_price_max": "<The highest fair selling price as a numeric value.>",
+				"currency": "<The currency used for the prices (e.g., USD).>",
+				"confidence_level": "<Assessment of prediction certainty: 'high' (complete information, clear comps), 'medium' (average information), or 'low' (missing images/details, volatile market).>",
+				"reasoning": "<A single, concise sentence (max 50 words) summarizing the 2-3 **primary factors** that directly drove the suggested price range.>"
 			}`,
 			body.Title, body.Description)},
 	}
@@ -144,13 +142,15 @@ func PredictPrice(c *gin.Context) {
 	}
 
 	// bind content into response
-	var prediction PricePredictionResponse
-	if err := json.Unmarshal([]byte(responseText), &prediction); err != nil {
+	var pricePredictionResponse PriceSuggestionResponse
+	if err := json.Unmarshal([]byte(responseText), &pricePredictionResponse); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse AI response"})
 		return
 	}
 
-	c.JSON(http.StatusOK, prediction)
+	log.Println(pricePredictionResponse)
+
+	c.JSON(http.StatusOK, pricePredictionResponse)
 }
 
 func HealthCheckGemini(c *gin.Context) {

@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -24,4 +25,5 @@ func InitGemini() {
 	}
 
 	AI = client
+	fmt.Println("Gemini initialized successfully")
 }

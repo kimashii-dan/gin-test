@@ -6,6 +6,8 @@ import {
   TrashIcon,
   ArrowPathIcon,
   HeartIcon,
+  LightBulbIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { formatDate } from "../../../../shared/helpers/formatDate";
 import { formatDateTime } from "../../../../shared/helpers/formatDateTime";
@@ -21,6 +23,7 @@ import DeletingAlert from "../deleting-alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToWishlist, updateListing } from "../../api";
 import styles from "../../styles.module.css";
+import { getAIPRiceReport } from "../../../home/api";
 
 export default function ListingDetails({
   listing,
@@ -50,6 +53,17 @@ export default function ListingDetails({
 
   const likeMutation = useMutation({
     mutationFn: addToWishlist,
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.invalidateQueries({ queryKey: ["listing", listing.id] });
+    },
+    onError: (error: ServerError) => {
+      console.log(error.response.data.error);
+    },
+  });
+
+  const aiMutation = useMutation({
+    mutationFn: getAIPRiceReport,
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries({ queryKey: ["listing", listing.id] });
@@ -98,6 +112,23 @@ export default function ListingDetails({
     likeMutation.mutate(id);
   }
 
+  const map = new Map<string, string>([
+    ["low", "bg-gray-300"],
+    ["medium", "bg-orange-400"],
+    ["high", "bg-green-400"],
+  ]);
+
+  function askAI() {
+    const formData = new FormData();
+    formData.append("title", listing.title);
+    formData.append("description", listing.description ?? "");
+    listing.image_urls.forEach((image) => {
+      formData.append("images[]", image);
+    });
+
+    // aiMutation.mutate(formData);
+  }
+
   return (
     <div className={styles.listing_details}>
       {listing.user?.id === authData?.user.id && (
@@ -133,7 +164,21 @@ export default function ListingDetails({
         <div className="flex flex-col gap-8">
           <h1 className={styles.listing_title}>{listing.title}</h1>
 
-          <h2 className={styles.listing_price}>${listing.price}</h2>
+          <div className="flex justify-between items-center">
+            <h2 className={styles.listing_price}>${listing.price}</h2>
+            {!listing.ai_price_report &&
+              listing.user_id === authData?.user.id && (
+                <Button
+                  onClick={askAI}
+                  type="button"
+                  variant="secondary"
+                  className="flex gap-2 items-center w-fit"
+                >
+                  <SparklesIcon className="size-6 text-yellow-300" />
+                  <span>Get AI suggestion</span>
+                </Button>
+              )}
+          </div>
 
           <div className="flex justify-between items-center">
             {listing.user?.id === authData?.user.id ? (
@@ -292,6 +337,42 @@ export default function ListingDetails({
           </div>
         </div>
       </Card>
+
+      {listing.ai_price_report && (
+        <Card className="flex-col p-8 gap-6">
+          <div className="flex lg:flex-row flex-col justify-between gap-5 lg:items-center">
+            <div className="flex items-center gap-2">
+              <LightBulbIcon className="text-yellow-400 size-7" />
+              <h2 className="text-xl text-card-foreground font-medium">
+                AI Price Suggestion
+              </h2>
+            </div>
+
+            <p
+              className={`${map.get(
+                listing.ai_price_report.confidence_level
+              )} shadow-sm px-3 p-0.5 text-sm w-fit font-semibold rounded-full text-black`}
+            >
+              {listing.ai_price_report.confidence_level} confidence
+            </p>
+          </div>
+
+          <div className="flex items-baseline gap-3">
+            <p className="text-4xl text-highlight font-semibold">
+              {listing.ai_price_report.suggested_price_min} -{" "}
+              {listing.ai_price_report.suggested_price_max}
+            </p>
+            <p className="text-xl text-muted-foreground font-medium">
+              {listing.ai_price_report.currency}
+            </p>
+          </div>
+
+          <hr className="border border-border" />
+          <p className="text-base font-normal text-muted-foreground leading-relaxed">
+            {listing.ai_price_report.reasoning}
+          </p>
+        </Card>
+      )}
     </div>
   );
 }

@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS ai_price_reports CASCADE;

@@ -1,4 +1,4 @@
-import type { ListingData } from "../types";
+import type { ListingData, PriceSuggestionResponse } from "../types";
 
 export const filteredListings: ListingData[] = [
   {
@@ -132,4 +132,13 @@ export const listingData: ListingData = {
     },
   },
   is_in_wishlist: true,
+};
+
+export const reportData: PriceSuggestionResponse = {
+  suggested_price_min: 320,
+  suggested_price_max: 580,
+  confidence_level: "high",
+  currency: "USD",
+  reasoning:
+    "The premium full-grain cowhide, reinforced stitching, and classic biker aesthetic indicate a high-quality, durable jacket. The price range reflects its new condition and superior materials, balanced against potential lack of explicit brand recognition.",
 };

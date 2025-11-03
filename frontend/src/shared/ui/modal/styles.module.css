@@ -1,5 +1,5 @@
 @reference "../../styles/index.css";
 
 .base {
-  @apply overflow-y-auto py-6 fixed inset-0 flex justify-center bg-black/50 backdrop-blur-sm z-50;
+  @apply overflow-y-auto py-6 h-auto fixed inset-0 flex justify-center bg-black/50 backdrop-blur-sm z-50;
 }

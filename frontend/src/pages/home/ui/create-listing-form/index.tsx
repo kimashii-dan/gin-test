@@ -4,12 +4,22 @@ import { Modal } from "../../../../shared/ui/modal";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ServerError } from "../../../../shared/types";
+import type {
+  PriceSuggestionResponse,
+  ServerError,
+} from "../../../../shared/types";
 import { listingSchema } from "../../../../shared/core/schemas";
-import { createListing } from "../../api";
+import { createListing, getAIPRiceReport } from "../../api";
 import { Button } from "../../../../shared/ui/button";
-import { TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  LightBulbIcon,
+  SparklesIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import styles from "../../styles.module.css";
+import { useState } from "react";
+// import { reportData } from "../../../../shared/core/mock";
 
 export default function CreateListingForm({
   setIsCreating,
@@ -27,9 +37,9 @@ export default function CreateListingForm({
   });
 
   const images = form.watch("images");
-
+  const [report, setReport] = useState<PriceSuggestionResponse | null>(null);
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: createListing,
     onSuccess: (data) => {
       console.log(data);
@@ -38,24 +48,44 @@ export default function CreateListingForm({
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
+      setReport(null);
+    },
+  });
+
+  const aiMutation = useMutation({
+    mutationFn: getAIPRiceReport,
+    onSuccess: (data) => {
+      console.log(data);
+      setReport(data);
+    },
+    onError: (error: ServerError) => {
+      console.log(error.response.data.error);
     },
   });
 
   async function onSubmit(data: z.infer<typeof listingSchema>) {
+    const reportString = JSON.stringify(report);
+
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description ?? "");
     formData.append("price", data.price.toString());
+    formData.append("price_suggestion", reportString);
     data.images.forEach((image) => {
       formData.append("images[]", image);
     });
 
-    mutation.mutate(formData);
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    createMutation.mutate(formData);
     setIsCreating(false);
   }
 
   function handleCancel() {
     form.reset();
+    setReport(null);
     setIsCreating(false);
   }
 
@@ -85,8 +115,28 @@ export default function CreateListingForm({
     form.setValue("images", filtered);
   }
 
+  function askAI() {
+    const title = form.watch("title");
+    const description = form.watch("description");
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description ?? "");
+    images.forEach((image) => {
+      formData.append("images[]", image);
+    });
+
+    aiMutation.mutate(formData);
+  }
+
+  const map = new Map<string, string>([
+    ["low", "bg-gray-300"],
+    ["medium", "bg-orange-400"],
+    ["high", "bg-green-400"],
+  ]);
+
   return (
-    <Modal className="items-start md:items-center">
+    <Modal className="items-start">
       <form className={styles.form} onSubmit={form.handleSubmit(onSubmit)}>
         <Card className={styles.form_card}>
           <div className="flex flex-col gap-10 w-full">
@@ -137,6 +187,79 @@ export default function CreateListingForm({
               <p className="text-destructive">
                 {form.formState.errors.price.message}
               </p>
+            )}
+
+            <Button
+              onClick={askAI}
+              type="button"
+              className="flex gap-2 items-center w-fit"
+              disabled={!!report || aiMutation.isPending}
+            >
+              <SparklesIcon className="size-6 text-yellow-300" />
+              <span>
+                {aiMutation.isPending
+                  ? "Getting suggestion..."
+                  : "Get AI suggestion"}
+              </span>
+            </Button>
+
+            {aiMutation.isPending && (
+              <Card className="flex-col p-8 gap-6 animate-pulse">
+                <div className="flex lg:flex-row flex-col justify-between gap-5 lg:items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 bg-muted rounded"></div>
+                    <div className="h-6 bg-muted rounded w-40"></div>
+                  </div>
+                  <div className="h-6 bg-muted rounded-full w-24"></div>
+                </div>
+
+                <div className="flex items-baseline gap-3">
+                  <div className="h-12 bg-muted rounded w-32"></div>
+                  <div className="h-8 bg-muted rounded w-12"></div>
+                </div>
+
+                <hr className="border border-border" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-muted rounded w-full"></div>
+                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-4 bg-muted rounded w-5/6"></div>
+                </div>
+              </Card>
+            )}
+
+            {report && (
+              <Card className="flex-col p-8 gap-6">
+                <div className="flex lg:flex-row flex-col justify-between gap-5 lg:items-center">
+                  <div className="flex items-center gap-2">
+                    <LightBulbIcon className="text-yellow-400 size-7" />
+                    <h2 className="text-xl text-card-foreground font-medium">
+                      AI Price Suggestion
+                    </h2>
+                  </div>
+
+                  <p
+                    className={`${map.get(
+                      report.confidence_level
+                    )} shadow-sm px-3 p-0.5 text-sm w-fit font-semibold rounded-full text-black`}
+                  >
+                    {report.confidence_level} confidence
+                  </p>
+                </div>
+
+                <div className="flex items-baseline gap-3">
+                  <p className="text-4xl text-highlight font-semibold">
+                    {report.suggested_price_min} - {report.suggested_price_max}
+                  </p>
+                  <p className="text-xl text-muted-foreground font-medium">
+                    {report.currency}
+                  </p>
+                </div>
+
+                <hr className="border border-border" />
+                <p className="text-base font-normal text-muted-foreground leading-relaxed">
+                  {report.reasoning}
+                </p>
+              </Card>
             )}
           </div>
 
@@ -205,7 +328,7 @@ export default function CreateListingForm({
               <Button
                 type="submit"
                 variant="primary"
-                disabled={mutation.isPending}
+                disabled={createMutation.isPending}
                 className=""
               >
                 Create

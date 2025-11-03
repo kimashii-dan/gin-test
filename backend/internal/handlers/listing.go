@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"gin-backend/internal/database"
 	"gin-backend/internal/models"
@@ -15,10 +17,11 @@ import (
 )
 
 type CreateListingDTO struct {
-	Title       string                  `form:"title" binding:"required"`
-	Description string                  `form:"description"`
-	Price       float64                 `form:"price"`
-	Images      []*multipart.FileHeader `form:"images[]"`
+	Title           string                  `form:"title" binding:"required"`
+	Description     string                  `form:"description"`
+	Price           float64                 `form:"price"`
+	Images          []*multipart.FileHeader `form:"images[]"`
+	PriceSuggestion string                  `form:"price_suggestion"`
 }
 
 func CreateListing(c *gin.Context) {
@@ -38,12 +41,23 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
+	// bind request body
 	var body CreateListingDTO
-
 	if err := c.ShouldBindWith(&body, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// convert JSON string into struct
+	var priceSuggestion *PriceSuggestionResponse
+	if body.PriceSuggestion != "" {
+		if err := json.Unmarshal([]byte(body.PriceSuggestion), &priceSuggestion); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid price suggestion format"})
+			return
+		}
+	}
+
+	log.Printf("Here's the price suggestion: %+v", priceSuggestion)
 
 	log.Printf("Here's the body: %+v", body)
 
@@ -63,6 +77,14 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
+	// transaction
+	tx := database.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
 	listing := models.Listing{
 		Title:       body.Title,
 		Description: body.Description,
@@ -70,31 +92,54 @@ func CreateListing(c *gin.Context) {
 		IsClosed:    false,
 		UserID:      user.ID,
 	}
-
-	// create listing in db
-	if err := database.DB.Create(&listing).Error; err != nil {
+	if err := tx.Create(&listing).Error; err != nil {
+		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create listing"})
 		return
 	}
 
+	// price suggesiton might not be in the body
+	if body.PriceSuggestion != "" {
+		aiPriceReport := models.AIPriceReport{
+			SuggestedPriceMin: priceSuggestion.SuggestedPriceMin,
+			SuggestedPriceMax: priceSuggestion.SuggestedPriceMax,
+			Currency:          priceSuggestion.Currency,
+			ConfidenceLevel:   priceSuggestion.ConfidenceLevel,
+			Reasoning:         priceSuggestion.Reasoning,
+			ListingID:         listing.ID,
+		}
+
+		if err := tx.Create(&aiPriceReport).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create listing"})
+			return
+		}
+	}
+
+	var imageURLs []string
 	if len(body.Images) > 0 {
-		// upload listing images to r2
-		imageURLs, err := services.UploadImages(c.Request.Context(), body.Images, &user, "listings")
+		var err error
+
+		// upload images to r2
+		imageURLs, err = services.UploadImages(c.Request.Context(), body.Images, &user, "listings")
 		if err != nil {
+			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		for _, value := range imageURLs {
-			log.Printf("Here's url: %s", value)
-		}
-
-		// save listing images ind db
 		listing.ImageURLs = imageURLs
-		if err := database.DB.Save(&listing).Error; err != nil {
+		if err := tx.Save(&listing).Error; err != nil {
+			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing with images"})
 			return
 		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create listing"})
+		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
@@ -210,6 +255,14 @@ func UpdateListing(c *gin.Context) {
 		}
 	}
 
+	// trasaction
+	tx := database.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
 	// assign input to entity
 	if body.Title != nil {
 		listing.Title = *body.Title
@@ -228,12 +281,14 @@ func UpdateListing(c *gin.Context) {
 	}
 
 	// save listing to db
-	if err := database.DB.Save(&listing).Error; err != nil {
+	if err := tx.Save(&listing).Error; err != nil {
+		tx.Rollback()
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing"})
 		return
 	}
 
 	if body.KeptImages != nil || body.NewImages != nil {
+
 		kept := make(map[string]bool)
 		for _, k := range body.KeptImages {
 			kept[k] = true
@@ -252,6 +307,7 @@ func UpdateListing(c *gin.Context) {
 		if len(body.NewImages) > 0 {
 			urls, err := services.UploadImages(c.Request.Context(), body.NewImages, &user, "listings")
 			if err != nil {
+				tx.Rollback()
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				return
 			}
@@ -260,17 +316,28 @@ func UpdateListing(c *gin.Context) {
 
 		// save images to db
 		listing.ImageURLs = append(body.KeptImages, newImageURLs...)
-		if err := database.DB.Save(&listing).Error; err != nil {
+		if err := tx.Save(&listing).Error; err != nil {
+			tx.Rollback()
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing images"})
 			return
 		}
 
-		// delete images from r2
-		for _, imgURL := range imagesToDelete {
-			if err := services.DeleteImageByURL(c.Request.Context(), imgURL); err != nil {
-				fmt.Printf("warning: failed to delete old image %s: %v\n", imgURL, err)
-			}
+		if len(imagesToDelete) > 0 {
+			go func() {
+				for _, imgURL := range imagesToDelete {
+					if err := services.DeleteImageByURL(context.Background(), imgURL); err != nil {
+						log.Printf("warning: failed to delete old image %s: %v", imgURL, err)
+					}
+				}
+			}()
 		}
+
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update listing"})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

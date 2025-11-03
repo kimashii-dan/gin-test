@@ -59,13 +59,25 @@ func GetListing(c *gin.Context) {
 	userAny, userExists := c.Get("user")
 
 	var listing models.Listing
-	err := database.DB.
-		Preload("User").
-		First(&listing, "id = ?", listingID).Error
+	query := database.DB.Preload("User")
+
+	err := query.First(&listing, "id = ?", listingID).Error
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
 		return
+	}
+
+	if userExists {
+		user := userAny.(models.User)
+		if listing.UserID == user.ID {
+			query = database.DB.Preload("User").Preload("AIPriceReport")
+			err = query.First(&listing, "id = ?", listingID).Error
+			if err != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
+				return
+			}
+		}
 	}
 
 	isInWishlist := false
