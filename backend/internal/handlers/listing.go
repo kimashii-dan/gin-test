@@ -57,10 +57,6 @@ func CreateListing(c *gin.Context) {
 		}
 	}
 
-	log.Printf("Here's the price suggestion: %+v", priceSuggestion)
-
-	log.Printf("Here's the body: %+v", body)
-
 	// validate input data
 	if strings.TrimSpace(body.Title) == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Title cannot be empty"})
@@ -476,4 +472,74 @@ func GetListingsFromWishlist(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, listings)
+}
+
+func CreateAIReport(c *gin.Context) {
+	userAny, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"error": "User not found in context",
+		})
+		return
+	}
+
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": "Invalid user type",
+		})
+		return
+	}
+
+	// check if listing exists and is owned by user
+	listingID := c.Param("id")
+	var listing models.Listing
+	if err := database.DB.First(&listing, "id = ? AND user_id = ?", listingID, user.ID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Listing not found"})
+		return
+	}
+
+	ctx := c.Request.Context()
+
+	// bind body
+	var body PriceSuggestionRequest
+	if err := c.ShouldBindWith(&body, binding.FormMultipart); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	log.Printf("Here's the body: %+v", body)
+
+	// validate body data
+	if strings.TrimSpace(body.Title) == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Title cannot be empty"})
+		return
+	}
+
+	if len(body.Images) < 1 && len(body.ImageUrls) < 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Listing must have at least 1 image"})
+		return
+	}
+
+	// get ai report
+	priceSuggestionResponse, err := services.SuggestPrice(ctx, body.Title, body.Description, body.Images, body.ImageUrls)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	aiPriceReport := models.AIPriceReport{
+		SuggestedPriceMin: priceSuggestionResponse.SuggestedPriceMin,
+		SuggestedPriceMax: priceSuggestionResponse.SuggestedPriceMax,
+		Currency:          priceSuggestionResponse.Currency,
+		ConfidenceLevel:   priceSuggestionResponse.ConfidenceLevel,
+		Reasoning:         priceSuggestionResponse.Reasoning,
+		ListingID:         listing.ID,
+	}
+
+	if err := database.DB.Create(&aiPriceReport).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save AI report"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, aiPriceReport)
 }

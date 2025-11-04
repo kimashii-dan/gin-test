@@ -126,4 +126,5 @@
   --inset-shadow-soft: var(--shadow-inset-soft);
   --inset-shadow-medium: var(--shadow-inset-medium);
   --breakpoint-base: 900px;
+  --breakpoint-xs: 500px;
 }

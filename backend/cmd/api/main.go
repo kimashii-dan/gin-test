@@ -61,6 +61,7 @@ func main() {
 			listing.DELETE("/:id", handlers.DeleteListing)
 			listing.POST("/wishlist/:id", handlers.ToggleWishlist)
 			listing.GET("/wishlist", handlers.GetListingsFromWishlist)
+			listing.POST("/report/:id", handlers.CreateAIReport)
 		}
 	}
 
@@ -82,7 +83,7 @@ func main() {
 	{
 		ai := router.Group("/ai", middleware.CheckAuth())
 		ai.GET("/health-check", handlers.HealthCheckGemini)
-		ai.POST("/suggest-price", handlers.SuggestPrice)
+		ai.POST("/suggest-price", handlers.AskAIAboutPrice)
 	}
 
 	router.Run(":8080")

@@ -75,13 +75,13 @@ export default function ListingCard({
           </span>
         </div>
 
-        <div className="w-full flex flex-col gap-5">
+        <div className="w-full flex flex-col flex-1 gap-5">
           <div className="">
             <h1 className={styles.card_title}>{listing.title}</h1>
             <p className={styles.card_description}>{listing.description}</p>
           </div>
 
-          <div className="w-full flex justify-between">
+          <div className="w-full flex justify-between mt-auto">
             <h2 className={styles.card_price}>${listing.price}</h2>
 
             {isAuthenticated && (

@@ -1,7 +1,7 @@
 @reference "../../shared/styles/index.css";
 
 .listing_controls {
-  @apply flex justify-between items-end gap-5;
+  @apply flex justify-between items-end gap-2 md:gap-5;
 }
 
 .button_active {
@@ -41,7 +41,7 @@
 }
 
 .card_listing {
-  @apply max-w-[300px] mx-auto flex-col gap-5 p-5 hover:-translate-y-1;
+  @apply h-full xs:max-w-[300px] mx-auto flex-col gap-5 p-5 hover:-translate-y-1;
 }
 
 .card_img {
@@ -65,7 +65,7 @@
 }
 
 .card_description {
-  @apply text-sm font-normal text-muted-foreground truncate;
+  @apply text-[15px] font-medium text-muted-foreground line-clamp-3;
 }
 
 .card_price {

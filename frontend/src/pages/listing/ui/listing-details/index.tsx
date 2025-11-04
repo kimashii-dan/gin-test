@@ -6,7 +6,6 @@ import {
   TrashIcon,
   ArrowPathIcon,
   HeartIcon,
-  LightBulbIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { formatDate } from "../../../../shared/helpers/formatDate";
@@ -17,13 +16,13 @@ import { Card } from "../../../../shared/ui/card";
 import TelegramLogo from "../../../../shared/ui/telegram-logo";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../../../shared/core/auth";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import UpdateListingForm from "../updating-listing";
 import DeletingAlert from "../deleting-alert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addToWishlist, updateListing } from "../../api";
+import { addToWishlist, createAIPriceReport, updateListing } from "../../api";
 import styles from "../../styles.module.css";
-import { getAIPRiceReport } from "../../../home/api";
+import { LightBulbIcon } from "@heroicons/react/24/solid";
 
 export default function ListingDetails({
   listing,
@@ -63,7 +62,7 @@ export default function ListingDetails({
   });
 
   const aiMutation = useMutation({
-    mutationFn: getAIPRiceReport,
+    mutationFn: createAIPriceReport,
     onSuccess: (data) => {
       console.log(data);
       queryClient.invalidateQueries({ queryKey: ["listing", listing.id] });
@@ -72,6 +71,8 @@ export default function ListingDetails({
       console.log(error.response.data.error);
     },
   });
+
+  const targetRef = useRef<HTMLDivElement | null>(null);
 
   function handleContact() {
     if (!listing) {
@@ -122,11 +123,12 @@ export default function ListingDetails({
     const formData = new FormData();
     formData.append("title", listing.title);
     formData.append("description", listing.description ?? "");
-    listing.image_urls.forEach((image) => {
-      formData.append("images[]", image);
+    listing.image_urls.forEach((imageURL) => {
+      formData.append("image_urls[]", imageURL);
     });
-
-    // aiMutation.mutate(formData);
+    const id = listing.id;
+    aiMutation.mutate({ id, formData });
+    targetRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
   return (
@@ -135,7 +137,7 @@ export default function ListingDetails({
         <div className="flex gap-5 items-center">
           <Button
             className="flex-1 flex justify-center gap-1 items-center font-medium"
-            variant="primary"
+            variant="secondary"
             onClick={handleUpdate}
           >
             <ArrowPathIcon className="size-5" />
@@ -165,17 +167,26 @@ export default function ListingDetails({
           <h1 className={styles.listing_title}>{listing.title}</h1>
 
           <div className="flex justify-between items-center">
-            <h2 className={styles.listing_price}>${listing.price}</h2>
+            <div className="flex items-baseline gap-2">
+              <p className="text-4xl text-highlight font-semibold">
+                {listing.price}
+              </p>
+              <p className="text-xl text-muted-foreground font-medium">USD</p>
+            </div>
             {!listing.ai_price_report &&
               listing.user_id === authData?.user.id && (
                 <Button
                   onClick={askAI}
                   type="button"
-                  variant="secondary"
                   className="flex gap-2 items-center w-fit"
+                  disabled={!!listing.ai_price_report || aiMutation.isPending}
                 >
                   <SparklesIcon className="size-6 text-yellow-300" />
-                  <span>Get AI suggestion</span>
+                  <span>
+                    {aiMutation.isPending
+                      ? "Getting suggestion..."
+                      : "Get AI suggestion"}
+                  </span>
                 </Button>
               )}
           </div>
@@ -338,12 +349,39 @@ export default function ListingDetails({
         </div>
       </Card>
 
+      {aiMutation.isPending && (
+        <Card className="flex-col overflow-hidden animate-pulse">
+          <div
+            ref={targetRef}
+            className="flex lg:flex-row flex-col p-6 bg-muted justify-between gap-5 lg:items-center"
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-muted rounded"></div>
+              <div className="h-6 bg-muted rounded w-40"></div>
+            </div>
+            <div className="h-6 bg-muted rounded-full w-24"></div>
+          </div>
+
+          <div className="flex items-baseline gap-3 px-6 py-5">
+            <div className="h-12 bg-muted rounded w-32"></div>
+            <div className="h-8 bg-muted rounded w-12"></div>
+          </div>
+
+          <hr className="border border-border" />
+          <div className="space-y-2 px-6 py-5">
+            <div className="h-4 bg-muted rounded w-full"></div>
+            <div className="h-4 bg-muted rounded w-3/4"></div>
+            <div className="h-4 bg-muted rounded w-5/6"></div>
+          </div>
+        </Card>
+      )}
+
       {listing.ai_price_report && (
-        <Card className="flex-col p-8 gap-6">
-          <div className="flex lg:flex-row flex-col justify-between gap-5 lg:items-center">
+        <Card className="flex-col overflow-hidden">
+          <div className="flex lg:flex-row flex-col p-6 bg-muted justify-between gap-5 lg:items-center">
             <div className="flex items-center gap-2">
               <LightBulbIcon className="text-yellow-400 size-7" />
-              <h2 className="text-xl text-card-foreground font-medium">
+              <h2 className="text-xl text-card-foreground font-semibold capitalize">
                 AI Price Suggestion
               </h2>
             </div>
@@ -351,13 +389,13 @@ export default function ListingDetails({
             <p
               className={`${map.get(
                 listing.ai_price_report.confidence_level
-              )} shadow-sm px-3 p-0.5 text-sm w-fit font-semibold rounded-full text-black`}
+              )} shadow-sm px-3 py-0.5 text-sm w-fit font-semibold rounded-full text-black`}
             >
               {listing.ai_price_report.confidence_level} confidence
             </p>
           </div>
 
-          <div className="flex items-baseline gap-3">
+          <div className="flex items-baseline gap-2 px-6 py-5">
             <p className="text-4xl text-highlight font-semibold">
               {listing.ai_price_report.suggested_price_min} -{" "}
               {listing.ai_price_report.suggested_price_max}
@@ -368,7 +406,7 @@ export default function ListingDetails({
           </div>
 
           <hr className="border border-border" />
-          <p className="text-base font-normal text-muted-foreground leading-relaxed">
+          <p className="text-base font-normal px-6 py-5 text-muted-foreground leading-relaxed">
             {listing.ai_price_report.reasoning}
           </p>
         </Card>

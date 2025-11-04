@@ -18,7 +18,6 @@ import (
 	"github.com/google/uuid"
 )
 
-
 func UploadImage(ctx context.Context, file *multipart.FileHeader, user *models.User, folder string) (string, error) {
 	accountHash := os.Getenv("R2_ACCOUNT_HASH")
 	bucketName := os.Getenv("R2_BUCKET_NAME")
@@ -27,7 +26,7 @@ func UploadImage(ctx context.Context, file *multipart.FileHeader, user *models.U
 	if err != nil {
 		return "", fmt.Errorf("failed to open uploaded file: %w", err)
 	}
-	
+
 	defer src.Close()
 
 	buf := make([]byte, 512)
@@ -37,7 +36,7 @@ func UploadImage(ctx context.Context, file *multipart.FileHeader, user *models.U
 	}
 
 	contentType := http.DetectContentType(buf[:n])
-	
+
 	if !strings.HasPrefix(contentType, "image/") {
 		return "", fmt.Errorf("uploaded file is not an image: %w", err)
 	}
@@ -67,7 +66,6 @@ func UploadImage(ctx context.Context, file *multipart.FileHeader, user *models.U
 	return imageURL, nil
 }
 
-
 func UploadImages(ctx context.Context, files []*multipart.FileHeader, user *models.User, folder string) ([]string, error) {
 	var urls []string
 
@@ -81,7 +79,6 @@ func UploadImages(ctx context.Context, files []*multipart.FileHeader, user *mode
 
 	return urls, nil
 }
-
 
 func DeleteImageByURL(ctx context.Context, imageURL string) error {
 	if imageURL == "" {
@@ -109,4 +106,52 @@ func DeleteImageByURL(ctx context.Context, imageURL string) error {
 	}
 
 	return nil
+}
+
+func GetImageByURL(ctx context.Context, imageURL string) ([]byte, string, error) {
+	if imageURL == "" {
+		return nil, "", fmt.Errorf("image URL cannot be empty")
+	}
+
+	bucketName := os.Getenv("R2_BUCKET_NAME")
+	if bucketName == "" {
+		return nil, "", fmt.Errorf("R2_BUCKET_NAME environment variable not set")
+	}
+
+	// parse the URL to extract the key
+	u, err := url.Parse(imageURL)
+	if err != nil {
+		return nil, "", fmt.Errorf("invalid image URL: %w", err)
+	}
+
+	// extract the key by removing the leading slash
+	key := strings.TrimPrefix(u.Path, "/")
+	if key == "" {
+		return nil, "", fmt.Errorf("invalid image key extracted from URL")
+	}
+
+	// get the object from R2 storage
+	result, err := database.S3Client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to retrieve image from storage: %w", err)
+	}
+
+	defer result.Body.Close()
+
+	// read the object body
+	imageData, err := io.ReadAll(result.Body)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to read image data: %w", err)
+	}
+
+	// get the content type
+	contentType := "application/octet-stream"
+	if result.ContentType != nil {
+		contentType = *result.ContentType
+	}
+
+	return imageData, contentType, nil
 }
