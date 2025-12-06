@@ -85,17 +85,13 @@ export default function Home() {
 
   return (
     <section className="page-layout">
-      {isCreating && <CreateListingForm setIsCreating={setIsCreating} />}
-
-      <Search searchParams={searchParams} setSearchParams={setSearchParams} />
-
-      <div className="flex flex-col gap-5">
-        <div className={styles.listing_controls}>
-          <div className="flex flex-row items-center gap-5">
-            {isAuthenticated && (
-              <SelectSortBy sortBy={sortBy} setSortBy={setSortBy} />
-            )}
-          </div>
+      <div className={styles.listing_controls}>
+        {isAuthenticated && (
+          <SelectListingType
+            listingType={listingType}
+            setListingType={setListingType}
+          />
+        )}
 
           {isAuthenticated && (
             <Button
