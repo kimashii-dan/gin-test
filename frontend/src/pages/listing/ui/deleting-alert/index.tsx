@@ -21,7 +21,6 @@ export default function DeletingAlert({
       console.log(data);
       setIsDeleting(false);
       queryClient.invalidateQueries({ queryKey: ["listings"] });
-      navigate("/");
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
@@ -30,6 +29,7 @@ export default function DeletingAlert({
 
   function handleDelete() {
     mutation.mutate(id);
+    navigate("/");
   }
 
   function handleCancel() {

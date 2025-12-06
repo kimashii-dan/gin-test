@@ -1,4 +1,4 @@
-import { NavLink } from "react-router";
+import { NavLink, useSearchParams } from "react-router";
 import styles from "./styles.module.css";
 import ModeToggle from "../../mode-toggle";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
@@ -8,15 +8,19 @@ import {
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../core/auth";
+import Search from "./ui/search";
 
 export default function Header() {
   const { data: authData } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isAuthenticated = !!authData?.user;
 
   return (
     <header className={styles.header}>
       <nav className={styles.header_nav}>
         <Logo />
+
+        <Search searchParams={searchParams} setSearchParams={setSearchParams} />
 
         <div className="flex gap-5">
           <ModeToggle />

@@ -5,11 +5,11 @@
 }
 
 .button_active {
-  @apply w-full px-4 py-2  flex items-center justify-between rounded-md hover:bg-muted inset-shadow-medium;
+  @apply w-full px-4 py-2 text-sm flex items-center justify-between rounded-md hover:bg-muted inset-shadow-medium;
 }
 
 .button_not_active {
-  @apply w-full px-4 py-2  flex items-center justify-between rounded-md hover:bg-muted;
+  @apply w-full px-4 py-2 text-sm flex items-center justify-between rounded-md hover:bg-muted;
 }
 
 .form {
@@ -41,7 +41,7 @@
 }
 
 .card_listing {
-  @apply h-full xs:max-w-[300px] mx-auto flex-col gap-5 p-5 hover:-translate-y-1;
+  @apply h-full xs:max-w-[300px] mx-auto md:mx-0 flex-col gap-5 p-5 hover:-translate-y-1;
 }
 
 .card_img {
@@ -65,7 +65,7 @@
 }
 
 .card_description {
-  @apply text-[15px] font-medium text-muted-foreground line-clamp-3;
+  @apply text-[15px] font-medium text-muted-foreground line-clamp-4;
 }
 
 .card_price {

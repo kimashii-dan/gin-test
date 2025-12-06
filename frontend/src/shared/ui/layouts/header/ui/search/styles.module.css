@@ -1,0 +1,4 @@
+@reference "../../styles/index.css";
+.search {
+  @apply w-full px-4 py-2 flex items-center justify-between rounded-lg hover:bg-muted inset-shadow-medium;
+}

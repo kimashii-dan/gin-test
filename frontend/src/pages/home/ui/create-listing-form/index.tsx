@@ -70,7 +70,10 @@ export default function CreateListingForm({
     formData.append("title", data.title);
     formData.append("description", data.description ?? "");
     formData.append("price", data.price.toString());
-    formData.append("price_suggestion", reportString);
+    if (report !== null) {
+      formData.append("price_suggestion", reportString);
+    }
+
     data.images.forEach((image) => {
       formData.append("images[]", image);
     });
