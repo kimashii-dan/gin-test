@@ -15,6 +15,7 @@ export default function Profile() {
   const { data: authData, isLoading, isError } = useAuth();
   const { t } = useTranslation();
   const user = authData?.user;
+  const listings = authData?.listings;
 
   const inputRefs = useRef<{
     name: HTMLInputElement | null;
@@ -50,6 +51,7 @@ export default function Profile() {
       {!isEditing ? (
         <DetailsInfo
           user={user}
+          listingData={listings}
           inputRefs={inputRefs}
           setIsEditing={setIsEditing}
         />

@@ -15,15 +15,16 @@ type ListingResponse struct {
 }
 
 func GetListings(c *gin.Context) {
-	userAny, userExists := c.Get("user")
-
+	// 1. Just find all listings
 	var listings []models.Listing
 	if err := database.DB.Find(&listings).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch listings"})
 		return
 	}
 
-	if !userExists {
+	// 2. Check if user is authenticated
+	userAny, exists := c.Get("user")
+	if !exists {
 		var response []ListingResponse
 		for _, listing := range listings {
 			response = append(response, ListingResponse{
@@ -35,18 +36,30 @@ func GetListings(c *gin.Context) {
 		return
 	}
 
+	// 3. Get wishlisted listing IDs
 	user := userAny.(models.User)
+	listingIDs := make([]uint, len(listings))
+	for i, listing := range listings {
+		listingIDs[i] = listing.ID
+	}
+
+	// Single query to get all wishlisted IDs
+	var wishlistedIDs []uint
+	database.DB.Model(&models.WishlistListing{}).
+		Where("user_id = ? AND listing_id IN ?", user.ID, listingIDs).
+		Pluck("listing_id", &wishlistedIDs)
+
+	wishlistMap := make(map[uint]bool)
+	for _, id := range wishlistedIDs {
+		wishlistMap[id] = true
+	}
+
+	// 4. Build response with wishlist status
 	var response []ListingResponse
-
 	for _, listing := range listings {
-		var count int64
-		database.DB.Model(&models.WishlistListing{}).
-			Where("user_id = ? AND listing_id = ?", user.ID, listing.ID).
-			Count(&count)
-
 		response = append(response, ListingResponse{
 			Listing:      listing,
-			IsInWishlist: count > 0,
+			IsInWishlist: wishlistMap[listing.ID],
 		})
 	}
 
@@ -162,6 +175,84 @@ func GetUserWithListing(c *gin.Context) {
 		Bio:          otherUser.Bio,
 		AvatarURL:    otherUser.AvatarURL,
 		Listings:     listingsResponse,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+type SearchParams struct {
+	Query string `form:"q" binding:"required"`
+	Page  int    `form:"page" binding:"min=1"`
+	// Category string  `form:"category"`
+	MinPrice float64 `form:"min_price"`
+	MaxPrice float64 `form:"max_price"`
+	Sort     string  `form:"sort"`
+}
+
+func Search(c *gin.Context) {
+	// 1. Get the query
+	var params SearchParams
+	if err := c.ShouldBindQuery(&params); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// 2. Retrieve the paginated resources from DB
+	const limit int = 10
+	offset := (params.Page - 1) * limit
+
+	var listings []models.Listing
+
+	searchPattern := "%" + params.Query + "%"
+	query := database.DB.Model(&models.Listing{}).Where(
+		"title ILIKE ? OR description ILIKE ?",
+		searchPattern, searchPattern,
+	)
+
+	if err := query.Limit(limit).Offset(offset).Find(&listings).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Search failed"})
+		return
+	}
+
+	// 3. Check if user is authenticated
+	userAny, exists := c.Get("user")
+	if !exists {
+		var response []ListingResponse
+		for _, listing := range listings {
+			response = append(response, ListingResponse{
+				Listing:      listing,
+				IsInWishlist: false,
+			})
+		}
+		c.JSON(http.StatusOK, response)
+		return
+	}
+
+	// 4. Get wishlisted listing IDs
+	user := userAny.(models.User)
+	listingIDs := make([]uint, len(listings))
+	for i, listing := range listings {
+		listingIDs[i] = listing.ID
+	}
+
+	// Single query to get all wishlisted IDs
+	var wishlistedIDs []uint
+	database.DB.Model(&models.WishlistListing{}).
+		Where("user_id = ? AND listing_id IN ?", user.ID, listingIDs).
+		Pluck("listing_id", &wishlistedIDs)
+
+	wishlistMap := make(map[uint]bool)
+	for _, id := range wishlistedIDs {
+		wishlistMap[id] = true
+	}
+
+	// 5. Build response with wishlist status
+	var response []ListingResponse
+	for _, listing := range listings {
+		response = append(response, ListingResponse{
+			Listing:      listing,
+			IsInWishlist: wishlistMap[listing.ID],
+		})
 	}
 
 	c.JSON(http.StatusOK, response)

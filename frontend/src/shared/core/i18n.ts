@@ -28,6 +28,16 @@ const resources = {
           label: "Description",
           placeholder: "Enter description of the product",
         },
+        category: {
+          label: "Description",
+          categories: {
+            Furniture: "Furniture",
+            Electronics: "Electronics",
+            Books: "Books",
+            Clothing: "Clothing",
+            Services: "Services",
+          },
+        },
         price: {
           label: "Price",
           placeholder: "Add your price",
@@ -214,6 +224,16 @@ const resources = {
         description: {
           label: "Описание",
           placeholder: "Введите описание",
+        },
+        category: {
+          label: "Категории",
+          categories: {
+            Furniture: "Мебель",
+            Electronics: "Электроника",
+            Books: "Книги",
+            Clothing: "Одежда",
+            Services: "Услуги",
+          },
         },
         price: {
           label: "Цена",

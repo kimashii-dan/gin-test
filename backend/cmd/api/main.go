@@ -69,9 +69,11 @@ func main() {
 		// public routes
 		public := router.Group("/public")
 		{
-			listing := public.Group("/listings")
-			listing.GET("", middleware.OptionalAuth(), handlers.GetListings)
-			listing.GET("/:id", middleware.OptionalAuth(), handlers.GetListing)
+			listings := public.Group("/listings")
+			listings.GET("/search", middleware.OptionalAuth(), handlers.Search)
+			listings.GET("", middleware.OptionalAuth(), handlers.GetListings)
+			listings.GET("/:id", middleware.OptionalAuth(), handlers.GetListing)
+
 		}
 
 		{

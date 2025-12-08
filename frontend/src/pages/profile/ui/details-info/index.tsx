@@ -10,12 +10,15 @@ import {
   PlusIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import type { User } from "../../../../shared/types";
+import type { ListingData, User } from "../../../../shared/types";
 import TelegramLogo from "../../../../shared/ui/telegram-logo";
 import { useTranslation } from "react-i18next";
+import EmptyData from "../../../../shared/ui/empty-data";
+import ListingCard from "../../../home/ui/listing-card";
 
 type DetailsInfoProps = {
   user: User;
+  listingData?: ListingData[];
   setIsEditing: (value: React.SetStateAction<boolean>) => void;
   inputRefs: React.RefObject<{
     name: HTMLInputElement | null;
@@ -28,6 +31,7 @@ type DetailsInfoProps = {
 
 export default function DetailsInfo({
   user,
+  listingData,
   setIsEditing,
   inputRefs,
 }: DetailsInfoProps) {
@@ -155,6 +159,25 @@ export default function DetailsInfo({
           )}
         </div>
       </Card>
+
+      {listingData && (
+        <h2 className="font-nice text-4xl italic">{t("listings")}</h2>
+      )}
+
+      {listingData && listingData.length === 0 && (
+        <EmptyData text={t("errors.account.listings.absence")} />
+      )}
+      <div className="cards">
+        {Array.isArray(listingData) &&
+          listingData.map((listingData: ListingData) => (
+            <ListingCard
+              key={listingData.listing.id}
+              listing={listingData.listing}
+              isInWishlist={listingData.is_in_wishlist}
+              queryKey={"currentUser"}
+            />
+          ))}
+      </div>
     </>
   );
 }

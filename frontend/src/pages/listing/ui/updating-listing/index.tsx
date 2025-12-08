@@ -13,6 +13,7 @@ import { useState } from "react";
 
 import styles from "../../styles.module.css";
 import { useTranslation } from "react-i18next";
+import { categories } from "../../../../shared/enums";
 
 type UpdateListingFormProps = {
   setIsUpdating: (value: React.SetStateAction<boolean>) => void;
@@ -30,6 +31,7 @@ export default function UpdateListingForm({
       description: listing.description,
       price: listing.price,
       images: [],
+      category: listing.category,
     },
   });
 
@@ -66,6 +68,10 @@ export default function UpdateListingForm({
 
     if (data.price !== listing.price) {
       formData.append("price", data.price.toString());
+    }
+
+    if (data.category !== listing.category) {
+      formData.append("category", data.category);
     }
 
     if ((data.images?.length ?? 0) + existingImages.length > 5) {
@@ -154,6 +160,32 @@ export default function UpdateListingForm({
             {form.formState.errors.description && (
               <p className="text-destructive">
                 {form.formState.errors.description.message}
+              </p>
+            )}
+
+            <label className="field">
+              <span className="">{t("listingForm.category.label")}</span>
+              <div className="">
+                {categories.map((category: string) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-1">
+                      <input
+                        type="radio"
+                        value={category}
+                        {...form.register("category")}
+                      />
+                      <span>
+                        {t(`listingForm.category.categories.${category}`)}
+                      </span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </label>
+
+            {form.formState.errors.category && (
+              <p className="text-destructive">
+                {form.formState.errors.category.message}
               </p>
             )}
 

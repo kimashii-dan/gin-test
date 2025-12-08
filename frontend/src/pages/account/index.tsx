@@ -22,18 +22,22 @@ export default function AccountPage() {
   });
   const { t } = useTranslation();
 
-  if (isError || !user) {
+  if (isError) {
     return <ErrorScreen text={t("errors.account.loading")} />;
   }
 
   return (
     <div className="page-layout">
       <h1 className="page-title">{t("profile.account")}</h1>
-      {isLoading ? <AccountDetailsSkeleton /> : <AccountDetails user={user} />}
+      {isLoading ? (
+        <AccountDetailsSkeleton />
+      ) : (
+        user && <AccountDetails user={user} />
+      )}
 
       <h2 className="font-nice text-4xl italic">{t("listings")}</h2>
 
-      {!isLoading && user.listings && user.listings.length === 0 && (
+      {!isLoading && user && user.listings && user.listings.length === 0 && (
         <EmptyData text={t("errors.account.listings.absence")} />
       )}
       <div className="cards">
@@ -45,6 +49,7 @@ export default function AccountPage() {
             <ListingCardSkeleton />
           </>
         ) : (
+          user &&
           Array.isArray(user.listings) &&
           user.listings.map((listingData: ListingData) => (
             <ListingCard

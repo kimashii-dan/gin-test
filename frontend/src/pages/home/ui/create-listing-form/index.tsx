@@ -20,6 +20,7 @@ import {
 import styles from "../../styles.module.css";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { categories } from "../../../../shared/enums";
 // import { reportData } from "../../../../shared/core/mock";
 
 export default function CreateListingForm({
@@ -34,9 +35,9 @@ export default function CreateListingForm({
       description: "",
       price: 0,
       images: [],
+      category: "Furniture",
     },
   });
-  const currencies = ["KZT", "RUB", "USD"];
 
   const { t, i18n } = useTranslation();
 
@@ -73,6 +74,7 @@ export default function CreateListingForm({
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description ?? "");
+    formData.append("category", data.category ?? "Furniture");
     formData.append("price", data.price.toString());
     if (report !== null) {
       formData.append("price_suggestion", reportString);
@@ -125,10 +127,12 @@ export default function CreateListingForm({
   function askAI() {
     const title = form.watch("title");
     const description = form.watch("description");
+    const category = form.watch("category");
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description ?? "");
+    formData.append("category", category ?? "Furniture");
     formData.append("lang", i18n.language);
     images.forEach((image) => {
       formData.append("images[]", image);
@@ -177,6 +181,32 @@ export default function CreateListingForm({
             {form.formState.errors.description && (
               <p className="text-destructive">
                 {form.formState.errors.description.message}
+              </p>
+            )}
+
+            <label className="field">
+              <span className="">{t("listingForm.category.label")}</span>
+              <div className="">
+                {categories.map((category: string) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <label className="flex items-center space-x-1">
+                      <input
+                        type="radio"
+                        value={category}
+                        {...form.register("category")}
+                      />
+                      <span>
+                        {t(`listingForm.category.categories.${category}`)}
+                      </span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </label>
+
+            {form.formState.errors.category && (
+              <p className="text-destructive">
+                {form.formState.errors.category.message}
               </p>
             )}
 

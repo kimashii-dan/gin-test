@@ -1,0 +1,5 @@
+ALTER TABLE listings
+DROP CONSTRAINT IF EXISTS category_check;
+
+ALTER TABLE listings
+DROP COLUMN IF EXISTS category;

@@ -82,13 +82,18 @@ export default function ListingCard({
         <div className="w-full flex flex-col flex-1 gap-5">
           <div className="">
             <h1 className={styles.card_title}>{listing.title}</h1>
+            {listing.category && (
+              <span className="inline-block px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full mt-1 mb-2">
+                {listing.category}
+              </span>
+            )}
             <p className={styles.card_description}>{listing.description}</p>
           </div>
 
           <div className="w-full flex justify-between mt-auto">
             <h2 className={styles.card_price}>${listing.price}</h2>
 
-            {isAuthenticated && (
+            {isAuthenticated && authData.user.id !== listing.user_id && (
               <button
                 onClick={handleAddToWishList}
                 className="flex items-center gap-2"

@@ -6,6 +6,16 @@ import (
 	"github.com/lib/pq"
 )
 
+type Category string
+
+const (
+	Electronics Category = "Electronics"
+	Furniture   Category = "Furniture"
+	Books       Category = "Books"
+	Clothing    Category = "Clothing"
+	Services    Category = "Services"
+)
+
 type Listing struct {
 	ID            uint              `json:"id" gorm:"primaryKey"`
 	CreatedAt     time.Time         `json:"created_at"`
@@ -16,6 +26,7 @@ type Listing struct {
 	Description   string            `json:"description"`
 	ImageURLs     pq.StringArray    `json:"image_urls" gorm:"type:text[]"`
 	Price         float64           `json:"price"`
+	Category      Category          `json:"category" gorm:"type:text;not null"`
 	IsClosed      bool              `json:"is_closed"`
 	WishlistedBy  []WishlistListing `gorm:"foreignKey:ListingID" json:"wishlisted_by,omitempty"`
 	AIPriceReport *AIPriceReport    `gorm:"foreignKey:ListingID" json:"ai_price_report,omitempty"`

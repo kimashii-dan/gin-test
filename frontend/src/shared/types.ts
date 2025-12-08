@@ -13,6 +13,7 @@ export type SuccessResponse = {
 
 export type AuthResponse = {
   user: User;
+  listings?: ListingData[];
 };
 
 export type Theme = "dark" | "light" | "system";
@@ -68,6 +69,7 @@ export type Listing = {
   user_id: number;
   title: string;
   description: string;
+  category: string;
   image_urls: string[];
   price: number;
   is_closed: boolean;

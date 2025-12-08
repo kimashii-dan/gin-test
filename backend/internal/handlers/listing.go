@@ -21,6 +21,7 @@ type CreateListingDTO struct {
 	Description     string                  `form:"description"`
 	Price           float64                 `form:"price"`
 	Images          []*multipart.FileHeader `form:"images[]"`
+	Category        string                  `form:"category"`
 	PriceSuggestion string                  `form:"price_suggestion"`
 }
 
@@ -73,6 +74,13 @@ func CreateListing(c *gin.Context) {
 		return
 	}
 
+	switch models.Category(body.Category) {
+	case models.Electronics, models.Furniture, models.Books, models.Clothing, models.Services:
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category"})
+		return
+	}
+
 	// transaction
 	tx := database.DB.Begin()
 	defer func() {
@@ -85,6 +93,7 @@ func CreateListing(c *gin.Context) {
 		Title:       body.Title,
 		Description: body.Description,
 		Price:       body.Price,
+		Category:    models.Category(body.Category),
 		IsClosed:    false,
 		UserID:      user.ID,
 	}
@@ -177,6 +186,7 @@ type UpdateListingDTO struct {
 	Title       *string                 `form:"title"`
 	Description *string                 `form:"description"`
 	Price       *float64                `form:"price"`
+	Category    *string                 `form:"category"`
 	NewImages   []*multipart.FileHeader `form:"new_images"`
 	KeptImages  []string                `form:"kept_images"`
 	IsClosed    *bool                   `form:"is_closed"`
@@ -225,6 +235,13 @@ func UpdateListing(c *gin.Context) {
 		return
 	}
 
+	switch models.Category(*body.Category) {
+	case models.Electronics, models.Furniture, models.Books, models.Clothing, models.Services:
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category"})
+		return
+	}
+
 	// check if amount of images exceeds limit
 	if body.KeptImages != nil || body.NewImages != nil {
 		totalImages := len(body.KeptImages) + len(body.NewImages)
@@ -270,6 +287,10 @@ func UpdateListing(c *gin.Context) {
 
 	if body.Price != nil {
 		listing.Price = *body.Price
+	}
+
+	if body.Category != nil {
+		listing.Category = models.Category(*body.Category)
 	}
 
 	if body.IsClosed != nil {

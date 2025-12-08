@@ -21,21 +21,21 @@ type UpdateUserDTO struct {
 }
 
 func UpdateUser(c *gin.Context) {
-    userAny, exists := c.Get("user")
-    if !exists {
-        c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	userAny, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
 		})
-        return
-    }
+		return
+	}
 
-    user, ok := userAny.(models.User)
-    if !ok {
-        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Invalid user type",
 		})
-        return
-    }
+		return
+	}
 
 	var body UpdateUserDTO
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -77,27 +77,26 @@ func UpdateUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"user": user,
+		"user":    user,
 	})
 }
 
 func DeleteUser(c *gin.Context) {
-    userAny, exists := c.Get("user")
-    if !exists {
-        c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	userAny, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
 		})
-        return
-    }
+		return
+	}
 
-    user, ok := userAny.(models.User)
-    if !ok {
-        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Invalid user type",
 		})
-        return
-    }
-
+		return
+	}
 
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 		// find user listings
@@ -146,24 +145,39 @@ func DeleteUser(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-    userAny, exists := c.Get("user")
-    if !exists {
-        c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+	userAny, exists := c.Get("user")
+	if !exists {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error": "User not found in context",
 		})
-        return
-    }
+		return
+	}
 
-    user, ok := userAny.(models.User)
-    if !ok {
-        c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+	user, ok := userAny.(models.User)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "Invalid user type",
 		})
-        return
-    }
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H {
-		"user": user,
+	var listings []models.Listing
+	if err := database.DB.Where("user_id = ?", user.ID).Find(&listings).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	var response []ListingResponse
+	for _, listing := range listings {
+		response = append(response, ListingResponse{
+			Listing:      listing,
+			IsInWishlist: false,
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"user":     user,
+		"listings": response,
 	})
 }
 
@@ -216,7 +230,7 @@ func UploadAvatar(c *gin.Context) {
 	user.AvatarURL = newURL
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
+		"success":  true,
 		"imageURL": user.AvatarURL,
 	})
 }

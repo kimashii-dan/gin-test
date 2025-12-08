@@ -24,6 +24,7 @@ import { addToWishlist, createAIPriceReport, updateListing } from "../../api";
 import styles from "../../styles.module.css";
 import { LightBulbIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
+import { listingData } from "../../../../shared/core/mock";
 
 export default function ListingDetails({
   listing,
@@ -166,15 +167,38 @@ export default function ListingDetails({
 
       <Card className="p-8 flex-col">
         <div className="flex flex-col gap-8">
-          <h1 className={styles.listing_title}>{listing.title}</h1>
+          <div className="flex flex-col gap-2">
+            <h1 className={styles.listing_title}>{listing.title}</h1>
+            {listing.category && (
+              <span className="inline-block px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full w-fit">
+                {listing.category}
+              </span>
+            )}
+          </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between gap-3 items-center">
             <div className="flex items-baseline gap-2">
               <p className="text-4xl text-highlight font-semibold">
                 {listing.price}
               </p>
               <p className="text-xl text-muted-foreground font-medium">USD</p>
             </div>
+            {isAuthenticated &&
+              authData.user.id !== listingData.listing.user_id && (
+                <button
+                  onClick={handleAddToWishList}
+                  className="flex items-center gap-2"
+                >
+                  <HeartIcon
+                    fill={`${isInWishlist ? "red" : "none"}`}
+                    className="size-7 text-destructive"
+                  />
+                  <span>{t("listingDetails.like")}</span>
+                </button>
+              )}
+          </div>
+
+          <div className="flex justify-between flex-col gap-5 items-center sm:items-start">
             {!listing.ai_price_report &&
               listing.user_id === authData?.user.id && (
                 <Button
@@ -184,18 +208,16 @@ export default function ListingDetails({
                   disabled={!!listing.ai_price_report || aiMutation.isPending}
                 >
                   <SparklesIcon className="size-6 text-yellow-300" />
-                  <span>
+                  <span className="text-sm md:text-base">
                     {aiMutation.isPending
                       ? t("listingForm.buttons.aiSuggestion.loading")
                       : t("listingForm.buttons.aiSuggestion.name")}
                   </span>
                 </Button>
               )}
-          </div>
 
-          <div className="flex justify-between items-center">
             {listing.user?.id === authData?.user.id ? (
-              <div className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-2 ">
                 <span
                   className={`text-sm font-medium ${
                     listing.is_closed ? "text-muted-foreground" : "text-accent"
@@ -243,19 +265,6 @@ export default function ListingDetails({
                     : t("listingDetails.status.available")}
                 </div>
               </div>
-            )}
-
-            {isAuthenticated && (
-              <button
-                onClick={handleAddToWishList}
-                className="flex items-center gap-2"
-              >
-                <HeartIcon
-                  fill={`${isInWishlist ? "red" : "none"}`}
-                  className="size-7 text-destructive"
-                />
-                <span>{t("listingDetails.like")}</span>
-              </button>
             )}
           </div>
 

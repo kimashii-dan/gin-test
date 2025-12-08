@@ -5,15 +5,12 @@ import type { ListingData } from "../../shared/types";
 import { Button } from "../../shared/ui/button";
 import { useAuth } from "../../shared/core/auth";
 import { useState } from "react";
-import { useSearchParams } from "react-router";
 import CreateListingForm from "./ui/create-listing-form";
 import styles from "./styles.module.css";
 import ListingCard from "./ui/listing-card";
 import ListingCardSkeleton from "./ui/listing-card/skeleton";
 import ErrorScreen from "../../shared/ui/error-screen";
-import SelectSortBy from "./ui/select-sort-by";
-import Search from "./ui/search";
-import SelectListingType from "./ui/select-listing-type";
+
 import { useTranslation } from "react-i18next";
 // import { filteredListings } from "../../shared/core/mock";
 
@@ -30,57 +27,11 @@ export default function Home() {
   const { data: authData } = useAuth();
   const isAuthenticated = !!authData?.user;
   const { t } = useTranslation();
-
   const [isCreating, setIsCreating] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const sortBy = searchParams.get("sortBy") || "Newest first";
-  const searchQuery = searchParams.get("search") || "";
-
-  const setSortBy = (value: string) => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
-      newParams.set("sortBy", value);
-      return newParams;
-    });
-  };
 
   const handleCreateListing = () => {
     setIsCreating(true);
   };
-
-  // Filter listings based on search query
-  let filteredListings = listingsData;
-  if (listingsData && searchQuery.trim()) {
-    const query = searchQuery.toLowerCase().trim();
-    filteredListings = listingsData.filter((listingData) =>
-      listingData.listing.title.toLowerCase().includes(query)
-    );
-  }
-
-  // Apply sorting to filtered listings
-  if (filteredListings) {
-    if (sortBy === "Title A-Z") {
-      filteredListings.sort((a, b) =>
-        a.listing.title.localeCompare(b.listing.title)
-      );
-    } else if (sortBy === "Newest first") {
-      filteredListings.sort(
-        (a, b) =>
-          new Date(b.listing.created_at).getTime() -
-          new Date(a.listing.created_at).getTime()
-      );
-    } else if (sortBy === "Oldest first") {
-      filteredListings.sort(
-        (a, b) =>
-          new Date(a.listing.created_at).getTime() -
-          new Date(b.listing.created_at).getTime()
-      );
-    } else if (sortBy === "Low to High") {
-      filteredListings.sort((a, b) => a.listing.price - b.listing.price);
-    } else if (sortBy === "High to Low") {
-      filteredListings.sort((a, b) => b.listing.price - a.listing.price);
-    }
-  }
 
   if (isError) {
     return <ErrorScreen text={t("errors.home.loading")} />;
@@ -89,13 +40,6 @@ export default function Home() {
   return (
     <section className="page-layout">
       <div className={styles.listing_controls}>
-        {/* {isAuthenticated && (
-          <SelectListingType
-            listingType={listingType}
-            setListingType={setListingType}
-          />
-        )} */}
-
         {isCreating && <CreateListingForm setIsCreating={setIsCreating} />}
 
         {isAuthenticated && (
@@ -117,9 +61,9 @@ export default function Home() {
             <ListingCardSkeleton />
           </>
         ) : (
-          filteredListings &&
-          filteredListings.length > 0 &&
-          filteredListings.map((listingData: ListingData) => (
+          listingsData &&
+          listingsData.length > 0 &&
+          listingsData.map((listingData: ListingData) => (
             <ListingCard
               key={listingData.listing.id}
               listing={listingData.listing}
