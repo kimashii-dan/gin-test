@@ -7,6 +7,8 @@ import AccountDetailsSkeleton from "./ui/account-details/skeleton";
 import { useParams } from "react-router";
 import ListingCardSkeleton from "../home/ui/listing-card/skeleton";
 import EmptyData from "../../shared/ui/empty-data";
+import { useTranslation } from "react-i18next";
+import ErrorScreen from "../../shared/ui/error-screen";
 
 export default function AccountPage() {
   const { id } = useParams();
@@ -18,20 +20,21 @@ export default function AccountPage() {
     queryKey: ["otherUser", id],
     queryFn: () => getUser(Number(id)),
   });
+  const { t } = useTranslation();
 
   if (isError || !user) {
-    return <EmptyData text={"Error loading account"} />;
+    return <ErrorScreen text={t("errors.account.loading")} />;
   }
 
   return (
     <div className="page-layout">
-      <h1 className="page-title">Account</h1>
+      <h1 className="page-title">{t("profile.account")}</h1>
       {isLoading ? <AccountDetailsSkeleton /> : <AccountDetails user={user} />}
 
-      <h2 className="font-nice text-4xl italic">Listings</h2>
+      <h2 className="font-nice text-4xl italic">{t("listings")}</h2>
 
       {!isLoading && user.listings && user.listings.length === 0 && (
-        <EmptyData text={"No listings available"} />
+        <EmptyData text={t("errors.account.listings.absence")} />
       )}
       <div className="cards">
         {isLoading ? (

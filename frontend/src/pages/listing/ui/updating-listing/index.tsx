@@ -12,6 +12,7 @@ import { updateListing } from "../../api";
 import { useState } from "react";
 
 import styles from "../../styles.module.css";
+import { useTranslation } from "react-i18next";
 
 type UpdateListingFormProps = {
   setIsUpdating: (value: React.SetStateAction<boolean>) => void;
@@ -32,6 +33,7 @@ export default function UpdateListingForm({
     },
   });
 
+  const { t } = useTranslation();
   const images = form.watch("images");
 
   const queryClient = useQueryClient();
@@ -124,10 +126,10 @@ export default function UpdateListingForm({
         <Card className={styles.form_card}>
           <div className="flex flex-col gap-10 w-full">
             <label className="field">
-              <span className="">Title</span>
+              <span className="">{t("listingForm.title.label")}</span>
               <input
                 className="w-full"
-                placeholder="Enter title of the product"
+                placeholder={t("listingForm.title.placeholder")}
                 autoComplete="off"
                 {...form.register("title")}
               />
@@ -140,11 +142,11 @@ export default function UpdateListingForm({
             )}
 
             <label className="field">
-              <span className="">Description</span>
+              <span className="">{t("listingForm.description.label")}</span>
               <textarea
                 className="w-full h-32"
                 autoComplete="off"
-                placeholder="Enter description of the product"
+                placeholder={t("listingForm.description.placeholder")}
                 {...form.register("description")}
               />
             </label>
@@ -156,10 +158,10 @@ export default function UpdateListingForm({
             )}
 
             <label className="field">
-              <span className="">Price</span>
+              <span className="">{t("listingForm.price.label")}</span>
               <input
                 className="w-full"
-                placeholder="Add your price"
+                placeholder={t("listingForm.title.placeholder")}
                 autoComplete="off"
                 type="number"
                 {...form.register("price", { valueAsNumber: true })}
@@ -186,7 +188,7 @@ export default function UpdateListingForm({
 
               <div className="flex flex-col gap-2">
                 <label className="w-full">
-                  <span className="">Images</span>
+                  <span className="">{t("listingForm.images.label")}</span>
                 </label>
 
                 <label
@@ -198,8 +200,8 @@ export default function UpdateListingForm({
                   onDrop={dropImages}
                   className={styles.image_upload_area}
                 >
-                  <p className="text-muted-foreground font-medium">
-                    Click to upload or drag and drop
+                  <p className="text-muted-foreground font-medium text-[12px]">
+                    {t("listingForm.images.placeholder")}
                   </p>
                 </label>
               </div>
@@ -258,7 +260,7 @@ export default function UpdateListingForm({
                 variant="primary"
                 disabled={mutation.isPending}
               >
-                Update
+                {t("listingForm.buttons.update.name")}
               </Button>
             </div>
           </div>

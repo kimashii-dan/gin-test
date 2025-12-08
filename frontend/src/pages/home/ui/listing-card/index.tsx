@@ -8,6 +8,7 @@ import { addToWishlist } from "../../../listing/api";
 import { useAuth } from "../../../../shared/core/auth";
 
 import styles from "../../styles.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function ListingCard({
   listing,
@@ -19,6 +20,7 @@ export default function ListingCard({
   queryKey?: string;
 }) {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { data: authData } = useAuth();
   const isAuthenticated = !!authData?.user;
@@ -64,7 +66,9 @@ export default function ListingCard({
                 : styles.card_status_available
             }
           >
-            {listing.is_closed ? "Sold" : "Available"}
+            {listing.is_closed
+              ? t("listingCard.status.sold")
+              : t("listingCard.status.available")}
           </span>
 
           <span className={styles.card_posted}>
@@ -93,7 +97,7 @@ export default function ListingCard({
                   fill={`${isInWishlist ? "red" : "none"}`}
                   className="size-7 text-destructive"
                 />
-                <span>Like</span>
+                <span>{t("listingCard.like")}</span>
               </button>
             )}
           </div>

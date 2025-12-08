@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../shared/ui/button";
 import type { ServerError } from "../../shared/types";
 import { Card } from "../../shared/ui/card";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -19,6 +20,7 @@ export default function Register() {
     },
   });
 
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const mutation = useMutation({
@@ -43,21 +45,21 @@ export default function Register() {
       <Card className="w-80 md:w-100 flex-col gap-5 p-6">
         <legend>
           <h1 className="text-4xl font-normal font-nice italic mb-2">
-            Register
+            {t("auth.register.title")}
           </h1>
           <p className="text-muted-foreground">
-            Create your account to get started.
+            {t("auth.register.description")}
           </p>
         </legend>
 
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Email</span>
+          <span className="">{t("auth.register.email.label")}</span>
           <input
             type="email"
             className="w-full"
-            placeholder="Enter your password"
-            autoComplete="email"
+            placeholder={t("auth.register.email.placeholder")}
             {...form.register("email")}
+            autoComplete="email"
           />
         </label>
 
@@ -68,13 +70,13 @@ export default function Register() {
         )}
 
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Password</span>
+          <span className="">{t("auth.register.password.label")}</span>
           <input
             type="password"
             className="w-full"
-            placeholder="Enter your password"
-            autoComplete="new-password"
+            placeholder={t("auth.register.password.placeholder")}
             {...form.register("password")}
+            autoComplete="current-password"
           />
         </label>
 
@@ -85,12 +87,12 @@ export default function Register() {
         )}
 
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Confirm Password</span>
+          <span className="">{t("auth.register.confirmPassword.label")}</span>
           <input
             type="password"
             className="w-full"
             autoComplete="off"
-            placeholder="Enter your password again"
+            placeholder={t("auth.register.confirmPassword.placeholder")}
             {...form.register("confirmPassword")}
           />
         </label>
@@ -111,13 +113,13 @@ export default function Register() {
           variant="primary"
           disabled={mutation.isPending}
         >
-          Register
+          {t("auth.register.title")}
         </Button>
 
         <div className="flex gap-2">
-          <p>Already have an account?</p>
+          <p>{t("auth.register.accountExists")}</p>
           <Link to="/login" className="text-accent">
-            Login
+            {t("auth.login.title")}
           </Link>
         </div>
       </Card>

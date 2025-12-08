@@ -1,15 +1,17 @@
 import { NavLink } from "react-router";
 import Logo from "../../logo";
 import styles from "./styles.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className={styles.footer}>
       <nav className={styles.footer_nav}>
         <Logo />
 
         <div className={styles.footer_socials}>
-          <h6 className={styles.footer_title}>Socials</h6>
+          <h6 className={styles.footer_title}>{t("socials")}</h6>
           <div className={styles.footer_icons}>
             <NavLink to="/">
               <svg

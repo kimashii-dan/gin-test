@@ -13,6 +13,8 @@ import ListingCardSkeleton from "./ui/listing-card/skeleton";
 import ErrorScreen from "../../shared/ui/error-screen";
 import SelectSortBy from "./ui/select-sort-by";
 import Search from "./ui/search";
+import SelectListingType from "./ui/select-listing-type";
+import { useTranslation } from "react-i18next";
 // import { filteredListings } from "../../shared/core/mock";
 
 export default function Home() {
@@ -27,6 +29,7 @@ export default function Home() {
 
   const { data: authData } = useAuth();
   const isAuthenticated = !!authData?.user;
+  const { t } = useTranslation();
 
   const [isCreating, setIsCreating] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -80,49 +83,50 @@ export default function Home() {
   }
 
   if (isError) {
-    return <ErrorScreen text={"Error loading listings"} />;
+    return <ErrorScreen text={t("errors.home.loading")} />;
   }
 
   return (
     <section className="page-layout">
       <div className={styles.listing_controls}>
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <SelectListingType
             listingType={listingType}
             setListingType={setListingType}
           />
-        )}
+        )} */}
 
-          {isAuthenticated && (
-            <Button
-              variant="primary"
-              className="w-fit h-fit"
-              onClick={handleCreateListing}
-            >
-              Create listing
-            </Button>
-          )}
-        </div>
-        <div className="cards">
-          {isLoading ? (
-            <>
-              <ListingCardSkeleton />
-              <ListingCardSkeleton />
-              <ListingCardSkeleton />
-              <ListingCardSkeleton />
-            </>
-          ) : (
-            filteredListings &&
-            filteredListings.length > 0 &&
-            filteredListings.map((listingData: ListingData) => (
-              <ListingCard
-                key={listingData.listing.id}
-                listing={listingData.listing}
-                isInWishlist={listingData.is_in_wishlist}
-              />
-            ))
-          )}
-        </div>
+        {isCreating && <CreateListingForm setIsCreating={setIsCreating} />}
+
+        {isAuthenticated && (
+          <Button
+            variant="primary"
+            className="w-fit h-fit"
+            onClick={handleCreateListing}
+          >
+            {t("buttons.createListing")}
+          </Button>
+        )}
+      </div>
+      <div className="cards">
+        {isLoading ? (
+          <>
+            <ListingCardSkeleton />
+            <ListingCardSkeleton />
+            <ListingCardSkeleton />
+            <ListingCardSkeleton />
+          </>
+        ) : (
+          filteredListings &&
+          filteredListings.length > 0 &&
+          filteredListings.map((listingData: ListingData) => (
+            <ListingCard
+              key={listingData.listing.id}
+              listing={listingData.listing}
+              isInWishlist={listingData.is_in_wishlist}
+            />
+          ))
+        )}
       </div>
     </section>
   );

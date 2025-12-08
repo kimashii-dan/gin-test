@@ -19,6 +19,7 @@ import {
 } from "@heroicons/react/24/outline";
 import styles from "../../styles.module.css";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 // import { reportData } from "../../../../shared/core/mock";
 
 export default function CreateListingForm({
@@ -35,6 +36,9 @@ export default function CreateListingForm({
       images: [],
     },
   });
+  const currencies = ["KZT", "RUB", "USD"];
+
+  const { t, i18n } = useTranslation();
 
   const images = form.watch("images");
   const [report, setReport] = useState<PriceSuggestionResponse | null>(null);
@@ -125,6 +129,7 @@ export default function CreateListingForm({
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description ?? "");
+    formData.append("lang", i18n.language);
     images.forEach((image) => {
       formData.append("images[]", image);
     });
@@ -144,10 +149,10 @@ export default function CreateListingForm({
         <Card className={styles.form_card}>
           <div className="flex flex-col gap-10 w-full">
             <label className="field">
-              <span className="">Title</span>
+              <span className="">{t("listingForm.title.label")}</span>
               <input
                 className="w-full"
-                placeholder="Enter title of the product"
+                placeholder={t("listingForm.title.placeholder")}
                 autoComplete="off"
                 {...form.register("title")}
               />
@@ -160,11 +165,11 @@ export default function CreateListingForm({
             )}
 
             <label className="field">
-              <span className="">Description</span>
+              <span className="">{t("listingForm.description.label")}</span>
               <textarea
                 className="w-full h-32"
                 autoComplete="off"
-                placeholder="Enter description of the product"
+                placeholder={t("listingForm.description.placeholder")}
                 {...form.register("description")}
               />
             </label>
@@ -176,10 +181,10 @@ export default function CreateListingForm({
             )}
 
             <label className="field">
-              <span className="">Price</span>
+              <span className="">{t("listingForm.price.label")}</span>
               <input
                 className="w-full"
-                placeholder="Add your price"
+                placeholder={t("listingForm.price.placeholder")}
                 autoComplete="off"
                 type="number"
                 {...form.register("price", { valueAsNumber: true })}
@@ -201,8 +206,8 @@ export default function CreateListingForm({
               <SparklesIcon className="size-6 text-yellow-300" />
               <span>
                 {aiMutation.isPending
-                  ? "Getting suggestion..."
-                  : "Get AI suggestion"}
+                  ? t("listingForm.buttons.aiSuggestion.loading")
+                  : t("listingForm.buttons.aiSuggestion.name")}
               </span>
             </Button>
 
@@ -236,7 +241,7 @@ export default function CreateListingForm({
                   <div className="flex items-center gap-2">
                     <LightBulbIcon className="text-yellow-400 size-7" />
                     <h2 className="text-xl text-card-foreground font-medium">
-                      AI Price Suggestion
+                      {t("aiReport.title")}
                     </h2>
                   </div>
 
@@ -245,7 +250,8 @@ export default function CreateListingForm({
                       report.confidence_level
                     )} shadow-sm px-3 p-0.5 text-sm w-fit font-semibold rounded-full text-black`}
                   >
-                    {report.confidence_level} confidence
+                    {t(`aiReport.confidence.${report.confidence_level}`)}{" "}
+                    {t("aiReport.confidence.name")}
                   </p>
                 </div>
 
@@ -279,7 +285,7 @@ export default function CreateListingForm({
 
               <div className="flex flex-col gap-2">
                 <label className="w-full">
-                  <span className="">Images</span>
+                  <span className="">{t("listingForm.images.label")}</span>
                 </label>
 
                 <label
@@ -291,8 +297,8 @@ export default function CreateListingForm({
                   onDrop={dropImages}
                   className={styles.image_upload_area}
                 >
-                  <p className="text-muted-foreground font-medium">
-                    Click to upload or drag and drop
+                  <p className="text-muted-foreground font-medium text-[12px] sm:text-base">
+                    {t("listingForm.images.placeholder")}
                   </p>
                 </label>
               </div>
@@ -334,7 +340,7 @@ export default function CreateListingForm({
                 disabled={createMutation.isPending}
                 className=""
               >
-                Create
+                {t("listingForm.buttons.create.name")}
               </Button>
             </div>
           </div>

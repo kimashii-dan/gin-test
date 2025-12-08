@@ -16,14 +16,7 @@ type PriceSuggestionRequest struct {
 	Description string                  `form:"description" binding:"required"`
 	Images      []*multipart.FileHeader `form:"images[]"`
 	ImageUrls   []string                `form:"image_urls[]"`
-}
-
-type PriceSuggestionResponse struct {
-	SuggestedPriceMin float64 `json:"suggested_price_min"`
-	SuggestedPriceMax float64 `json:"suggested_price_max"`
-	ConfidenceLevel   string  `json:"confidence_level"`
-	Currency          string  `json:"currency"`
-	Reasoning         string  `json:"reasoning"`
+	Language    string                  `form:"lang" binding:"required"`
 }
 
 func AskAIAboutPrice(c *gin.Context) {
@@ -56,7 +49,7 @@ func AskAIAboutPrice(c *gin.Context) {
 		return
 	}
 
-	priceSuggestionResponse, err := services.SuggestPrice(ctx, body.Title, body.Description, body.Images, body.ImageUrls)
+	priceSuggestionResponse, err := services.SuggestPrice(ctx, body.Title, body.Language, body.Description, body.Images, body.ImageUrls)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

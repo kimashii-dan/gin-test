@@ -9,6 +9,7 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import { logout } from "../../api";
 import { useNavigate } from "react-router";
 import AvatarUploader from "../avatar-uploader";
+import { useTranslation } from "react-i18next";
 
 type MainInfoProps = {
   user: User;
@@ -22,6 +23,7 @@ export default function MainInfo({
   queryClient,
 }: MainInfoProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const logOutMutation = useMutation({
     mutationFn: logout,
@@ -58,9 +60,12 @@ export default function MainInfo({
         <AvatarUploader />
       </div>
       <div className="flex flex-col justify-center gap-2">
-        <p className="text-2xl font-semibold text-center">{user?.name}</p>
+        <p className="text-2xl font-semibold text-center">
+          {user.name ?? t("anonymous")}
+        </p>
         <p className="text-muted-foreground">
-          Joined: {new Date(user.created_at ?? "").toLocaleDateString()}
+          {t("profile.joined")}:{" "}
+          {new Date(user.created_at ?? "").toLocaleDateString()}
         </p>
       </div>
       <div className="flex flex-row md:flex-col gap-5 justify-center">
@@ -70,7 +75,7 @@ export default function MainInfo({
           onClick={() => setIsEditing(true)}
         >
           <PencilSquareIcon className="size-6" />
-          <span>Edit</span>
+          <span>{t("profile.buttons.edit")}</span>
         </Button>
         <Button
           className="flex gap-2 items-center justify-center font-medium"
@@ -78,7 +83,7 @@ export default function MainInfo({
           variant="danger"
         >
           <ArrowLeftStartOnRectangleIcon className="size-6" />
-          <span>Logout</span>
+          <span>{t("profile.buttons.logout")}</span>
         </Button>
       </div>
     </Card>

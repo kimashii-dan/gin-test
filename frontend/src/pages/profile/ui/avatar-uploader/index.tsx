@@ -6,11 +6,13 @@ import { PencilSquareIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Card } from "../../../../shared/ui/card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ServerError } from "../../../../shared/types";
+import { useTranslation } from "react-i18next";
 
 export default function AvatarUploader() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { t } = useTranslation();
 
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -88,10 +90,11 @@ export default function AvatarUploader() {
             {file && (
               <div className="text-sm break-all">
                 <div>
-                  Selected: <span className="text-primary">{file.name}</span>
+                  {t("profile.avatar.uploader.selected")}:{" "}
+                  <span className="text-primary">{file.name}</span>
                 </div>
                 <div>
-                  Size:{" "}
+                  {t("profile.avatar.uploader.size")}:{" "}
                   <span className="text-accent">
                     {(file.size / 1024).toFixed(2)} KB
                   </span>
@@ -116,7 +119,7 @@ export default function AvatarUploader() {
                   variant="primary"
                   onClick={handleUpload}
                 >
-                  Upload Avatar
+                  {t("profile.avatar.uploader.buttons.upload")}
                 </Button>
 
                 <Button
@@ -124,7 +127,7 @@ export default function AvatarUploader() {
                   variant="secondary"
                   onClick={handleChange}
                 >
-                  Change image
+                  {t("profile.avatar.uploader.buttons.changeImage")}
                 </Button>
               </div>
             )}

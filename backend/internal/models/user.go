@@ -10,7 +10,7 @@ type User struct {
 	UpdatedAt    time.Time         `json:"updated_at"`
 	Email        string            `json:"email"`
 	Password     string            `json:"-"`
-	Name         string            `json:"name" gorm:"default:'Anonymous'"`
+	Name         string            `json:"name"`
 	University   string            `json:"university"`
 	Phone        string            `json:"phone"`
 	TelegramLink string            `json:"telegram_link"`

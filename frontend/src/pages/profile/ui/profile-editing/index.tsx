@@ -7,6 +7,7 @@ import { profileSchema } from "../../../../shared/core/schemas";
 import type z from "zod";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { updateUser } from "../../api";
+import { useTranslation } from "react-i18next";
 
 type ProfileEditingProps = {
   user: User;
@@ -38,6 +39,8 @@ export default function ProfileEditing({
       console.log(error);
     },
   });
+
+  const { t } = useTranslation();
 
   const form = useForm({
     resolver: zodResolver(profileSchema),
@@ -92,19 +95,19 @@ export default function ProfileEditing({
     <form onSubmit={form.handleSubmit(handleUpdate)}>
       <Card className="flex-col gap-5 p-5 md:p-10">
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Email</span>
+          <span className="">{t("profile.info.email")}</span>
           <input
             className="w-full"
-            placeholder="Enter your email"
+            placeholder={t("profile.fields.email")}
             autoComplete="email"
             {...form.register("email")}
           />
         </label>
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Name</span>
+          <span className="">{t("profile.name")}</span>
           <input
             className="w-full"
-            placeholder="Enter your name"
+            placeholder={t("profile.fields.name")}
             autoComplete="name"
             {...form.register("name")}
             ref={(e) => {
@@ -114,10 +117,10 @@ export default function ProfileEditing({
           />
         </label>
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">University</span>
+          <span className="">{t("profile.info.university")}</span>
           <input
             className="w-full"
-            placeholder="Add your university"
+            placeholder={t("profile.fields.university")}
             autoComplete="off"
             {...form.register("university")}
             ref={(e) => {
@@ -127,11 +130,11 @@ export default function ProfileEditing({
           />
         </label>
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Phone</span>
+          <span className="">{t("profile.contacts.phone")}</span>
           <input
             type="tel"
             className="w-full"
-            placeholder="Add a phone"
+            placeholder={t("profile.fields.phone")}
             autoComplete="tel"
             {...form.register("phone")}
             ref={(e) => {
@@ -141,11 +144,11 @@ export default function ProfileEditing({
           />
         </label>
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Telegram Link</span>
+          <span className="">{t("profile.contacts.telegram")}</span>
           <input
             type="url"
             className="w-full"
-            placeholder="Add a telegram"
+            placeholder={t("profile.fields.telegram")}
             autoComplete="off"
             {...form.register("telegram_link")}
             ref={(e) => {
@@ -155,10 +158,10 @@ export default function ProfileEditing({
           />
         </label>
         <label className="flex flex-col items-start gap-2 w-full">
-          <span className="">Bio</span>
+          <span className="">{t("profile.aboutMe.name")}</span>
           <textarea
             className="w-full h-20"
-            placeholder="Add a bio"
+            placeholder={t("profile.fields.bio")}
             autoComplete="off"
             {...form.register("bio")}
             ref={(e) => {
@@ -173,10 +176,10 @@ export default function ProfileEditing({
             variant="primary"
             disabled={updateUserMutation.isPending}
           >
-            Save
+            {t("profile.buttons.save")}
           </Button>
           <Button type="button" variant="secondary" onClick={handleCancelEdit}>
-            Cancel
+            {t("profile.buttons.cancel")}
           </Button>
         </div>
       </Card>

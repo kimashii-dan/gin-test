@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import type { User } from "../../../../shared/types";
 import TelegramLogo from "../../../../shared/ui/telegram-logo";
+import { useTranslation } from "react-i18next";
 
 type DetailsInfoProps = {
   user: User;
@@ -37,18 +38,20 @@ export default function DetailsInfo({
     }, 0);
   }
 
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="flex flex-col lg:flex-row gap-10">
         <Card className="flex-col gap-5 w-full p-5 md:p-10">
           <div className="flex gap-2 items-center w-fit">
             <InformationCircleIcon className="size-7 text-accent" />
-            <h1 className="text-2xl font-semibold">Info</h1>
+            <h1 className="text-2xl font-semibold">{t("profile.info.name")}</h1>
           </div>
           <div className="flex flex-col gap-2 pl-5">
             <div className="flex gap-2 py-3 px-4 items-center w-fit">
               <EnvelopeIcon className="size-5" />
-              <h2>Email: </h2>
+              <h2>{t("profile.info.email")}:</h2>
               <Link
                 className="text-primary break-all"
                 to={`mailto:${user?.email}`}
@@ -60,7 +63,7 @@ export default function DetailsInfo({
             {user?.university !== "" ? (
               <div className="flex gap-2 py-3 px-4  items-center w-fit">
                 <AcademicCapIcon className="size-5" />
-                <h2>University:</h2>
+                <h2>{t("profile.info.university")}:</h2>
                 <p>{user?.university}</p>
               </div>
             ) : (
@@ -69,7 +72,7 @@ export default function DetailsInfo({
                 className="flex py-3 px-4 shadow-base font-medium rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
               >
                 <PlusIcon className="size-5" />
-                <h2>Add University</h2>
+                <h2>{t("profile.fields.university")}</h2>
                 <AcademicCapIcon className="size-5" />
               </button>
             )}
@@ -78,14 +81,16 @@ export default function DetailsInfo({
         <Card className="flex-col gap-5 w-full p-5 md:p-10">
           <div className="flex gap-2 items-center w-fit">
             <LinkIcon className="size-7 text-primary" />
-            <h1 className="text-2xl font-semibold">Contacts</h1>
+            <h1 className="text-2xl font-semibold">
+              {t("profile.contacts.name")}
+            </h1>
           </div>
 
           <div className="flex flex-col pl-5 gap-2">
             {user?.phone !== "" ? (
               <div className="flex gap-2 py-3 px-4  items-center w-fit">
                 <PhoneIcon className="size-5" />
-                <h2>Phone:</h2>
+                <h2>{t("profile.contacts.phone")}:</h2>
                 <Link to={`tel:${user?.phone}`}>{user?.phone}</Link>
               </div>
             ) : (
@@ -94,7 +99,7 @@ export default function DetailsInfo({
                 className="flex py-3 px-4 shadow-base font-medium rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
               >
                 <PlusIcon className="size-5" />
-                <h2>Add Phone</h2>
+                <h2>{t("profile.fields.phone")}</h2>
                 <PhoneIcon className="size-5" />
               </button>
             )}
@@ -103,7 +108,9 @@ export default function DetailsInfo({
               <div className="flex items-center py-3 px-4 w-fit gap-1">
                 <TelegramLogo width={25} height={25} />
 
-                <h2 className="whitespace-nowrap">Telegram: </h2>
+                <h2 className="whitespace-nowrap">
+                  {t("profile.contacts.telegram")}:
+                </h2>
                 <Link
                   className="text-primary break-all"
                   to={user?.telegram_link ?? ""}
@@ -117,7 +124,7 @@ export default function DetailsInfo({
                 className="flex py-3 px-4 shadow-base font-medium  rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
               >
                 <PlusIcon className="size-5" />
-                <h2>Add Telegram</h2>
+                <h2>{t("profile.fields.telegram")}</h2>
                 <TelegramLogo width={25} height={25} />
               </button>
             )}
@@ -127,7 +134,9 @@ export default function DetailsInfo({
       <Card className="flex flex-col gap-5 w-full p-5 md:p-10">
         <div className="flex gap-2 items-center w-fit">
           <UserIcon className="size-7 text-foreground" />
-          <h1 className="text-2xl font-semibold">About me</h1>
+          <h1 className="text-2xl font-semibold">
+            {t("profile.aboutMe.name")}
+          </h1>
         </div>
         <div className="pl-5">
           {user?.bio !== "" ? (
@@ -140,7 +149,7 @@ export default function DetailsInfo({
               className="flex py-3 px-4 shadow-base font-medium rounded-md gap-2 items-center w-fit bg-accent text-accent-foreground"
             >
               <PlusIcon className="size-5" />
-              <h2>Add Bio</h2>
+              <h2>{t("profile.fields.bio")}</h2>
               <PencilIcon className="size-5" />
             </button>
           )}

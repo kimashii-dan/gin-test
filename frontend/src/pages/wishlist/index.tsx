@@ -5,6 +5,7 @@ import ListingCard from "../home/ui/listing-card";
 import ListingCardSkeleton from "../home/ui/listing-card/skeleton";
 import ErrorScreen from "../../shared/ui/error-screen";
 import EmptyData from "../../shared/ui/empty-data";
+import { useTranslation } from "react-i18next";
 
 export default function WishlistPage() {
   const {
@@ -16,15 +17,17 @@ export default function WishlistPage() {
     queryFn: getWishlist,
   });
 
+  const { t } = useTranslation();
+
   if (isError) {
-    return <ErrorScreen text={"Error loading wishlist"} />;
+    return <ErrorScreen text={t("errors.wishlist.loading")} />;
   }
 
   return (
     <section className="page-layout">
-      <h1 className="page-title">Wishlist</h1>
+      <h1 className="page-title">{t("wishlist")}</h1>
       {!isLoading && listings && listings.length === 0 && (
-        <EmptyData text={"No items in wishlist"} />
+        <EmptyData text={t("errors.wishlist.absence")} />
       )}
       <div className="cards">
         {isLoading ? (

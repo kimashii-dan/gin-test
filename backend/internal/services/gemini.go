@@ -34,13 +34,6 @@ func InitGemini() {
 	fmt.Println("Gemini initialized successfully")
 }
 
-type PriceSuggestionRequest struct {
-	Title       string                  `form:"title" binding:"required"`
-	Description string                  `form:"description" binding:"required"`
-	Images      []*multipart.FileHeader `form:"images[]"`
-	ImageUrls   []string                `form:"image_urls[]"`
-}
-
 type PriceSuggestionResponse struct {
 	SuggestedPriceMin float64 `json:"suggested_price_min"`
 	SuggestedPriceMax float64 `json:"suggested_price_max"`
@@ -49,7 +42,7 @@ type PriceSuggestionResponse struct {
 	Reasoning         string  `json:"reasoning"`
 }
 
-func SuggestPrice(ctx context.Context, title string, description string, images []*multipart.FileHeader, imageURLs []string) (PriceSuggestionResponse, error) {
+func SuggestPrice(ctx context.Context, title string, language string, description string, images []*multipart.FileHeader, imageURLs []string) (PriceSuggestionResponse, error) {
 	// create text prompt
 	parts := []*genai.Part{
 		{Text: fmt.Sprintf(
@@ -130,6 +123,11 @@ func SuggestPrice(ctx context.Context, title string, description string, images 
 		[]*genai.Content{{Parts: parts}},
 		&genai.GenerateContentConfig{
 			ResponseMIMEType: "application/json",
+			SystemInstruction: &genai.Content{
+				Parts: []*genai.Part{{
+					Text: fmt.Sprintf("You are a pricing assistant. Always respond in %s language. Output must be valid JSON only.", language),
+				}},
+			},
 		},
 	)
 	if err != nil {

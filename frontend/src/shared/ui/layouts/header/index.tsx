@@ -9,11 +9,14 @@ import {
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../core/auth";
 import Search from "./ui/search";
+import LangToggle from "../../lang-toggle";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const { data: authData } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const isAuthenticated = !!authData?.user;
+  const { t } = useTranslation();
 
   return (
     <header className={styles.header}>
@@ -24,6 +27,7 @@ export default function Header() {
 
         <div className="flex gap-5">
           <ModeToggle />
+          <LangToggle />
           {isAuthenticated ? (
             <>
               <NavLink
@@ -39,7 +43,7 @@ export default function Header() {
           ) : (
             <NavLink to="/login" className="flex flex-row items-center gap-1">
               <ArrowLeftEndOnRectangleIcon className="size-6" />
-              <span>Login</span>
+              <span>{t("auth.login.title")}</span>
             </NavLink>
           )}
         </div>

@@ -13,10 +13,11 @@ import TelegramLogo from "../../../../shared/ui/telegram-logo";
 import styles from "../../styles.module.css";
 import { Button } from "../../../../shared/ui/button";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 export default function AccountDetails({ user }: { user: User }) {
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   function handleContact() {
     if (!user) {
       return;
@@ -32,24 +33,24 @@ export default function AccountDetails({ user }: { user: User }) {
 
   const userDetails = [
     {
-      title: "Email",
+      title: t("profile.info.email"),
       icon: <EnvelopeIcon className="size-5" />,
       value: user?.email,
     },
     {
-      title: "Phone",
+      title: t("profile.contacts.phone"),
       icon: <PhoneIcon className="size-5" />,
-      value: user?.phone || "Unknown",
+      value: user?.phone || t("unknown"),
     },
     {
-      title: "University",
+      title: t("profile.info.university"),
       icon: <AcademicCapIcon className="size-5" />,
-      value: user?.university || "Unknown",
+      value: user?.university || t("unknown"),
     },
     {
-      title: "Telegram",
+      title: t("profile.contacts.telegram"),
       icon: <PaperAirplaneIcon className="size-5 -rotate-40" />,
-      value: user?.telegram_link || "Unknown",
+      value: user?.telegram_link || t("unknown"),
     },
   ];
 
@@ -73,7 +74,8 @@ export default function AccountDetails({ user }: { user: User }) {
         <div className="flex flex-col justify-center gap-2">
           <p className="text-2xl font-semibold text-center">{user?.name}</p>
           <p className="text-muted-foreground">
-            Member since {formatDate(user?.created_at)}
+            {t("listingDetails.owner.memberSince")}{" "}
+            {formatDate(user?.created_at)}
           </p>
         </div>
 
@@ -86,7 +88,7 @@ export default function AccountDetails({ user }: { user: User }) {
             >
               <TelegramLogo width={30} height={30} />
               <span className="font-medium text-base">
-                Contact via Telegram
+                {t("listingDetails.buttons.contactTelegram")}
               </span>
             </Button>
           ) : (
@@ -96,7 +98,9 @@ export default function AccountDetails({ user }: { user: User }) {
               onClick={handleContact}
             >
               <EnvelopeIcon className="size-5" />
-              <span className="font-medium text-base">Contact via Email</span>
+              <span className="font-medium text-base">
+                {t("listingDetails.buttons.contactEmail")}
+              </span>
             </Button>
           )}
 
@@ -106,7 +110,9 @@ export default function AccountDetails({ user }: { user: User }) {
             variant="secondary"
           >
             <StarIcon className="size-6  text-yellow-500" />
-            <span className="font-medium text-base">Rate {user?.name}</span>
+            <span className="font-medium text-base">
+              {t("listingDetails.buttons.rate")} {user?.name}
+            </span>
           </Button>
         </div>
       </Card>
@@ -128,9 +134,9 @@ export default function AccountDetails({ user }: { user: User }) {
           <div className="flex flex-col gap-2 items-start justify-center">
             <h3 className="font-medium text-lg flex gap-2 items-center">
               <UserIcon className="size-5" />
-              <span>Bio</span>
+              <span>{t("profile.aboutMe.name")}</span>
             </h3>
-            <p className="text-muted-foreground">{user.bio || "Unknown"}</p>
+            <p className="text-muted-foreground">{user.bio || t("unknown")}</p>
           </div>
         </Card>
       </div>

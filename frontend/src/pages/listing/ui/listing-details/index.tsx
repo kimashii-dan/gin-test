@@ -23,6 +23,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToWishlist, createAIPriceReport, updateListing } from "../../api";
 import styles from "../../styles.module.css";
 import { LightBulbIcon } from "@heroicons/react/24/solid";
+import { useTranslation } from "react-i18next";
 
 export default function ListingDetails({
   listing,
@@ -36,7 +37,7 @@ export default function ListingDetails({
   const isAuthenticated = !!authData?.user;
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
+  const { i18n, t } = useTranslation();
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
     mutationFn: updateListing,
@@ -123,12 +124,13 @@ export default function ListingDetails({
     const formData = new FormData();
     formData.append("title", listing.title);
     formData.append("description", listing.description ?? "");
+    formData.append("lang", i18n.language);
     listing.image_urls.forEach((imageURL) => {
       formData.append("image_urls[]", imageURL);
     });
     const id = listing.id;
     aiMutation.mutate({ id, formData });
-    targetRef.current?.scrollIntoView({ behavior: "smooth" });
+    targetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return (
@@ -141,7 +143,7 @@ export default function ListingDetails({
             onClick={handleUpdate}
           >
             <ArrowPathIcon className="size-5" />
-            <span>Update</span>
+            <span>{t("listingDetails.buttons.update")}</span>
           </Button>
           <Button
             className="flex-1 flex justify-center gap-1 items-center font-medium"
@@ -149,7 +151,7 @@ export default function ListingDetails({
             onClick={handleDelete}
           >
             <TrashIcon className="size-5" />
-            <span>Delete</span>
+            <span>{t("listingDetails.buttons.delete")}</span>
           </Button>
         </div>
       )}
@@ -184,8 +186,8 @@ export default function ListingDetails({
                   <SparklesIcon className="size-6 text-yellow-300" />
                   <span>
                     {aiMutation.isPending
-                      ? "Getting suggestion..."
-                      : "Get AI suggestion"}
+                      ? t("listingForm.buttons.aiSuggestion.loading")
+                      : t("listingForm.buttons.aiSuggestion.name")}
                   </span>
                 </Button>
               )}
@@ -199,7 +201,7 @@ export default function ListingDetails({
                     listing.is_closed ? "text-muted-foreground" : "text-accent"
                   }`}
                 >
-                  Available
+                  {t("listingDetails.status.available")}
                 </span>
 
                 <button
@@ -224,7 +226,7 @@ export default function ListingDetails({
                       : "text-muted-foreground"
                   }`}
                 >
-                  Sold
+                  {t("listingDetails.status.sold")}
                 </span>
               </div>
             ) : (
@@ -236,7 +238,9 @@ export default function ListingDetails({
                       : styles.listing_status_available
                   }
                 >
-                  {listing.is_closed ? "Sold" : "Available"}
+                  {listing.is_closed
+                    ? t("listingDetails.status.sold")
+                    : t("listingDetails.status.available")}
                 </div>
               </div>
             )}
@@ -250,13 +254,15 @@ export default function ListingDetails({
                   fill={`${isInWishlist ? "red" : "none"}`}
                   className="size-7 text-destructive"
                 />
-                <span>Like</span>
+                <span>{t("listingDetails.like")}</span>
               </button>
             )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <p className="text-xl font-medium">Description</p>
+            <p className="text-xl font-medium">
+              {t("listingDetails.description")}
+            </p>
             <p className="font-normal text-muted-foreground">
               {listing.description}
             </p>
@@ -285,7 +291,8 @@ export default function ListingDetails({
             <div className="flex flex-col justify-between">
               <p className="text-lg font-medium">{listing.user?.email}</p>
               <p className="text-base font-normal text-muted-foreground">
-                Member since {formatDate(listing.user?.created_at)}
+                {t("listingDetails.owner.memberSince")}{" "}
+                {formatDate(listing.user?.created_at)}
               </p>
             </div>
           </Link>
@@ -298,7 +305,9 @@ export default function ListingDetails({
                 onClick={handleContact}
               >
                 <TelegramLogo width={25} height={25} />
-                <span className="">Contact via Telegram</span>
+                <span className="">
+                  {t("listingDetails.buttons.contactTelegram")}
+                </span>
               </Button>
             ) : (
               <Button
@@ -307,7 +316,9 @@ export default function ListingDetails({
                 onClick={handleContact}
               >
                 <EnvelopeIcon className="size-5 text-secondary" />
-                <span className="">Contact via Email</span>
+                <span className="">
+                  {t("listingDetails.buttons.contactEmail")}
+                </span>
               </Button>
             )}
 
@@ -317,7 +328,7 @@ export default function ListingDetails({
               onClick={handleShare}
             >
               <ShareIcon className="size-5 text-primary" />
-              <span className="">Share</span>
+              <span className="">{t("listingDetails.buttons.share")}</span>
             </Button>
           </div>
 
@@ -327,10 +338,12 @@ export default function ListingDetails({
             <div className="flex items-center w-fit gap-2">
               <AcademicCapIcon className="size-8 text-muted-foreground" />
               <div className="flex flex-col">
-                <p className="font-normal text-muted-foreground">University</p>
+                <p className="font-normal text-muted-foreground">
+                  {t("listingDetails.owner.university")}
+                </p>
                 <p className="font-medium">
                   {listing.user?.university === ""
-                    ? "Unknown"
+                    ? t("unknown")
                     : listing.user?.university}
                 </p>
               </div>
@@ -339,7 +352,9 @@ export default function ListingDetails({
             <div className="flex items-center w-fit gap-2">
               <CalendarDaysIcon className="size-8 text-muted-foreground" />
               <div className="flex flex-col">
-                <p className="font-normal text-muted-foreground">Posted</p>
+                <p className="font-normal text-muted-foreground">
+                  {t("listingDetails.posted")}
+                </p>
                 <p className="font-medium">
                   {formatDateTime(listing.created_at)}
                 </p>
@@ -349,32 +364,31 @@ export default function ListingDetails({
         </div>
       </Card>
 
-      {aiMutation.isPending && (
-        <Card className="flex-col overflow-hidden animate-pulse">
-          <div
-            ref={targetRef}
-            className="flex lg:flex-row flex-col p-6 bg-muted justify-between gap-5 lg:items-center"
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-muted rounded"></div>
-              <div className="h-6 bg-muted rounded w-40"></div>
+      <div ref={targetRef}>
+        {aiMutation.isPending && (
+          <Card className="flex-col overflow-hidden animate-pulse">
+            <div className="flex lg:flex-row flex-col p-6 bg-muted justify-between gap-5 lg:items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 bg-muted rounded"></div>
+                <div className="h-6 bg-muted rounded w-40"></div>
+              </div>
+              <div className="h-6 bg-muted rounded-full w-24"></div>
             </div>
-            <div className="h-6 bg-muted rounded-full w-24"></div>
-          </div>
 
-          <div className="flex items-baseline gap-3 px-6 py-5">
-            <div className="h-12 bg-muted rounded w-32"></div>
-            <div className="h-8 bg-muted rounded w-12"></div>
-          </div>
+            <div className="flex items-baseline gap-3 px-6 py-5">
+              <div className="h-12 bg-muted rounded w-32"></div>
+              <div className="h-8 bg-muted rounded w-12"></div>
+            </div>
 
-          <hr className="border border-border" />
-          <div className="space-y-2 px-6 py-5">
-            <div className="h-4 bg-muted rounded w-full"></div>
-            <div className="h-4 bg-muted rounded w-3/4"></div>
-            <div className="h-4 bg-muted rounded w-5/6"></div>
-          </div>
-        </Card>
-      )}
+            <hr className="border border-border" />
+            <div className="space-y-2 px-6 py-5">
+              <div className="h-4 bg-muted rounded w-full"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-5/6"></div>
+            </div>
+          </Card>
+        )}
+      </div>
 
       {listing.ai_price_report && (
         <Card className="flex-col overflow-hidden">
@@ -382,7 +396,7 @@ export default function ListingDetails({
             <div className="flex items-center gap-2">
               <LightBulbIcon className="text-yellow-400 size-7" />
               <h2 className="text-xl text-card-foreground font-semibold capitalize">
-                AI Price Suggestion
+                {t("aiReport.title")}
               </h2>
             </div>
 
@@ -391,7 +405,10 @@ export default function ListingDetails({
                 listing.ai_price_report.confidence_level
               )} shadow-sm px-3 py-0.5 text-sm w-fit font-semibold rounded-full text-black`}
             >
-              {listing.ai_price_report.confidence_level} confidence
+              {t(
+                `aiReport.confidence.${listing.ai_price_report.confidence_level}`
+              )}{" "}
+              {t("aiReport.confidence.name")}
             </p>
           </div>
 

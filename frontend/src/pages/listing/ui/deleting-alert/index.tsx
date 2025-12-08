@@ -5,6 +5,7 @@ import { Modal } from "../../../../shared/ui/modal";
 import type { ServerError } from "../../../../shared/types";
 import { deleteListing } from "../../api";
 import { useNavigate } from "react-router";
+import { useTranslation } from "react-i18next";
 
 export default function DeletingAlert({
   setIsDeleting,
@@ -14,6 +15,7 @@ export default function DeletingAlert({
   id: number;
 }) {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: deleteListing,
@@ -40,14 +42,14 @@ export default function DeletingAlert({
     <Modal className="items-center">
       <Card className="p-5 md:p-10 flex-col gap-5 m-5">
         <p className="text-lg font-medium">
-          Do you really want to delete this beautiful listing?
+          {t("listingDetails.deletingAlert")}
         </p>
         <div className="flex gap-5">
           <Button className="flex-1" onClick={handleCancel} variant="secondary">
-            No
+            {t("no")}
           </Button>
           <Button className="flex-1" onClick={handleDelete} variant="danger">
-            Yes
+            {t("yes")}
           </Button>
         </div>
       </Card>

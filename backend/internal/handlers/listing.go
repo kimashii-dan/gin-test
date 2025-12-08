@@ -49,7 +49,7 @@ func CreateListing(c *gin.Context) {
 	}
 
 	// convert JSON string into struct
-	var priceSuggestion *PriceSuggestionResponse
+	var priceSuggestion *services.PriceSuggestionResponse
 	if body.PriceSuggestion != "" {
 		if err := json.Unmarshal([]byte(body.PriceSuggestion), &priceSuggestion); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid price suggestion format"})
@@ -521,7 +521,7 @@ func CreateAIReport(c *gin.Context) {
 	}
 
 	// get ai report
-	priceSuggestionResponse, err := services.SuggestPrice(ctx, body.Title, body.Description, body.Images, body.ImageUrls)
+	priceSuggestionResponse, err := services.SuggestPrice(ctx, body.Title, body.Language, body.Description, body.Images, body.ImageUrls)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return

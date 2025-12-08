@@ -19,36 +19,40 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
           className="w-full h-full object-cover"
           alt={`${listing.title} image 1`}
         />
-        <div className="absolute top-1/2 left-1">
-          <button
-            onClick={() =>
-              setCurrentIndex((prev: number) => {
-                if (currentIndex === 0) {
-                  return listing.image_urls.length - 1;
-                }
+        {listing.image_urls.length > 2 && (
+          <>
+            <div className="absolute top-1/2 left-1">
+              <button
+                onClick={() =>
+                  setCurrentIndex((prev: number) => {
+                    if (currentIndex === 0) {
+                      return listing.image_urls.length - 1;
+                    }
 
-                return prev - 1;
-              })
-            }
-          >
-            <ArrowLeftIcon className={styles.arrow} />
-          </button>
-        </div>
-        <div className="absolute top-1/2 right-1">
-          <button
-            onClick={() => {
-              setCurrentIndex((prev: number) => {
-                if (currentIndex === listing.image_urls.length - 1) {
-                  return 0;
+                    return prev - 1;
+                  })
                 }
+              >
+                <ArrowLeftIcon className={styles.arrow} />
+              </button>
+            </div>
+            <div className="absolute top-1/2 right-1">
+              <button
+                onClick={() => {
+                  setCurrentIndex((prev: number) => {
+                    if (currentIndex === listing.image_urls.length - 1) {
+                      return 0;
+                    }
 
-                return prev + 1;
-              });
-            }}
-          >
-            <ArrowRightIcon className={styles.arrow} />
-          </button>
-        </div>
+                    return prev + 1;
+                  });
+                }}
+              >
+                <ArrowRightIcon className={styles.arrow} />
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex w-full gap-2">

@@ -7,11 +7,13 @@ import ListingDetails from "./ui/listing-details";
 import ListingPageSkeleton from "./skeleton";
 import styles from "./styles.module.css";
 import ErrorScreen from "../../shared/ui/error-screen";
+import { useTranslation } from "react-i18next";
 
 // import { listingData } from "../../shared/core/mock";
 
 export default function ListingPage() {
   let { id } = useParams();
+  const { t } = useTranslation();
 
   const {
     data: listingData,
@@ -27,7 +29,7 @@ export default function ListingPage() {
   }
 
   if (isError || !listingData?.listing) {
-    return <ErrorScreen text={"Error loading listing"} />;
+    return <ErrorScreen text={t("errors.listing.loading")} />;
   }
 
   return (
