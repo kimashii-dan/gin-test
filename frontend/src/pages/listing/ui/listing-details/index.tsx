@@ -167,11 +167,13 @@ export default function ListingDetails({
 
       <Card className="p-8 flex-col">
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <h1 className={styles.listing_title}>{listing.title}</h1>
             {listing.category && (
               <span className="inline-block px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full w-fit">
-                {listing.category}
+                {t(
+                  `listingForm.category.categories.${listing.category.toLowerCase()}`
+                )}
               </span>
             )}
           </div>

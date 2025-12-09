@@ -181,12 +181,12 @@ func GetUserWithListing(c *gin.Context) {
 }
 
 type SearchParams struct {
-	Query string `form:"q" binding:"required"`
-	Page  int    `form:"page" binding:"min=1"`
-	// Category string  `form:"category"`
-	MinPrice float64 `form:"min_price"`
-	MaxPrice float64 `form:"max_price"`
-	Sort     string  `form:"sort"`
+	Query    string `form:"q"`
+	Page     int    `form:"page" binding:"min=1"`
+	Category string `form:"category"`
+	// MinPrice float64 `form:"min_price"`
+	// MaxPrice float64 `form:"max_price"`
+	// Sort     string  `form:"sort"`
 }
 
 func Search(c *gin.Context) {
@@ -203,11 +203,19 @@ func Search(c *gin.Context) {
 
 	var listings []models.Listing
 
-	searchPattern := "%" + params.Query + "%"
-	query := database.DB.Model(&models.Listing{}).Where(
-		"title ILIKE ? OR description ILIKE ?",
-		searchPattern, searchPattern,
-	)
+	query := database.DB.Model(&models.Listing{})
+
+	if params.Query != "" {
+		searchPattern := "%" + params.Query + "%"
+		query = database.DB.Where(
+			"title ILIKE ? OR description ILIKE ?",
+			searchPattern, searchPattern,
+		)
+	}
+
+	if params.Category != "" {
+		query = query.Where("LOWER(category) = LOWER(?)", params.Category)
+	}
 
 	if err := query.Limit(limit).Offset(offset).Find(&listings).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Search failed"})

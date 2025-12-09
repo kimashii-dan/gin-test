@@ -1,14 +1,14 @@
 import { ClockIcon, HeartIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router";
-import type { Listing, ServerError } from "../../../../shared/types";
-import { Card } from "../../../../shared/ui/card";
-import { timeAgo } from "../../../../shared/helpers/timeAgo";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addToWishlist } from "../../../listing/api";
-import { useAuth } from "../../../../shared/core/auth";
 
-import styles from "../../styles.module.css";
+import styles from "./styles.module.css";
 import { useTranslation } from "react-i18next";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../core/auth";
+import type { Listing, ServerError } from "../../types";
+import { addToWishlist } from "../../../pages/listing/api";
+import { Card } from "../card";
+import { timeAgo } from "../../helpers/timeAgo";
 
 export default function ListingCard({
   listing,
@@ -84,7 +84,9 @@ export default function ListingCard({
             <h1 className={styles.card_title}>{listing.title}</h1>
             {listing.category && (
               <span className="inline-block px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full mt-1 mb-2">
-                {listing.category}
+                {t(
+                  `listingForm.category.categories.${listing.category.toLowerCase()}`
+                )}
               </span>
             )}
             <p className={styles.card_description}>{listing.description}</p>

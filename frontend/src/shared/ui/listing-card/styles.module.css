@@ -1,0 +1,33 @@
+@reference "../../styles/index.css";
+
+.card_listing {
+  @apply h-full xs:max-w-[300px] mx-auto md:mx-0 flex-col gap-5 p-5 hover:-translate-y-1;
+}
+
+.card_img {
+  @apply relative w-full aspect-square overflow-hidden rounded-lg;
+}
+
+.card_status_sold {
+  @apply absolute shadow-sm top-2 left-2 px-2 py-0.5 text-sm font-semibold rounded-full bg-destructive text-destructive-foreground;
+}
+
+.card_status_available {
+  @apply absolute shadow-sm top-2 left-2 px-2 py-0.5 text-sm font-semibold rounded-full bg-accent text-accent-foreground;
+}
+
+.card_posted {
+  @apply absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full;
+}
+
+.card_title {
+  @apply text-xl font-medium truncate;
+}
+
+.card_description {
+  @apply text-[15px] font-medium text-muted-foreground line-clamp-4;
+}
+
+.card_price {
+  @apply text-2xl font-semibold text-highlight;
+}

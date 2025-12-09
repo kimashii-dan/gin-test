@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../shared/core/auth";
 
@@ -8,6 +8,7 @@ import ProfileEditing from "./ui/profile-editing";
 import ProfileSkeleton from "./skeleton";
 import ErrorScreen from "../../shared/ui/error-screen";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router";
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -16,6 +17,14 @@ export default function Profile() {
   const { t } = useTranslation();
   const user = authData?.user;
   const listings = authData?.listings;
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.scrollToBottom) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+  }, [location.state]);
 
   const inputRefs = useRef<{
     name: HTMLInputElement | null;

@@ -11,6 +11,7 @@ import ListingPage from "../pages/listing";
 import Home from "../pages/home";
 import AccountPage from "../pages/account";
 import WishlistPage from "../pages/wishlist";
+import SearchPage from "../pages/search";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
           {
             path: "/listings/:id",
             Component: ListingPage,
+          },
+          {
+            path: "/search",
+            Component: SearchPage,
           },
           {
             path: "/users/:id",

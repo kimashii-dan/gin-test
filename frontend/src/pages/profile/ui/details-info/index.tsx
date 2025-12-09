@@ -14,7 +14,7 @@ import type { ListingData, User } from "../../../../shared/types";
 import TelegramLogo from "../../../../shared/ui/telegram-logo";
 import { useTranslation } from "react-i18next";
 import EmptyData from "../../../../shared/ui/empty-data";
-import ListingCard from "../../../home/ui/listing-card";
+import ListingCard from "../../../../shared/ui/listing-card";
 
 type DetailsInfoProps = {
   user: User;
@@ -167,7 +167,7 @@ export default function DetailsInfo({
       {listingData && listingData.length === 0 && (
         <EmptyData text={t("errors.account.listings.absence")} />
       )}
-      <div className="cards">
+      <div className="cards" id="listings">
         {Array.isArray(listingData) &&
           listingData.map((listingData: ListingData) => (
             <ListingCard

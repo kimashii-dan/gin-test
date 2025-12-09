@@ -8,9 +8,18 @@ const resources = {
         en: "English",
         ru: "Russian",
       },
+      heroText: {
+        title: {
+          stroke1: "The Marketplace",
+          stroke2: "Made for Students.",
+        },
+        description:
+          "A student marketplace with an AI Price Advisor. Buy, sell, and get instant price suggestions to save money and make smarter deals",
+      },
       buttons: {
         createListing: "Create listing",
         goToHome: "Go to Home",
+        getStarted: "Get Started",
       },
       listingCard: {
         status: {
@@ -29,13 +38,13 @@ const resources = {
           placeholder: "Enter description of the product",
         },
         category: {
-          label: "Description",
+          label: "Categories",
           categories: {
-            Furniture: "Furniture",
-            Electronics: "Electronics",
-            Books: "Books",
-            Clothing: "Clothing",
-            Services: "Services",
+            furniture: "Furniture",
+            electronics: "Electronics",
+            books: "Books",
+            clothing: "Clothing",
+            services: "Services",
           },
         },
         price: {
@@ -205,9 +214,18 @@ const resources = {
         en: "Английский",
         ru: "Русский",
       },
+      heroText: {
+        title: {
+          stroke1: "Mаркетплейс",
+          stroke2: "Для студентов.",
+        },
+        description:
+          "Маркетплейс с AI-советником по ценам: продавай, покупай и получай мгновенные рекомендации, чтобы экономить и делать выгодные сделки.",
+      },
       buttons: {
         createListing: "Создать объявление",
         goToHome: "Вернуться на главную страницу",
+        getStarted: "Попробовать",
       },
       listingCard: {
         status: {
@@ -228,11 +246,11 @@ const resources = {
         category: {
           label: "Категории",
           categories: {
-            Furniture: "Мебель",
-            Electronics: "Электроника",
-            Books: "Книги",
-            Clothing: "Одежда",
-            Services: "Услуги",
+            furniture: "Мебель",
+            electronics: "Электроника",
+            books: "Книги",
+            clothing: "Одежда",
+            services: "Услуги",
           },
         },
         price: {

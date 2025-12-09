@@ -175,7 +175,9 @@ export default function UpdateListingForm({
                         {...form.register("category")}
                       />
                       <span>
-                        {t(`listingForm.category.categories.${category}`)}
+                        {t(
+                          `listingForm.category.categories.${category.toLowerCase()}`
+                        )}
                       </span>
                     </label>
                   </div>

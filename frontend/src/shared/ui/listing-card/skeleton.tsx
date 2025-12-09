@@ -1,5 +1,5 @@
-import { Card } from "../../../../shared/ui/card";
-import styles from "../../styles.module.css";
+import styles from "./styles.module.css";
+import { Card } from "../card";
 
 export default function ListingCardSkeleton() {
   return (

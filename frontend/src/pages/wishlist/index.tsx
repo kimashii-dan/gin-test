@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getWishlist } from "./api";
 import type { Listing } from "../../shared/types";
-import ListingCard from "../home/ui/listing-card";
-import ListingCardSkeleton from "../home/ui/listing-card/skeleton";
+
 import ErrorScreen from "../../shared/ui/error-screen";
 import EmptyData from "../../shared/ui/empty-data";
 import { useTranslation } from "react-i18next";
+import ListingCardSkeleton from "../../shared/ui/listing-card/skeleton";
+import ListingCard from "../../shared/ui/listing-card";
 
 export default function WishlistPage() {
   const {

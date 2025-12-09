@@ -91,10 +91,8 @@ export type PriceSuggestionResponse = {
   reasoning: string;
 };
 
-// type PriceSuggestionResponse struct {
-// 	SuggestedPriceMin float64 `json:"suggested_price_min"`
-// 	SuggestedPriceMax float64 `json:"suggested_price_max"`
-// 	ConfidenceLevel   string  `json:"confidence_level"`
-// 	Currency          string  `json:"currency"`
-// 	Reasoning         string  `json:"reasoning"`
-// }
+export type SearchParams = {
+  page: number;
+  query?: string;
+  category?: string;
+};

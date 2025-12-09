@@ -21,6 +21,7 @@ import styles from "../../styles.module.css";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { categories } from "../../../../shared/enums";
+import { useNavigate } from "react-router";
 // import { reportData } from "../../../../shared/core/mock";
 
 export default function CreateListingForm({
@@ -40,16 +41,18 @@ export default function CreateListingForm({
   });
 
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const images = form.watch("images");
   const [report, setReport] = useState<PriceSuggestionResponse | null>(null);
-  const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationFn: createListing,
     onSuccess: (data) => {
       console.log(data);
       form.reset();
-      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+      navigate("/profile", { state: { scrollToBottom: true } });
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);
@@ -196,7 +199,9 @@ export default function CreateListingForm({
                         {...form.register("category")}
                       />
                       <span>
-                        {t(`listingForm.category.categories.${category}`)}
+                        {t(
+                          `listingForm.category.categories.${category.toLowerCase()}`
+                        )}
                       </span>
                     </label>
                   </div>

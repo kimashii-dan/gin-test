@@ -31,7 +31,7 @@ export default function DeletingAlert({
 
   function handleDelete() {
     mutation.mutate(id);
-    navigate("/");
+    navigate("/profile", { state: { scrollToBottom: true } });
   }
 
   function handleCancel() {

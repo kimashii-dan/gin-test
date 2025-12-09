@@ -19,7 +19,7 @@ export default function ImageGallery({ listing }: { listing: Listing }) {
           className="w-full h-full object-cover"
           alt={`${listing.title} image 1`}
         />
-        {listing.image_urls.length > 2 && (
+        {listing.image_urls.length >= 2 && (
           <>
             <div className="absolute top-1/2 left-1">
               <button

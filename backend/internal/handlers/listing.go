@@ -235,11 +235,13 @@ func UpdateListing(c *gin.Context) {
 		return
 	}
 
-	switch models.Category(*body.Category) {
-	case models.Electronics, models.Furniture, models.Books, models.Clothing, models.Services:
-	default:
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category"})
-		return
+	if body.Category != nil {
+		switch models.Category(*body.Category) {
+		case models.Electronics, models.Furniture, models.Books, models.Clothing, models.Services:
+		default:
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid category"})
+			return
+		}
 	}
 
 	// check if amount of images exceeds limit

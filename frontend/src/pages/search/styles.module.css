@@ -1,0 +1,73 @@
+@reference "../../shared/styles/index.css";
+
+.listing_controls {
+  @apply flex justify-between items-end gap-2 md:gap-5;
+}
+
+.button_active {
+  @apply w-full px-4 py-2 text-sm flex items-center justify-between rounded-md hover:bg-muted inset-shadow-medium;
+}
+
+.button_not_active {
+  @apply w-full px-4 py-2 text-sm flex items-center justify-between rounded-md hover:bg-muted;
+}
+
+.form {
+  @apply flex flex-col w-11/12 h-auto;
+}
+
+.form_card {
+  @apply flex-col md:flex-row relative h-full gap-5 p-5;
+}
+
+.image_upload {
+  @apply w-full flex flex-col gap-5 md:justify-between;
+}
+
+.image_input {
+  @apply flex flex-col gap-5 overflow-y-auto max-h-[500px];
+}
+
+.image_upload_area {
+  @apply flex flex-col inset-shadow-soft gap-2 items-center justify-center w-full h-32 border-2 border-border border-dashed rounded-md cursor-pointer;
+}
+
+.image_preview_hover {
+  @apply absolute bg-black/50  inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200;
+}
+
+.button_cancel {
+  @apply w-fit absolute top-2 right-2;
+}
+
+.card_listing {
+  @apply h-full xs:max-w-[300px] mx-auto md:mx-0 flex-col gap-5 p-5 hover:-translate-y-1;
+}
+
+.card_img {
+  @apply relative w-full aspect-square overflow-hidden rounded-lg;
+}
+
+.card_status_sold {
+  @apply absolute shadow-sm top-2 left-2 px-2 py-0.5 text-sm font-semibold rounded-full bg-destructive text-destructive-foreground;
+}
+
+.card_status_available {
+  @apply absolute shadow-sm top-2 left-2 px-2 py-0.5 text-sm font-semibold rounded-full bg-accent text-accent-foreground;
+}
+
+.card_posted {
+  @apply absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full;
+}
+
+.card_title {
+  @apply text-xl font-medium truncate;
+}
+
+.card_description {
+  @apply text-[15px] font-medium text-muted-foreground line-clamp-4;
+}
+
+.card_price {
+  @apply text-2xl font-semibold text-highlight;
+}

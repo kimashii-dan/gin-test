@@ -1,14 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "./api";
 import type { ListingData } from "../../shared/types";
-import ListingCard from "../home/ui/listing-card";
+
 import AccountDetails from "./ui/account-details";
 import AccountDetailsSkeleton from "./ui/account-details/skeleton";
 import { useParams } from "react-router";
-import ListingCardSkeleton from "../home/ui/listing-card/skeleton";
+
 import EmptyData from "../../shared/ui/empty-data";
 import { useTranslation } from "react-i18next";
 import ErrorScreen from "../../shared/ui/error-screen";
+import ListingCardSkeleton from "../../shared/ui/listing-card/skeleton";
+import ListingCard from "../../shared/ui/listing-card";
 
 export default function AccountPage() {
   const { id } = useParams();
