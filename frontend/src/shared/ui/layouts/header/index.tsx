@@ -21,31 +21,43 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <nav className={styles.header_nav}>
-        <Logo />
+        <div className="hidden md:flex flex-row justify-between gap-5 items-center w-full">
+          <Logo />
 
-        <Search searchParams={searchParams} setSearchParams={setSearchParams} />
+          <Search
+            searchParams={searchParams}
+            setSearchParams={setSearchParams}
+          />
 
-        <div className="flex gap-5">
-          <ModeToggle />
-          <LangToggle />
-          {isAuthenticated ? (
-            <>
-              <NavLink
-                to="/wishlist"
-                className="flex flex-row items-center gap-2"
-              >
-                <ShoppingCartIcon className="size-8 text-accent" />
+          <div className="flex gap-5">
+            <ModeToggle />
+            <LangToggle />
+            {isAuthenticated ? (
+              <>
+                <NavLink
+                  to="/wishlist"
+                  className="flex flex-row items-center gap-2"
+                >
+                  <ShoppingCartIcon className="size-8 text-accent" />
+                </NavLink>
+                <NavLink to="/profile">
+                  <UserCircleIcon className="size-10" />
+                </NavLink>
+              </>
+            ) : (
+              <NavLink to="/login" className="flex flex-row items-center gap-1">
+                <ArrowLeftEndOnRectangleIcon className="size-6" />
+                <span>{t("auth.login.title")}</span>
               </NavLink>
-              <NavLink to="/profile">
-                <UserCircleIcon className="size-10" />
-              </NavLink>
-            </>
-          ) : (
-            <NavLink to="/login" className="flex flex-row items-center gap-1">
-              <ArrowLeftEndOnRectangleIcon className="size-6" />
-              <span>{t("auth.login.title")}</span>
-            </NavLink>
-          )}
+            )}
+          </div>
+        </div>
+
+        <div className="flex md:hidden w-full justify-center">
+          <Search
+            searchParams={searchParams}
+            setSearchParams={setSearchParams}
+          />
         </div>
       </nav>
     </header>

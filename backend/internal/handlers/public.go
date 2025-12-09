@@ -181,7 +181,7 @@ func GetUserWithListing(c *gin.Context) {
 }
 
 type SearchParams struct {
-	Query    string `form:"q"`
+	Query    string `form:"query"`
 	Page     int    `form:"page" binding:"min=1"`
 	Category string `form:"category"`
 	// MinPrice float64 `form:"min_price"`
@@ -207,7 +207,7 @@ func Search(c *gin.Context) {
 
 	if params.Query != "" {
 		searchPattern := "%" + params.Query + "%"
-		query = database.DB.Where(
+		query = query.Where(
 			"title ILIKE ? OR description ILIKE ?",
 			searchPattern, searchPattern,
 		)

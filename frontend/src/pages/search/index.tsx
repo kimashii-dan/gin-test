@@ -45,20 +45,29 @@ export default function SearchPage() {
       <div className={styles.listing_controls}>
         {isCreating && <CreateListingForm setIsCreating={setIsCreating} />}
 
-        {isAuthenticated && (
-          <Button
-            variant="primary"
-            className="w-fit h-fit"
-            onClick={handleCreateListing}
-          >
-            {t("buttons.createListing")}
-          </Button>
-        )}
+        <div className="flex w-full justify-between gap-3">
+          {query ? (
+            <h1 className="md:text-3xl">
+              {t("search.result.found")} {listingsData?.length || 0}{" "}
+              {t("search.result.results")} "{query}"
+            </h1>
+          ) : (
+            <h1 className="page-title">
+              {t(`listingForm.category.categories.${category}`)}
+            </h1>
+          )}
+          {isAuthenticated && (
+            <Button
+              variant="primary"
+              className="w-fit h-fit"
+              onClick={handleCreateListing}
+            >
+              {t("buttons.createListing")}
+            </Button>
+          )}
+        </div>
       </div>
 
-      <h1 className="page-title">
-        {t(`listingForm.category.categories.${category}`)}
-      </h1>
       {listingsData && listingsData.length === 0 && (
         <EmptyData text={t("errors.account.listings.absence")} />
       )}

@@ -61,7 +61,7 @@ export default function MainInfo({
       </div>
       <div className="flex flex-col justify-center gap-2">
         <p className="text-2xl font-semibold text-center">
-          {user.name ?? t("anonymous")}
+          {user.name || t("anonymous")}
         </p>
         <p className="text-muted-foreground">
           {t("profile.joined")}:{" "}

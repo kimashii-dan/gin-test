@@ -178,7 +178,7 @@ export default function ListingDetails({
             )}
           </div>
 
-          <div className="flex justify-between gap-3 items-center">
+          <div className="flex flex-wrap justify-between gap-3 items-center">
             <div className="flex items-baseline gap-2">
               <p className="text-4xl text-highlight font-semibold">
                 {listing.price}

@@ -21,6 +21,13 @@ const resources = {
         goToHome: "Go to Home",
         getStarted: "Get Started",
       },
+      search: {
+        placeholder: "Search for anything",
+        result: {
+          found: "Found",
+          results: "results for",
+        },
+      },
       listingCard: {
         status: {
           sold: "Sold",
@@ -45,6 +52,7 @@ const resources = {
             books: "Books",
             clothing: "Clothing",
             services: "Services",
+            null: "All",
           },
         },
         price: {
@@ -227,6 +235,13 @@ const resources = {
         goToHome: "Вернуться на главную страницу",
         getStarted: "Попробовать",
       },
+      search: {
+        placeholder: "Начните поиск...",
+        result: {
+          found: "Найдено",
+          results: "результатов для",
+        },
+      },
       listingCard: {
         status: {
           sold: "Продано",
@@ -251,6 +266,7 @@ const resources = {
             books: "Книги",
             clothing: "Одежда",
             services: "Услуги",
+            null: "Все",
           },
         },
         price: {

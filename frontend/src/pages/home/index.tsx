@@ -10,11 +10,11 @@ export default function Home() {
 
   return (
     <>
-      <section className="page-layout h-[85vh] items-center justify-start">
-        <div className="pt-0 sm:pt-15 md:pt-30 flex">
+      <section className="page-layout h-[65vh] md:h-[85vh] items-center justify-start">
+        <div className="pt-10 sm:pt-15 md:pt-30 flex">
           <div className="flex justify-center items-center">
             <div className="flex flex-col gap-8 lg:w-200">
-              <h1 className="font-nice w-fit italic text-6xl lg:text-8xl text-highlight">
+              <h1 className="font-nice w-fit italic text-5xl lg:text-8xl text-highlight">
                 {t("heroText.title.stroke1")} <br />{" "}
                 {t("heroText.title.stroke2")}
               </h1>

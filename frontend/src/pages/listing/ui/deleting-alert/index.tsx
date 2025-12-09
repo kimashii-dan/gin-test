@@ -22,7 +22,7 @@ export default function DeletingAlert({
     onSuccess: (data) => {
       console.log(data);
       setIsDeleting(false);
-      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);

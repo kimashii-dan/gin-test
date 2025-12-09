@@ -40,7 +40,7 @@
   }
 
   .page-title {
-    @apply text-5xl font-normal font-nice italic;
+    @apply text-3xl md:text-5xl font-normal font-nice italic;
   }
 
   .field {
