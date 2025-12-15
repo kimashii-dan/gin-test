@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { Card } from "../../../../shared/ui/card";
-import { Modal } from "../../../../shared/ui/modal";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import { useState } from "react";
 import styles from "../../styles.module.css";
 import { useTranslation } from "react-i18next";
 import { categories } from "../../../../shared/enums";
+import { Modal } from "../../../../shared/ui/modal";
 
 type UpdateListingFormProps = {
   setIsUpdating: (value: React.SetStateAction<boolean>) => void;

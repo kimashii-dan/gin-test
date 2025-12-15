@@ -27,24 +27,27 @@
   --destructive: oklch(0.62 0.16 25);
   --destructive-foreground: var(--card);
 
+  --warning: oklch(0.75 0.15 85);
+  --warning-foreground: oklch(0.25 0.02 85);
+
   --highlight: oklch(0 0 0);
 
   /* Shadows and Glass remain untouched */
   --glass-bg: rgba(240, 235, 225, 0.35);
   --glass-shadow: rgba(100, 90, 80, 0.15);
 
-  --shadow-sm: inset 0 1px 2px #ffffff30,
-    /* top highlight */ 0 1px 2px #00000030,
+  --shadow-sm:
+    inset 0 1px 2px #ffffff30, /* top highlight */ 0 1px 2px #00000030,
     /* dark shadow */ 0 2px 4px #00000015;
-  --shadow-base: inset 0 1px 2px #ffffff50,
-    /* top highlight */ 0 2px 4px #00000030,
+  --shadow-base:
+    inset 0 1px 2px #ffffff50, /* top highlight */ 0 2px 4px #00000030,
     /* dark shadow */ 0 4px 8px #00000015;
-  --shadow-lg: inset 0 1px 2px #ffffff70,
-    /* top highlight */ 0 4px 6px #00000030,
+  --shadow-lg:
+    inset 0 1px 2px #ffffff70, /* top highlight */ 0 4px 6px #00000030,
     /* dark shadow */ 0 6px 10px #00000015;
 
-  --shadow-inset-soft: inset 2px 2px 5px #00000025,
-    inset -2px -2px 5px #ffffff20;
+  --shadow-inset-soft:
+    inset 2px 2px 5px #00000025, inset -2px -2px 5px #ffffff20;
 }
 
 .dark {
@@ -76,27 +79,30 @@
   --destructive: oklch(0.64 0.18 25);
   --destructive-foreground: oklch(0.25 0.015 260);
 
+  --warning: oklch(0.78 0.15 85);
+  --warning-foreground: oklch(0.25 0.02 85);
+
   --highlight: oklch(1 0 0);
 
   /* Shadows and Glass remain untouched */
   --glass-bg: rgba(40, 45, 55, 0.4);
   --glass-shadow: rgba(0, 0, 0, 0.3);
 
-  --shadow-sm: inset 0 1px 2px #ffffff30,
-    /* top highlight */ 0 1px 2px #00000030,
+  --shadow-sm:
+    inset 0 1px 2px #ffffff30, /* top highlight */ 0 1px 2px #00000030,
     /* dark shadow */ 0 2px 4px #00000015;
-  --shadow-base: inset 0 1px 2px #ffffff50,
-    /* top highlight */ 0 2px 4px #00000030,
+  --shadow-base:
+    inset 0 1px 2px #ffffff50, /* top highlight */ 0 2px 4px #00000030,
     /* dark shadow */ 0 4px 8px #00000015;
-  --shadow-lg: inset 0 1px 2px #ffffff70,
-    /* top highlight */ 0 4px 6px #00000030,
+  --shadow-lg:
+    inset 0 1px 2px #ffffff70, /* top highlight */ 0 4px 6px #00000030,
     /* dark shadow */ 0 6px 10px #00000015;
 
-  --shadow-inset-soft: inset 2px 2px 4px #00000035,
-    inset -2px -2px 4px #ffffff08;
+  --shadow-inset-soft:
+    inset 2px 2px 4px #00000035, inset -2px -2px 4px #ffffff08;
 
-  --shadow-inset-medium: inset 2px 2px 5px #00000060,
-    inset -2px -2px 5px #ffffff10;
+  --shadow-inset-medium:
+    inset 2px 2px 5px #00000060, inset -2px -2px 5px #ffffff10;
 }
 
 @theme inline {
@@ -117,6 +123,8 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-glass: var(--glass-bg);
   --color-glass-shadow: var(--glass-shadow);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --font-main: "Manrope", sans-serif;
   --font-nice: "Playfair Display", sans-serif;
   --shadow-sm: var(--shadow-sm);

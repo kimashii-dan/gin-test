@@ -20,6 +20,24 @@ const resources = {
         createListing: "Create listing",
         goToHome: "Go to Home",
         getStarted: "Get Started",
+        cancel: "Cancel",
+        submit: "Submit",
+        update: "Update",
+        submitting: "Submitting...",
+      },
+      ratings: {
+        title: "Ratings",
+        rate: "Rate Seller",
+        update: "Update Rating",
+        rateSeller: "Rate this Seller",
+        updateYourRating: "Update Your Rating",
+        yourRating: "Your Rating",
+        comment: "Comment",
+        optional: "optional",
+        commentPlaceholder: "Share your experience with this seller...",
+        noRatings: "No ratings yet",
+        outOf: "out of",
+        forListing: "For listing",
       },
       search: {
         placeholder: "Search for anything",
@@ -114,6 +132,7 @@ const resources = {
       no: "No",
       unknown: "Unknown",
       anonymous: "Anonymous",
+      loading: "Loading",
       listings: "Listings",
       profile: {
         title: "Profile",
@@ -160,7 +179,18 @@ const resources = {
         },
       },
       wishlist: "Wishlist",
+      dashboard: {
+        title: "Dashboard",
+        totalListings: "Total Listings",
+        activeListings: "Active Listings",
+        closedListings: "Closed Listings",
+        totalWishlists: "Times Wishlisted",
+        averagePrice: "Average Price",
+      },
       errors: {
+        dashboard: {
+          loading: "Error loading dashboard",
+        },
         wishlist: {
           loading: "Error loading wishlist",
           absence: "No items in wishlist",
@@ -214,6 +244,76 @@ const resources = {
         },
       },
       socials: "Socials",
+      admin: {
+        login: {
+          title: "Admin Login",
+          description: "Administrator access only",
+          username: {
+            label: "Username",
+            placeholder: "Enter admin username",
+            required: "Username is required",
+          },
+          password: {
+            label: "Password",
+            placeholder: "Enter admin password",
+            required: "Password is required",
+          },
+          button: {
+            login: "Login as Admin",
+            loading: "Logging in...",
+          },
+          backToHome: "Back to home",
+        },
+        panel: {
+          title: "Admin Panel",
+          logout: "Logout",
+          tabs: {
+            users: "Users",
+            listings: "Listings",
+          },
+          loading: {
+            users: "Loading users...",
+            listings: "Loading listings...",
+          },
+          error: "Failed to load admin data. Please login again.",
+          users: {
+            table: {
+              id: "ID",
+              email: "Email",
+              name: "Name",
+              university: "University",
+              listings: "Listings",
+              rating: "Rating",
+              actions: "Actions",
+            },
+            delete: {
+              button: "Delete",
+              confirm:
+                "Delete user {email}? This will also delete all their listings.",
+            },
+          },
+          listings: {
+            table: {
+              id: "ID",
+              title: "Title",
+              price: "Price",
+              category: "Category",
+              status: "Status",
+              owner: "Owner",
+              images: "Images",
+              actions: "Actions",
+            },
+            status: {
+              closed: "Closed",
+              available: "Available",
+            },
+            delete: {
+              button: "Delete",
+              confirm: 'Delete listing "{title}"?',
+            },
+          },
+        },
+      },
     },
   },
   ru: {
@@ -234,6 +334,24 @@ const resources = {
         createListing: "Создать объявление",
         goToHome: "Вернуться на главную страницу",
         getStarted: "Попробовать",
+        cancel: "Отмена",
+        submit: "Отправить",
+        update: "Обновить",
+        submitting: "Отправка...",
+      },
+      ratings: {
+        title: "Рейтинги",
+        rate: "Оценить продавца",
+        update: "Обновить оценку",
+        rateSeller: "Оценить этого продавца",
+        updateYourRating: "Обновить вашу оценку",
+        yourRating: "Ваша оценка",
+        comment: "Комментарий",
+        optional: "необязательно",
+        commentPlaceholder: "Поделитесь вашим опытом с этим продавцом...",
+        noRatings: "Пока нет оценок",
+        outOf: "из",
+        forListing: "Для объявления",
       },
       search: {
         placeholder: "Начните поиск...",
@@ -328,6 +446,7 @@ const resources = {
       no: "Нет",
       unknown: "Неизвестно",
       anonymous: "Без имени",
+      loading: "Загрузка",
       listings: "Объявления",
       profile: {
         title: "Профиль",
@@ -374,7 +493,18 @@ const resources = {
         },
       },
       wishlist: "Вишлист",
+      dashboard: {
+        title: "Панель управления",
+        totalListings: "Всего объявлений",
+        activeListings: "Активные объявления",
+        closedListings: "Закрытые объявления",
+        totalWishlists: "Добавлено в вишлист",
+        averagePrice: "Средняя цена",
+      },
       errors: {
+        dashboard: {
+          loading: "Ошибка загрузки панели управления",
+        },
         wishlist: {
           loading: "Ошибка загрузки вишлиста",
           absence: "У вас пока нет сохраненных объявлений",
@@ -428,6 +558,77 @@ const resources = {
         },
       },
       socials: "Медиа",
+      admin: {
+        login: {
+          title: "Вход для администратора",
+          description: "Доступ только для администратора",
+          username: {
+            label: "Имя пользователя",
+            placeholder: "Введите имя администратора",
+            required: "Имя пользователя обязательно",
+          },
+          password: {
+            label: "Пароль",
+            placeholder: "Введите пароль администратора",
+            required: "Пароль обязателен",
+          },
+          button: {
+            login: "Войти как администратор",
+            loading: "Вход...",
+          },
+          backToHome: "Вернуться на главную",
+        },
+        panel: {
+          title: "Панель администратора",
+          logout: "Выйти",
+          tabs: {
+            users: "Пользователи",
+            listings: "Объявления",
+          },
+          loading: {
+            users: "Загрузка пользователей...",
+            listings: "Загрузка объявлений...",
+          },
+          error:
+            "Не удалось загрузить данные администратора. Пожалуйста, войдите снова.",
+          users: {
+            table: {
+              id: "ID",
+              email: "Почта",
+              name: "Имя",
+              university: "Университет",
+              listings: "Объявления",
+              rating: "Рейтинг",
+              actions: "Действия",
+            },
+            delete: {
+              button: "Удалить",
+              confirm:
+                "Удалить пользователя {email}? Это также удалит все их объявления.",
+            },
+          },
+          listings: {
+            table: {
+              id: "ID",
+              title: "Название",
+              price: "Цена",
+              category: "Категория",
+              status: "Статус",
+              owner: "Владелец",
+              images: "Фото",
+              actions: "Действия",
+            },
+            status: {
+              closed: "Закрыто",
+              available: "Открыто",
+            },
+            delete: {
+              button: "Удалить",
+              confirm: 'Удалить объявление "{title}"?',
+            },
+          },
+        },
+      },
     },
   },
 };

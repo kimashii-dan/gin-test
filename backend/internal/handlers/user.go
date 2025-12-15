@@ -161,23 +161,8 @@ func GetUser(c *gin.Context) {
 		return
 	}
 
-	var listings []models.Listing
-	if err := database.DB.Where("user_id = ?", user.ID).Find(&listings).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	var response []ListingResponse
-	for _, listing := range listings {
-		response = append(response, ListingResponse{
-			Listing:      listing,
-			IsInWishlist: false,
-		})
-	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"user":     user,
-		"listings": response,
+		"user": user,
 	})
 }
 

@@ -1,0 +1,57 @@
+@reference "../../shared/styles/index.css";
+
+.header {
+  @apply flex justify-between items-center w-full;
+}
+
+.tabs {
+  @apply flex gap-2 border-b-2 border-border;
+}
+
+.tab {
+  @apply px-6 py-3 font-medium text-muted-foreground hover:text-foreground transition-colors;
+}
+
+.tab_active {
+  @apply px-6 py-3 font-medium text-highlight border-b-2 border-highlight -mb-0.5;
+}
+
+.content {
+  @apply w-full;
+}
+
+.table_container {
+  @apply w-full overflow-x-auto rounded-lg border-border border-1;
+}
+
+.table {
+  @apply w-full border-collapse;
+}
+
+.table thead {
+  @apply bg-muted;
+}
+
+.table th {
+  @apply text-left px-4 py-3 font-semibold text-sm;
+}
+
+.table td {
+  @apply px-4 py-3 border-t-1 border-border;
+}
+
+.table tbody tr {
+  @apply hover:bg-muted/50 transition-colors;
+}
+
+.title_cell {
+  @apply max-w-xs truncate;
+}
+
+.badge_available {
+  @apply px-2 py-1 rounded-full text-xs font-semibold bg-accent text-accent-foreground;
+}
+
+.badge_closed {
+  @apply px-2 py-1 rounded-full text-xs font-semibold bg-destructive text-destructive-foreground;
+}

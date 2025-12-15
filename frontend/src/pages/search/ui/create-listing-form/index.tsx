@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { Card } from "../../../../shared/ui/card";
-import { Modal } from "../../../../shared/ui/modal";
 import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,6 +21,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { categories } from "../../../../shared/enums";
 import { useNavigate } from "react-router";
+import { Modal } from "../../../../shared/ui/modal";
 // import { reportData } from "../../../../shared/core/mock";
 
 export default function CreateListingForm({
@@ -52,7 +52,7 @@ export default function CreateListingForm({
       console.log(data);
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["auth"] });
-      navigate("/profile", { state: { scrollToBottom: true } });
+      navigate("/dashboard", { state: { scrollToBottom: true } });
     },
     onError: (error: ServerError) => {
       console.log(error.response.data.error);

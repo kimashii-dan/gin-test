@@ -1,0 +1,2 @@
+ALTER TABLE users DROP COLUMN IF EXISTS rating_count;
+ALTER TABLE users DROP COLUMN IF EXISTS average_rating;

@@ -110,17 +110,19 @@ func GetListing(c *gin.Context) {
 }
 
 type UserWithListingsResponse struct {
-	ID           uint              `json:"id"`
-	CreatedAt    time.Time         `json:"created_at"`
-	UpdatedAt    time.Time         `json:"updated_at"`
-	Name         string            `json:"name"`
-	Email        string            `json:"email"`
-	University   string            `json:"university"`
-	Phone        string            `json:"phone"`
-	TelegramLink string            `json:"telegram_link"`
-	Bio          string            `json:"bio"`
-	AvatarURL    string            `json:"avatar_url"`
-	Listings     []ListingResponse `json:"listings"`
+	ID            uint              `json:"id"`
+	CreatedAt     time.Time         `json:"created_at"`
+	UpdatedAt     time.Time         `json:"updated_at"`
+	Name          string            `json:"name"`
+	Email         string            `json:"email"`
+	University    string            `json:"university"`
+	Phone         string            `json:"phone"`
+	TelegramLink  string            `json:"telegram_link"`
+	Bio           string            `json:"bio"`
+	AvatarURL     string            `json:"avatar_url"`
+	AverageRating float64           `json:"average_rating"`
+	RatingCount   int               `json:"rating_count"`
+	Listings      []ListingResponse `json:"listings"`
 }
 
 func GetUserWithListing(c *gin.Context) {
@@ -164,17 +166,19 @@ func GetUserWithListing(c *gin.Context) {
 	}
 
 	response := UserWithListingsResponse{
-		ID:           otherUser.ID,
-		CreatedAt:    otherUser.UpdatedAt,
-		UpdatedAt:    otherUser.UpdatedAt,
-		Name:         otherUser.Name,
-		Email:        otherUser.Email,
-		University:   otherUser.University,
-		Phone:        otherUser.Phone,
-		TelegramLink: otherUser.TelegramLink,
-		Bio:          otherUser.Bio,
-		AvatarURL:    otherUser.AvatarURL,
-		Listings:     listingsResponse,
+		ID:            otherUser.ID,
+		CreatedAt:     otherUser.UpdatedAt,
+		UpdatedAt:     otherUser.UpdatedAt,
+		Name:          otherUser.Name,
+		Email:         otherUser.Email,
+		University:    otherUser.University,
+		Phone:         otherUser.Phone,
+		TelegramLink:  otherUser.TelegramLink,
+		Bio:           otherUser.Bio,
+		AvatarURL:     otherUser.AvatarURL,
+		AverageRating: otherUser.AverageRating,
+		RatingCount:   otherUser.RatingCount,
+		Listings:      listingsResponse,
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -189,6 +193,11 @@ type SearchParams struct {
 	// Sort     string  `form:"sort"`
 }
 
+type SearchResponse struct {
+	Listings []ListingResponse `json:"listings"`
+	Total    int64             `json:"total"`
+}
+
 func Search(c *gin.Context) {
 	// 1. Get the query
 	var params SearchParams
@@ -197,11 +206,12 @@ func Search(c *gin.Context) {
 		return
 	}
 
-	// 2. Retrieve the paginated resources from DB
+	// 2. Build base query
 	const limit int = 10
 	offset := (params.Page - 1) * limit
 
 	var listings []models.Listing
+	var total int64
 
 	query := database.DB.Model(&models.Listing{})
 
@@ -217,6 +227,13 @@ func Search(c *gin.Context) {
 		query = query.Where("LOWER(category) = LOWER(?)", params.Category)
 	}
 
+	// Get total count before applying limit/offset
+	if err := query.Count(&total).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Search failed"})
+		return
+	}
+
+	// Retrieve the paginated resources from DB
 	if err := query.Limit(limit).Offset(offset).Find(&listings).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Search failed"})
 		return
@@ -232,7 +249,10 @@ func Search(c *gin.Context) {
 				IsInWishlist: false,
 			})
 		}
-		c.JSON(http.StatusOK, response)
+		c.JSON(http.StatusOK, SearchResponse{
+			Listings: response,
+			Total:    total,
+		})
 		return
 	}
 
@@ -263,5 +283,8 @@ func Search(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, SearchResponse{
+		Listings: response,
+		Total:    total,
+	})
 }

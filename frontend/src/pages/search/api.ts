@@ -7,9 +7,14 @@ export type SearchParams = {
   category?: string;
 };
 
+export type SearchResponse = {
+  listings: ListingData[];
+  total: number;
+};
+
 export async function searchListings(
   searchParams: URLSearchParams
-): Promise<ListingData[]> {
+): Promise<SearchResponse> {
   const { data } = await api.get("/public/listings/search", {
     params: searchParams,
   });

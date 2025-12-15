@@ -4,6 +4,18 @@
   @apply flex justify-between items-end gap-2 md:gap-5;
 }
 
+.category_nav {
+  @apply flex flex-wrap gap-2 md:gap-3 w-full;
+}
+
+.category_button {
+  @apply px-4 py-2 text-sm font-medium rounded-lg bg-card border-1 border-border text-foreground hover:bg-muted transition-all duration-200 no-underline;
+}
+
+.category_button_active {
+  @apply px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground shadow-base no-underline;
+}
+
 .button_active {
   @apply w-full px-4 py-2 text-sm flex items-center justify-between rounded-md hover:bg-muted inset-shadow-medium;
 }

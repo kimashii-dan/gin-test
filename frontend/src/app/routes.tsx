@@ -5,6 +5,7 @@ import NotFound from "../pages/not-found";
 import Profile from "../pages/profile";
 import Register from "../pages/register";
 import { requireAuth, requireGuest } from "../shared/core/auth";
+import { requireAdminAuth, requireAdminGuest } from "../shared/core/admin-auth";
 import AuthLayout from "../shared/ui/layouts/auth-layout";
 import MainLayout from "../shared/ui/layouts/main-layout";
 import ListingPage from "../pages/listing";
@@ -12,6 +13,9 @@ import Home from "../pages/home";
 import AccountPage from "../pages/account";
 import WishlistPage from "../pages/wishlist";
 import SearchPage from "../pages/search";
+import AdminLogin from "../pages/admin-login";
+import AdminPanel from "../pages/admin";
+import DashboardPage from "../pages/dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -44,9 +48,19 @@ export const router = createBrowserRouter([
             Component: Profile,
           },
           {
+            path: "/dashboard",
+            middleware: [requireAuth],
+            Component: DashboardPage,
+          },
+          {
             path: "/wishlist",
             middleware: [requireAuth],
             Component: WishlistPage,
+          },
+          {
+            path: "/admin",
+            middleware: [requireAdminAuth],
+            Component: AdminPanel,
           },
           {
             path: "*",
@@ -61,6 +75,11 @@ export const router = createBrowserRouter([
           { path: "/login", Component: Login },
           { path: "/register", Component: Register },
         ],
+      },
+      {
+        Component: AuthLayout,
+        middleware: [requireAdminGuest],
+        children: [{ path: "/admin-login", Component: AdminLogin }],
       },
     ],
   },

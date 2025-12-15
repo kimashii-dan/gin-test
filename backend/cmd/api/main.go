@@ -51,6 +51,7 @@ func main() {
 		user.PATCH("", handlers.UpdateUser)
 		user.DELETE("", handlers.DeleteUser)
 		user.PATCH("/avatar", handlers.UploadAvatar)
+		user.GET("/dashboard", handlers.GetDashboard)
 
 		{
 			// user's listing CRUD
@@ -62,6 +63,15 @@ func main() {
 			listing.POST("/wishlist/:id", handlers.ToggleWishlist)
 			listing.GET("/wishlist", handlers.GetListingsFromWishlist)
 			listing.POST("/report/:id", handlers.CreateAIReport)
+		}
+
+		{
+			// user's ratings
+			ratings := user.Group("/ratings")
+			ratings.POST("", handlers.CreateRating)
+			ratings.GET("/given", handlers.GetMyRatingsGiven)
+			ratings.PATCH("/:id", handlers.UpdateRating)
+			ratings.DELETE("/:id", handlers.DeleteRating)
 		}
 	}
 
@@ -80,12 +90,30 @@ func main() {
 			user := public.Group("/users")
 			user.GET("/:id", middleware.OptionalAuth(), handlers.GetUserWithListing)
 		}
+
+		{
+			ratings := public.Group("/ratings")
+			ratings.GET("/user/:id", handlers.GetUserRatings)
+			ratings.GET("/check/:sellerId", middleware.OptionalAuth(), handlers.CheckUserRating)
+		}
 	}
 
 	{
 		ai := router.Group("/ai", middleware.CheckAuth())
 		ai.GET("/health-check", handlers.HealthCheckGemini)
 		ai.POST("/suggest-price", handlers.AskAIAboutPrice)
+	}
+
+	{
+		// admin routes
+		adminAuth := router.Group("/admin/auth")
+		adminAuth.POST("/login", handlers.AdminLogin)
+
+		admin := router.Group("/admin", middleware.CheckAdminAuth())
+		admin.GET("/users", handlers.GetAllUsers)
+		admin.GET("/listings", handlers.GetAllListings)
+		admin.DELETE("/users/:id", handlers.AdminDeleteUser)
+		admin.DELETE("/listings/:id", handlers.AdminDeleteListing)
 	}
 
 	router.Run(":8080")

@@ -14,6 +14,7 @@ import styles from "../../styles.module.css";
 import { Button } from "../../../../shared/ui/button";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import RatingStars from "../../../../shared/ui/rating-stars";
 
 export default function AccountDetails({ user }: { user: User }) {
   const navigate = useNavigate();
@@ -77,6 +78,16 @@ export default function AccountDetails({ user }: { user: User }) {
             {t("listingDetails.owner.memberSince")}{" "}
             {formatDate(user?.created_at)}
           </p>
+          {user.rating_count > 0 && (
+            <div className="flex justify-center mt-2">
+              <RatingStars
+                rating={user.average_rating}
+                size="medium"
+                showCount
+                count={user.rating_count}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex flex-row md:flex-col gap-5 justify-center">

@@ -7,6 +7,7 @@ import {
   ArrowPathIcon,
   HeartIcon,
   SparklesIcon,
+  StarIcon,
 } from "@heroicons/react/24/outline";
 import { formatDate } from "../../../../shared/helpers/formatDate";
 import { formatDateTime } from "../../../../shared/helpers/formatDateTime";
@@ -19,12 +20,15 @@ import { useAuth } from "../../../../shared/core/auth";
 import { useRef, useState } from "react";
 import UpdateListingForm from "../updating-listing";
 import DeletingAlert from "../deleting-alert";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToWishlist, createAIPriceReport, updateListing } from "../../api";
+import { checkUserRating } from "../../../../shared/api";
 import styles from "../../styles.module.css";
 import { LightBulbIcon } from "@heroicons/react/24/solid";
 import { useTranslation } from "react-i18next";
 import { listingData } from "../../../../shared/core/mock";
+import RatingModal from "../rating-modal";
+import RatingStars from "../../../../shared/ui/rating-stars";
 
 export default function ListingDetails({
   listing,
@@ -38,8 +42,23 @@ export default function ListingDetails({
   const isAuthenticated = !!authData?.user;
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const { i18n, t } = useTranslation();
   const queryClient = useQueryClient();
+
+  // Check if user has already rated this seller
+  const { data: ratingCheck } = useQuery({
+    queryKey: ["checkRating", listing.user?.id, listing.id],
+    queryFn: () =>
+      listing.user?.id
+        ? checkUserRating(listing.user.id, listing.id)
+        : Promise.resolve({ has_rated: false, rating: null }),
+    enabled:
+      isAuthenticated &&
+      !!listing.user?.id &&
+      authData.user.id !== listing.user_id,
+  });
+
   const updateMutation = useMutation({
     mutationFn: updateListing,
     onSuccess: (data) => {
@@ -305,8 +324,35 @@ export default function ListingDetails({
                 {t("listingDetails.owner.memberSince")}{" "}
                 {formatDate(listing.user?.created_at)}
               </p>
+              {listing.user && listing.user.rating_count > 0 && (
+                <div className="mt-1">
+                  <RatingStars
+                    rating={listing.user.average_rating}
+                    size="small"
+                    showCount
+                    count={listing.user.rating_count}
+                  />
+                </div>
+              )}
             </div>
           </Link>
+
+          {isAuthenticated &&
+            authData.user.id !== listing.user_id &&
+            listing.user && (
+              <Button
+                variant="outline"
+                className="flex items-center justify-center gap-2"
+                onClick={() => setIsRatingModalOpen(true)}
+              >
+                <StarIcon className="size-5" />
+                <span>
+                  {ratingCheck?.has_rated
+                    ? t("ratings.updateYourRating")
+                    : t("ratings.rateSeller")}
+                </span>
+              </Button>
+            )}
 
           <div className="flex flex-col md:flex-row gap-5">
             {listing.user?.telegram_link ? (
@@ -438,6 +484,15 @@ export default function ListingDetails({
             {listing.ai_price_report.reasoning}
           </p>
         </Card>
+      )}
+
+      {isRatingModalOpen && listing.user && (
+        <RatingModal
+          onClose={() => setIsRatingModalOpen(false)}
+          seller={listing.user}
+          listingId={listing.id}
+          existingRating={ratingCheck?.rating || undefined}
+        />
       )}
     </div>
   );

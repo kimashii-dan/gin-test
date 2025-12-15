@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import ErrorScreen from "../../shared/ui/error-screen";
 import ListingCardSkeleton from "../../shared/ui/listing-card/skeleton";
 import ListingCard from "../../shared/ui/listing-card";
+import UserRatings from "../profile/ui/user-ratings";
 
 export default function AccountPage() {
   const { id } = useParams();
@@ -36,6 +37,8 @@ export default function AccountPage() {
       ) : (
         user && <AccountDetails user={user} />
       )}
+
+      {!isLoading && user && <UserRatings userId={user.id} />}
 
       <h2 className="font-nice text-4xl italic">{t("listings")}</h2>
 

@@ -1,0 +1,13 @@
+@reference "../../styles/index.css";
+
+.pagination {
+  @apply flex items-center justify-center gap-4 mt-8;
+}
+
+.button {
+  @apply flex items-center justify-center;
+}
+
+.page_info {
+  @apply text-sm font-medium text-muted-foreground;
+}

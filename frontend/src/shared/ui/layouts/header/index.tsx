@@ -6,17 +6,25 @@ import Logo from "../../logo";
 import {
   ArrowLeftEndOnRectangleIcon,
   ShoppingCartIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../../../core/auth";
 import Search from "./ui/search";
 import LangToggle from "../../lang-toggle";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const { data: authData } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const isAuthenticated = !!authData?.user;
+  const [isAdmin, setIsAdmin] = useState(false);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    const adminToken = localStorage.getItem("admin_token");
+    setIsAdmin(!!adminToken);
+  }, []);
 
   return (
     <header className={styles.header}>
@@ -32,7 +40,12 @@ export default function Header() {
           <div className="flex gap-5">
             <ModeToggle />
             <LangToggle />
-            {isAuthenticated ? (
+            {isAdmin ? (
+              <NavLink to="/admin" className="flex flex-row items-center gap-2">
+                <ShieldCheckIcon className="size-6 text-highlight" />
+                <span>Admin Panel</span>
+              </NavLink>
+            ) : isAuthenticated ? (
               <>
                 <NavLink
                   to="/wishlist"
