@@ -112,6 +112,7 @@ export default function SearchPage() {
           listingsData.length > 0 &&
           listingsData.map((listingData: ListingData) => (
             <ListingCard
+              queryKey={`listings ${category} ${page} ${query}`}
               key={listingData.listing.id}
               listing={listingData.listing}
               isInWishlist={listingData.is_in_wishlist}

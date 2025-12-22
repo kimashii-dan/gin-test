@@ -51,7 +51,7 @@ export default function CreateListingForm({
     onSuccess: (data) => {
       console.log(data);
       form.reset();
-      queryClient.invalidateQueries({ queryKey: ["auth"] });
+      queryClient.invalidateQueries({ queryKey: ["user-listings"] });
       navigate("/dashboard", { state: { scrollToBottom: true } });
     },
     onError: (error: ServerError) => {

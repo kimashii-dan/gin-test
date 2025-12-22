@@ -8,7 +8,6 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   HeartIcon,
-  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import styles from "./styles.module.css";
 import ListingCard from "../../shared/ui/listing-card";
@@ -23,7 +22,7 @@ import { Button } from "../../shared/ui/button";
 export default function DashboardPage() {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["dashboard"],
+    queryKey: ["user-listings"],
     queryFn: getDashboardStats,
   });
   const [isCreating, setIsCreating] = useState(false);
@@ -100,20 +99,6 @@ export default function DashboardPage() {
                   {t("dashboard.totalWishlists")}
                 </div>
                 <div className={styles.stat_value}>{stats.total_wishlists}</div>
-              </div>
-            </Card>
-
-            <Card className={styles.stat_card}>
-              <div className={`${styles.stat_icon_wrapper} ${styles.price}`}>
-                <CurrencyDollarIcon className={styles.stat_icon} />
-              </div>
-              <div className={styles.stat_content}>
-                <div className={styles.stat_label}>
-                  {t("dashboard.averagePrice")}
-                </div>
-                <div className={styles.stat_value}>
-                  ₸{stats.average_price.toFixed(0)}
-                </div>
               </div>
             </Card>
           </div>
@@ -216,7 +201,7 @@ export default function DashboardPage() {
                   key={listingData.listing.id}
                   listing={listingData.listing}
                   isInWishlist={listingData.is_in_wishlist}
-                  queryKey="dashboard"
+                  queryKey="user-listings"
                 />
               ))}
             </div>
